@@ -7,6 +7,40 @@ rec {
   attrsToList = attrs:
     mapAttrsToList (name: value: { inherit name value; }) attrs;
 
+  # Convert a attrs of attrs to a single attrs set where each
+  # attribute is the full-path to the attribute in the original set.
+  # Example:
+  #
+  # flattenAttrs {
+  #   a = {
+  #     b = {
+  #       c = {
+  #         d = 1;
+  #       };
+  #       e = true;
+  #     };
+  #     f = "bla";
+  #   };
+  # }
+  #
+  # becomes
+  #
+  # {
+  #   "a.b.c.d" = 1;
+  #   "a.b.e" = true;
+  #   "a.f" = "bla";
+  # }
+  #
+  # flattenAttrs :: attrs -> attrs
+  flattenAttrs = let
+    expandAttr = path: value: {
+      inherit value;
+      name = concatStringSep "." path;
+      __expanded__ = true;
+    };
+    isExpanded = v: isAttrs v -> v ? "__expanded__";
+  in flip pipe [ (mapAttrsRecursive expandAttr) (collect isExpanded) listToAttrs ];
+
   # Maps and filters attributes
   # mapFilterAttrs :: (name -> value -> bool)
   #                -> (name -> value -> { name = any; value = any; })

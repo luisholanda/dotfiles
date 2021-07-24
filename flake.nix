@@ -3,14 +3,14 @@
 
   inputs =
   {
-    nixpkgs.url = "nixpkgs/master";    # for packages on the edge
+    nixpkgs.url = "nixpkgs/master";
     home-manager.url = "github:rycee/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ { self, nixpkgs }: let
+  outputs = inputs @ { self, nixpkgs, ... }: let
     inherit (lib.my) mapModules mapModulesRec mkHostsFromDir;
     system = "x86_64-linux";
     pkgs = import nixpkgs {

@@ -1,0 +1,132 @@
+{ config, lib, pkgs, stdenv, ... }:
+let
+  inherit (lib) mkIf mkOption types;
+
+  colors = config.theme.colors;
+  fonts = config.theme.fonts;
+  cfg = config.modules.programs.alacritty;
+in {
+  options.modules.programs.alacritty = with types; {
+    enable = mkOption {
+      description = "Enable the use of alacritty terminal emulator.";
+      type = bool;
+    };
+
+    package = mkOption {
+      description = "The alacritty package to install.";
+      type = package;
+      default = pkgs.alacritty;
+    };
+
+    font.size = mOption {
+      description = "Text's font size.";
+      type = ints.u8;
+      default = 12;
+    };
+
+    window = {
+      dynamicTitle = mkOption {
+        description = ''
+          If the window title should be dynamically changed to the current
+          command being run.
+        '';
+        type = bool;
+      };
+
+      dimensions = {
+        columns = mkOption {
+          description = "N. of columns in the window.";
+          type = ints.unsigned;
+        };
+        rows = mkOption {
+          description = "N. of rows in the window.";
+          type = ints.unsigned;
+        };
+      };
+
+      padding = {
+        x = mkOption {
+          default = 0;
+          description = "Padding added horizontally to the window.";
+          type = ints.u16;
+        };
+        y = mkOption {
+          default = 0;
+          description = "Padding added vertically to the window.";
+          type = ints.u16;
+        };
+      };
+    };
+  };
+
+  config = {
+    user.home.programs.alacritty = {
+      enable = cfg.enable;
+      package = cfg.package;
+
+      settings = {
+        colors = {
+          primary = {
+            background = colors.background.xHex;
+            foreground = colors.foreground.xHex;
+          };
+
+          normal = {
+            black = colors.normal.black.xHex;
+            red = colors.normal.red.xHex;
+            green = colors.normal.green.xHex;
+            yellow = colors.normal.yellow.xHex;
+            blue = colors.normal.blue.xHex;
+            magenta = colors.normal.magenta.xHex;
+            cyan = colors.normal.cyan.xHex;
+            white = colors.normal.white.xHex;
+          };
+
+          bright = {
+            black = colors.bright.black.xHex;
+            red = colors.bright.red.xHex;
+            green = colors.bright.green.xHex;
+            yellow = colors.bright.yellow.xHex;
+            blue = colors.bright.blue.xHex;
+            magenta = colors.bright.magenta.xHex;
+            cyan = colors.bright.cyan.xHex;
+            white = colors.bright.white.xHex;
+          };
+        };
+
+        draw_bold_text_with_bright_colors = true;
+
+        font = let
+          family = fonts.family.monospace;
+          fontWithStyle = style: { inherit family style; };
+        in {
+          normal = fontWithStyle "Normal";
+          bold = fontWithStyle "Bold";
+          italic = fontWithStyle "Italic";
+          bold_italic = fontWithStyle "Bold Italic";
+
+          size = cfg.font.size;
+
+          use_think_strokes = false;
+        };
+
+        live_config_reload = true;
+        mouse.hide_when_typing = false;
+        selection.save_to_clipboard = true;
+
+        window = {
+          decorations = if stdenv.isDarwin then "buttonless" else "none";
+          dimensions = {
+            columns = cfg.windows.dimensions.columns;
+            lines = cfg.windows.dimensions.lines;
+          };
+
+          dynamic_title = cfg.windows.dynamic_title;
+          dynamic_padding = true;
+          startup_mode = "Maximized";
+          padding = cfg.windows.padding;
+        };
+      };
+    };
+  };
+}

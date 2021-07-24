@@ -15,7 +15,7 @@ in rec {
     then nameValuePair n (fn path)
     else if v == "regular" && n != "default.nix" && hasSuffix ".nix" n
     then nameValuePair (removeSuffix ".nix" n) (fn path)
-    else nameValuePair "" nil)
+    else nameValuePair "" null)
     (readDir dir);
 
   # Map every module inside dir, returning a list of the results.
@@ -33,7 +33,7 @@ in rec {
     then nameValuePair n (mapModulesRec path fn)
     else if v == "regular" && n != "default.nix" && hasSuffix ".nix" n
     then nameValuePair (removeSuffix ".nix" n) (fn path)
-    else nameValuePair "" nil)
+    else nameValuePair "" null)
     (readDir dir);
 
   # Recursively map every module inside dir, returning a list of the results.
