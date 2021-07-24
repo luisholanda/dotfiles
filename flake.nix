@@ -31,6 +31,6 @@
 
     nixosModules = { dotfiles = import ./.; } // mapModulesRec ./modules import;
 
-    nixosConfiguration = mkHostsFromDir ./hosts {};
+    nixosConfigurations = mkHostsFromDir ./hosts {};
   };
 }
