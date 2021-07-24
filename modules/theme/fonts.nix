@@ -2,7 +2,7 @@
 let
   inherit (lib) mkAliasDefinitions mkOption types isList optional;
 
-  oneOrListOfStr = either str (listOf str);
+  oneOrListOfStr = with types; either str (listOf str);
 
   cfg = config.theme.fonts;
   toList = f: if isList f then f else [ f ];

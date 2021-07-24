@@ -1,15 +1,16 @@
 { inputs, config, lib, pkgs, ... }:
 let
   inherit (builtins) map;
-  inherit (lib) filterAttrs isDarwin isLinux mapAttrs mapAttrsToList mkDefault mkIf;
+  inherit (lib) filterAttrs mapAttrs mapAttrsToList mkDefault mkIf;
   inherit (lib.my)  mapModulesRec';
-
-  home-manager-module = if isLinux
-    then inputs.home-manager.nixosModule
-    else inputs.home-manager.darwinModule;
+  inherit (pkgs.stdenv) isDarwin;
 in {
-  imports = [ home-manager-module ]
-    ++ (mapModulesRec' (toString ./modules) import);
+  imports = (mapModulesRec' (toString ./modules) import);
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+  };
 
   environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
   nix = let
@@ -36,7 +37,7 @@ in {
     ];
     binaryCaches = map (x: x.url) caches;
     binaryCachePublicKeys = map (x: x.key) caches;
-    registryInputs = registryInputs // { dotfiles.flake = inputs.self; };
+    registry = registryInputs // { dotfiles.flake = inputs.self; };
     autoOptimiseStore = true;
     useSandbox = true;
     sandboxPaths = [ ] ++ lib.optionals isDarwin [
@@ -49,7 +50,7 @@ in {
     ];
   };
   system.configurationRevision = with inputs; mkIf (self ? rev) self.rev;
-  system.stateRevision = "21.05";
+  system.stateVersion = "21.05";
 
   ## Reasonable global defaults
   # This is here to appease `nix flake check` for generic hosts with no

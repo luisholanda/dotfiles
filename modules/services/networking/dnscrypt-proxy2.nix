@@ -1,4 +1,4 @@
-{ config, lib, pkgs, stdenv, ... }:
+{ config, lib, pkgs, ... }:
 let
   inherit (lib) mkDefault mkIf mkMerge;
   inherit (lib.my) mkAttrsOpt mkEnableOpt;

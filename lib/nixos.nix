@@ -13,10 +13,8 @@ in {
           nixpkgs.pkgs = pkgs;
           networking.hostName = mkDefault (removeSuffix ".nix" (baseNameOf path));
         }
-        (filterAttrs (n: v: !elem n [ "system" ]) attrs)
-        ../.
         (import path)
-      ];
+      ] ++ (attrValues (filterAttrs (n: v: !elem n [ "system" ]) attrs));
     };
 
   # Create new hosts from every path inside dir.

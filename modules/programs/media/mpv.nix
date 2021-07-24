@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib.my) mkAttrs mkEnableOpt mkPkgOpt;
+  inherit (lib.my) mkAttrsOpt mkEnableOpt mkPkgOpt mkPkgsOpt;
 
   cfg = config.modules.programs.mpv;
 in {
@@ -8,8 +8,8 @@ in {
     enable = mkEnableOpt "Enable MPV media player.";
     package = mkPkgOpt pkgs.mpv "Package providing mpv";
 
-    config = mkAtrrs "MPV configuration options.";
-    scripts = mkPkgsOpts "MPV scripts";
+    config = mkAttrsOpt "MPV configuration options.";
+    scripts = mkPkgsOpt "MPV scripts";
   };
 
   config = {

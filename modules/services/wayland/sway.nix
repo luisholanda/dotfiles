@@ -14,7 +14,7 @@ let
   };
 
   modifier = "Mod4";
-  cfg = config.modules.service.sway;
+  cfg = config.modules.services.sway;
 in {
   options.modules.services.sway = {
     enable = mkEnableOpt "Enable Sway WM";
@@ -33,14 +33,17 @@ in {
         };
       };
 
-      input = listToAttrs (map ({ attr, name }: {
-        name = attr;
-        value = mkOption {
+      input = let
+        libinputOpt = mkOption {
           type = types.attrsOf types.str;
           default = {};
-          description = "Mouse's libinput configuration";
+          description = "Libinput configuration";
         };
-      }) ["mouse" "keyboard" "penTablet"]);
+      in {
+        mouse = libinputOpt;
+        keyboard = libinputOpt;
+        penTablet = libinputOpt;
+      };
 
       keybindings = mkOption {
         type = types.attrsOf types.str;

@@ -1,6 +1,6 @@
-{ config, lib, pkgs, stdenv, ... }:
+{ config, lib, pkgs, ... }:
 let
-  inherit (stdenv) isDarwin;
+  inherit (pkgs.stdenv) isDarwin;
   inherit (lib) mkIf mkMerge mkOption types;
   inherit (lib.my) mkBoolOpt mkEnableOpt mkPkgOpt;
 
@@ -74,7 +74,7 @@ in {
       };
 
       user.sessionVariables = mkIf cfg.enable {
-        GIT_SEQUENCE_EDITOR = confing.user.sessionVariables.EDITOR or "";
+        GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or "";
       };
     }
     # SSH-specific configurations.
@@ -94,7 +94,7 @@ in {
       };
     })
     # Stacked-git addon.
-    (mkIf cfg.stgit.enable {
+    (mkIf cfg.addons.stgit.enable {
       user.packages = [ pkgs.stgit ];
       user.home.programs.git.extraConfig.stgit = {
         keepoptimized = "yes";

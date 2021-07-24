@@ -10,12 +10,13 @@ in {
     enable = mkEnableOpt "Enable waybar configuration.";
     settings = mkOption {
       type = types.listOf (types.attrs);
+      default = [];
       description = "Configuration for Waybar.";
     };
     style = mkCssOpt {
       description = "CSS style of the bar.";
     };
-    systemd.enable = mkBoolOpt false "Enable waybar systemd integration.";
+    systemd.enable = mkEnableOpt "Enable waybar systemd integration.";
   };
 
   config = mkIf cfg.enable {

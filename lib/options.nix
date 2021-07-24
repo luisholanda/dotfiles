@@ -30,6 +30,7 @@ in rec {
   mkCssOpt = with types; let
     cssAttrValue = oneOf [ int str (listOf str) ];
   in { description, default ? "" }: mkOption {
+    inherit description default;
     type = either str (attrsOf (attrsOf cssAttrValue));
   };
   mkCssFileOpt = mkPathWithExtOpt ".css";

@@ -23,6 +23,6 @@ in {
 
     programs.ssh.startAgent = cfg.agent.enable;
 
-    user.sessionVariables.SSH_AUTH_SOCK = "${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent";
+    user.sessionVariables.SSH_AUTH_SOCK = "\${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent";
   };
 }

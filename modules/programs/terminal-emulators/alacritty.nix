@@ -1,16 +1,14 @@
-{ config, lib, pkgs, stdenv, ... }:
+{  config, lib, pkgs, ... }:
 let
   inherit (lib) mkIf mkOption types;
+  inherit (lib.my) mkEnableOpt;
 
   colors = config.theme.colors;
   fonts = config.theme.fonts;
   cfg = config.modules.programs.alacritty;
 in {
   options.modules.programs.alacritty = with types; {
-    enable = mkOption {
-      description = "Enable the use of alacritty terminal emulator.";
-      type = bool;
-    };
+    enable = mkEnableOpt "Enable the use of alacritty terminal emulator.";
 
     package = mkOption {
       description = "The alacritty package to install.";
@@ -18,7 +16,7 @@ in {
       default = pkgs.alacritty;
     };
 
-    font.size = mOption {
+    font.size = mkOption {
       description = "Text's font size.";
       type = ints.u8;
       default = 12;
@@ -115,7 +113,7 @@ in {
         selection.save_to_clipboard = true;
 
         window = {
-          decorations = if stdenv.isDarwin then "buttonless" else "none";
+          decorations = if pkgs.stdenv.isDarwin then "buttonless" else "none";
           dimensions = {
             columns = cfg.windows.dimensions.columns;
             lines = cfg.windows.dimensions.lines;

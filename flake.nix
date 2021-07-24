@@ -12,25 +12,37 @@
 
   outputs = inputs @ { self, nixpkgs, ... }: let
     inherit (lib.my) mapModules mapModulesRec mkHostsFromDir;
-    system = "x86_64-linux";
+    system = builtins.currentSystem;
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
-      overlays = [ self.overlay ] ++ self.overlays;
+      overlays = [ self.overlay ] ++ (nixpkgs.lib.attrValues self.overlays);
     };
 
     lib = nixpkgs.lib.extend
       (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
-  in {
-    lib = lib.my;
 
+    dotfiles = import ./.;
+  in {
     overlay = final: prev: { my = self.packages."${system}"; };
 
     overlays = mapModules ./overlays import;
     packages."${system}" = mapModules ./packages (p: pkgs.callPackage p {});
 
-    nixosModules = { dotfiles = import ./.; } // mapModulesRec ./modules import;
+    nixosModules = { inherit dotfiles; } // mapModulesRec ./modules import;
 
-    nixosConfigurations = mkHostsFromDir ./hosts {};
+    nixosConfigurations = mkHostsFromDir ./hosts {
+      inherit dotfiles;
+      home-manager = inputs.home-manager.nixosModule;
+    };
+
+    devShell."${system}" = import ./shell.nix { inherit pkgs; };
+
+    templates = {
+      full = {
+        path = ./.;
+        description = "A completely non-minimal NixOS configuration";
+      };
+    };
   };
 }

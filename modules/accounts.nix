@@ -200,13 +200,13 @@ in {
     };
 
     accounts = mkOption {
-      types = with types; attrsOf (submodule mailAccountOpts);
+      type = with types; attrsOf (submodule mailAccountOpts);
       default = { };
       description = "List of email accounts.";
     };
   };
 
   config = {
-    home-manager.user.${cfg.name}.accounts = cfg.accounts;
+    #home-manager.user.${cfg.name}.accounts = cfg.accounts;
   };
 }

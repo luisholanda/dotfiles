@@ -1,8 +1,8 @@
-{ config, lib, pkgs, stdenv, ... }:
+{ config, lib, pkgs, ... }:
 let
   inherit (lib) mkOption types optionalString;
   inherit (lib.my) mkEnableOpt;
-  inherit (stdenv) isDarwin;
+  inherit (pkgs.stdenv) isDarwin;
 
   functionModule = types.submodule {
     options = {
@@ -132,7 +132,7 @@ in {
     };
   };
 
-  config = {
+  config.user.home.programs.fish = {
     enable = cfg.enable;
     interactiveShellInit = ''
       set -g fish_key_bindings __fish_user_key_bindings
