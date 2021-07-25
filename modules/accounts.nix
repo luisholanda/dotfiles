@@ -98,6 +98,7 @@ let
       realName = mkOption {
         type = types.str;
         example = "Jane Doe";
+        default = config.user.name;
         description = "Name displayed when sending mails.";
       };
 
@@ -188,7 +189,7 @@ in {
   options.user.accounts.email = {
     maildirBasePath = mkOption {
       type = types.str;
-      default = "${config.home.homeDirectory}/Maildir";
+      default = "${config.user.home.dir}/Maildir";
       defaultText = "$HOME/Maildir";
       apply = p:
         if hasPrefix "/" p then p else "${config.home.homeDirectory}/${p}";

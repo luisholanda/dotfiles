@@ -11,7 +11,7 @@ in rec {
     inherit description default;
     type = types.bool;
   };
-  mkColorValueOpt = prefix: { description, default ? null }: mkOption {
+  mkColorValueOpt = prefix: description: mkOption {
     inherit description;
     example = "${prefix}424242";
     type = types.strMatching "${prefix}[0-9A-F]{6}";

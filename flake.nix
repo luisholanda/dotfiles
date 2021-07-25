@@ -11,7 +11,8 @@
   };
 
   outputs = inputs @ { self, nixpkgs, ... }: let
-    inherit (lib.my) mapModules mapModulesRec mkHostsFromDir;
+    inherit (lib) nameValuePair;
+    inherit (lib.my) mapModulesRec mapModulesRec' mkHost mkHostsFromDir;
     system = builtins.currentSystem;
     pkgs = import nixpkgs {
       inherit system;
@@ -24,16 +25,22 @@
 
     dotfiles = import ./.;
   in {
-    overlay = final: prev: { my = self.packages."${system}"; };
+    overlay = final: prev: self.packages."${system}";
 
-    overlays = mapModules ./overlays import;
-    packages."${system}" = mapModules ./packages (p: pkgs.callPackage p {});
+    overlays = mapModulesRec ./overlays import;
+    packages."${system}" = import ./packages { inherit pkgs; };
 
     nixosModules = { inherit dotfiles; } // mapModulesRec ./modules import;
 
-    nixosConfigurations = mkHostsFromDir ./hosts {
-      inherit dotfiles;
-      home-manager = inputs.home-manager.nixosModule;
+    #nixosConfigurations = mkHostsFromDir ./hosts {
+    #  inherit dotfiles;
+    #  home-manager = inputs.home-manager.nixosModule;
+    #};
+    nixosConfigurations = {
+      plutus = mkHost ./hosts/plutus {
+        inherit dotfiles;
+        home-manager = inputs.home-manager.nixosModule;
+      };
     };
 
     devShell."${system}" = import ./shell.nix { inherit pkgs; };

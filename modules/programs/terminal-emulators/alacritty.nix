@@ -29,15 +29,18 @@ in {
           command being run.
         '';
         type = bool;
+        default = false;
       };
 
       dimensions = {
         columns = mkOption {
           description = "N. of columns in the window.";
+          default = 80;
           type = ints.unsigned;
         };
         rows = mkOption {
           description = "N. of rows in the window.";
+          default = 24;
           type = ints.unsigned;
         };
       };
@@ -115,14 +118,14 @@ in {
         window = {
           decorations = if pkgs.stdenv.isDarwin then "buttonless" else "none";
           dimensions = {
-            columns = cfg.windows.dimensions.columns;
-            lines = cfg.windows.dimensions.lines;
+            columns = cfg.window.dimensions.columns;
+            lines = cfg.window.dimensions.rows;
           };
 
-          dynamic_title = cfg.windows.dynamic_title;
+          dynamic_title = cfg.window.dynamicTitle;
           dynamic_padding = true;
           startup_mode = "Maximized";
-          padding = cfg.windows.padding;
+          padding = cfg.window.padding;
         };
       };
     };

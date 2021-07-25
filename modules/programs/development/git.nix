@@ -38,7 +38,7 @@ in {
           default = {};
           type = with types; let
             value = either str (either bool int);
-          in attrOf (either value (attrOf value));
+          in attrsOf (either value (attrsOf value));
         };
       };
       stgit.enable = mkEnableOpt "Enable the stacked-git wrapper.";
@@ -57,7 +57,13 @@ in {
         signing.key = account.gpg.key;
         signing.signByDefault = account.gpg.signByDefault;
 
-        delta = cfg.addons.delta;
+        delta = {
+          enable = cfg.addons.delta.enable;
+          options = {
+            line-numbers = true;
+            syntax-theme = "OneHalfDark";
+          } // cfg.addons.delta.options;
+        };
 
         extraConfig = {
           branch.autosetuprebase = "always";

@@ -76,7 +76,13 @@ in
         description = "Folders where projects are stored.";
       };
 
-      extraConfig = mkAttrsOpt "Extra configuration for home-manageer.";
+      extraConfig = mkAttrsOpt "Extra configuration for home-manager.";
+
+      dir = mkOption {
+        type = str;
+        default = "/home/${cfg.name}";
+        description = "Home directory for the user.";
+      };
     };
 
     xdg = {
@@ -90,7 +96,7 @@ in
     users.users.${cfg.name} = {
       createHome = true;
       isNormalUser = true;
-      home = "/home/${cfg.name}";
+      home = cfg.home.dir;
 
       description = cfg.description;
       extraGroups = cfg.groups;
@@ -118,7 +124,7 @@ in
           configFile = mkAliasDefinitions options.user.xdg.configFile;
           dataFile = mkAliasDefinitions options.user.xdg.dataFile;
         };
-      };# // cfg.home.extraConfig;
+      } // cfg.home.extraConfig;
     };
 
     nix = let

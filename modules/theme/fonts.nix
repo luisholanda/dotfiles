@@ -8,30 +8,30 @@ let
   toList = f: if isList f then f else [ f ];
 in {
   options.theme.fonts = with types; {
-    family = mkOption {
-      description = "System-wide font families.";
-      type = submodule {
-        emoji = mkOption {
-          type = oneOrListOfStr;
-          example = "Noto Color Emoji";
-          default = "Noto Color Emoji";
-          description = "System-wide emoji font(s).";
-        };
-        monospace = mkOption {
-          type = oneOrListOfStr;
-          example = "DejaVu Sans Mono";
-          description = "System-wide monospace font(s).";
-        };
-        sansSerif = mkOption {
-          type = oneOrListOfStr;
-          example = "DejaVu Sans";
-          description = "System-wide sans serif font(s).";
-        };
-        serif = mkOption {
-          type = oneOrListOfStr;
-          example = "DejaVu Serif";
-          description = "System-wide serif font(s).";
-        };
+    family = {
+      emoji = mkOption {
+        type = oneOrListOfStr;
+        example = "Noto Color Emoji";
+        default = "Noto Color Emoji";
+        description = "System-wide emoji font(s).";
+      };
+      monospace = mkOption {
+        type = oneOrListOfStr;
+        example = "DejaVu Sans Mono";
+        default = "DejaVu Sans Mono";
+        description = "System-wide monospace font(s).";
+      };
+      sansSerif = mkOption {
+        type = oneOrListOfStr;
+        example = "DejaVu Sans";
+        default = "DejaVu Sans";
+        description = "System-wide sans serif font(s).";
+      };
+      serif = mkOption {
+        type = oneOrListOfStr;
+        example = "DejaVu Serif";
+        default = "DejaVu Serif";
+        description = "System-wide serif font(s).";
       };
     };
 
@@ -52,11 +52,13 @@ in {
     packages = mkOption {
       description = "Fonts packages to install.";
       type = listOf package;
+      default = [];
     };
 
     nerdfonts = mkOption {
       description = "Nerd font patches fonts to install.";
       type = listOf str;
+      default = [];
     };
   };
 

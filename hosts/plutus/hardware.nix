@@ -13,7 +13,7 @@
 
   boot.cleanTmpDir = true;
   boot.consoleLogLevel = 4;
-  boot.extraModulePackages = [ pkgs.firmware-rtl8188eu ];
+  boot.extraModulePackages = [ pkgs.rtl8188eu ];
   boot.initrd.availableKernelModules =
     [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
@@ -26,7 +26,7 @@
     "page_alloc.shuffle=1"
     # Reduce TTY output during boot
     "quiet"
-    "vga=current"
+    #"vga=current"
   ];
   boot.blacklistedKernelModules = [
     # Bad Realtek driver
