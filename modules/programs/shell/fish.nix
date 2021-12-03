@@ -140,8 +140,6 @@ in {
       set -g fish_cursor_insert line;
       set -g fish_cursor_replace_one underscore
       _pure_set_default pure_show_prefix_root_prompt true
-    '';
-    promptInit = ''
       ${pkgs.any-nix-shell}/bin/any-nix-shell fish --info-right | source
     '';
     shellAliases = user.shellAliases // cfg.aliases;
