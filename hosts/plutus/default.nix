@@ -24,6 +24,7 @@ in {
         };
       };
       gpg.enable = true;
+      mpv.enable = true;
       ssh.enable = true;
     };
   };
@@ -60,7 +61,7 @@ in {
 
   user = {
     name = "luiscm";
-    description = "Luis C. M. Holanda";
+    description = "Luis C. M. de Holanda";
     # TODO: move these groups to their respective modules.
     groups = [ "wheel" "networking" "wideo" "adbusers" "docker" ];
     passwordFile = "${config.dotfiles.dir}/hosts/plutus/passfile";

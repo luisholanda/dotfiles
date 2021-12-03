@@ -16,7 +16,7 @@ in stdenv.mkDerivation rec {
   src = fetchgit {
     url = meta.homepage;
     rev = version;
-    sha256 = "sha256-TUnf0HYUuk0klqD6fuhrOclNAPn/6zypwvedJjGQaTA=";
+    sha256 = "sha256-e2DIV8QKKzdsciM2zJEPSxq8Q0i2WZom573xznahao4=";
     leaveDotGit = true;
   };
 
