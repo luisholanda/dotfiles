@@ -1,7 +1,7 @@
 { config, lib, options, pkgs, ... }:
 let
   inherit (lib) types mkAliasDefinitions mkOption splitString;
-  inherit (lib.my) mkAttrsOpt mkPathOpt;
+  inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt;
 
   cfg = config.user;
 in
@@ -53,6 +53,8 @@ in
       default = {};
     };
 
+    shell = mkPkgOpt pkgs.shadow "User shell. Defaults to bash";
+
     shellAliases = mkOption {
       type = with types; attrsOf str;
       default = {};
@@ -102,6 +104,8 @@ in
       extraGroups = cfg.groups;
       hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
       packages = cfg.packages;
+
+      shell = cfg.shell;
     };
 
     home-manager = {

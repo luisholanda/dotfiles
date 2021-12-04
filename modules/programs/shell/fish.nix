@@ -132,6 +132,7 @@ in {
     };
   };
 
+  config.user.shell = pkgs.fish;
   config.user.home.programs.fish = {
     enable = cfg.enable;
     interactiveShellInit = ''
