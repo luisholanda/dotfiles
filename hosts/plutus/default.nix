@@ -6,6 +6,8 @@ in {
   imports = [ ./hardware.nix ];
 
   modules = {
+    editors.neovim.enable = true;
+
     services = {
       sway.enable = true;
       mako.enable = true;
@@ -15,6 +17,7 @@ in {
     programs = {
       alacritty.enable = true;
       brave.enable = true;
+      fish.enable = true;
       git = {
         enable = true;
         emailAccount = "personalGmail";

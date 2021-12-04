@@ -120,7 +120,7 @@ in {
     enable = mkEnableOpt "Enable Fish shell configuration.";
 
     aliases = mkOption {
-      type = with types; attrsof str;
+      type = with types; attrsOf str;
       default = {};
       description = "Shell specific aliases.";
     };
@@ -168,7 +168,7 @@ in {
         description = "Go to the given project";
         body = ''
           set --local prev_dir (dir)
-          set --local projects_dirs ${user.home.projectDirs}
+          set --local projects_dirs ${builtins.concatStringsSep " " user.home.projectDirs}
 
           for proj_dir in $proejcts_dirs
             set --local project_dir $proj_dir/$project
