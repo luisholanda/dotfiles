@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkOption types mkMerge mkIf listToAttrs;
+  inherit (lib) mkOption types mkMerge mkIf listToAttrs makeBinPath;
   inherit (lib.my) mkEnableOpt mkColorHexValueOpt;
 
   mkColor = description: mkColorHexValueOpt { inherit description; };
@@ -53,10 +53,16 @@ in {
     };
   };
 
-  config = mkIf cfg.enable (mkMerge [
+  config = mkMerge [
+    (let
+      a = config.modules.programs.alacritty;
+    in mkIf a.enable {
+      user.home.extraConfig.wayland.windowManager.sway.config.terminal = "${makeBinPath [a.package]}/alacritty";
+    })
+
     {
       user.home.extraConfig.wayland.windowManager.sway = {
-        enable = true;
+        enable = cfg.enable;
 
         config = {
           inherit modifier;
@@ -72,7 +78,7 @@ in {
               repeat_delay = "150";
               repeat_rate = "30";
               xkb_layout = "us";
-              xkb_variant = "int";
+              xkb_variant = "intl";
             } // cfg.config.input.keyboard;
             "type:pointer" = {
               accel_profile = "adaptive";
@@ -90,12 +96,5 @@ in {
         };
       };
     }
-    (let
-      a = config.modules.programs.alacritty;
-    in mkIf a.enable {
-      user.home.extraConfig.wayland.windowManager.sway = {
-        config.terminal = "${a.package}/bin/alacritty";
-      };
-    })
-  ]);
+  ];
 }

@@ -107,6 +107,7 @@ in
     home-manager = {
       # Install user packages in /etc/profiles instead. Necessary for
       # nixos-rebuild build-vm to work.
+      useGlobalPkgs = true;
       useUserPackages = true;
 
       users.${cfg.name} = {
