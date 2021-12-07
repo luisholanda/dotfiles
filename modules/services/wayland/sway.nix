@@ -82,6 +82,11 @@ in {
           "type:tablet_tool" = cfg.config.input.penTablet;
         };
 
+        fonts = {
+          names = config.fonts.fontconfig.defaultFonts.sansSerif ++ config.fonts.fontconfig.defaultFonts.emoji;
+          size = config.theme.fonts.size.ui;
+        };
+
         keybindings = let
           customKeybindings = {
           "${modifier}+v" = "split toggle";
@@ -93,6 +98,17 @@ in {
         window.hideEdgeBorders = "smart";
         workspaceAutoBackAndForth = true;
       };
+
+      extraSessionCommands = ''
+        export SDL_VIDEODRIVER=wayland
+        export QT_QPA_PLATFORM=wayland
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+        export _JAVA_AWT_WM_NOREPARENTING=1
+        export MOZ_ENABLE_WAYLAND=1
+        export XDG_CURRENT_DESKTOP=sway
+      '';
+
+      wrapperFeatures.gtk = true;
     };
   };
 }
