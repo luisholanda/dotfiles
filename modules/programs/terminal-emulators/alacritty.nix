@@ -60,7 +60,8 @@ in {
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
+    user.terminalCmd = "${lib.makeBinPath [cfg.package]}/alacritty";
     user.home.programs.alacritty = {
       enable = cfg.enable;
       package = cfg.package;

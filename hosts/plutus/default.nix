@@ -15,7 +15,8 @@ in {
     };
 
     programs = {
-      alacritty.enable = true;
+      alacritty.enable = false;
+      kitty.enable = true;
       brave.enable = true;
       fish.enable = true;
       git = {
@@ -32,6 +33,7 @@ in {
     };
   };
 
+  theme.fonts.size.text = 12;
   theme.colors = rec {
     background = mkColor "#2B2D3A";
     foreground = mkColor "#E1E3E4";

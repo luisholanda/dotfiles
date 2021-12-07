@@ -88,9 +88,7 @@ in {
           } // cfg.config.keybindings;
         in mkOptionDefault customKeybindings;
 
-        terminal = let
-          a = config.modules.programs.alacritty;
-        in mkIf a.enable "${makeBinPath [a.package]}/alacritty";
+        terminal = config.user.terminalCmd;
 
         window.hideEdgeBorders = "smart";
         workspaceAutoBackAndForth = true;

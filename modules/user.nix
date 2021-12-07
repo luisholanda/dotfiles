@@ -47,6 +47,11 @@ in
       '';
     };
 
+    terminalCmd = mkOption {
+      type = types.str;
+      description = "Command to start the user terminal.";
+      default = "";
+    };
 
     sessionCmd = mkOption {
       type = types.str;
