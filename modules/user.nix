@@ -47,6 +47,13 @@ in
       '';
     };
 
+
+    sessionCmd = mkOption {
+      type = types.str;
+      description = "Command to start the user session.";
+      default = "";
+    };
+
     sessionVariables = mkOption {
       type = types.attrs;
       description = "Environment variables to always set at login";

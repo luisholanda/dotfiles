@@ -2,7 +2,7 @@
 let
   inherit (lib) mkOption types optionalString;
   inherit (lib.my) mkEnableOpt;
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv) isDarwin isLinux;
 
   functionModule = types.submodule {
     options = {
@@ -135,7 +135,16 @@ in {
   config.user.shell = pkgs.fish;
   config.user.home.programs.fish = {
     enable = cfg.enable;
-    interactiveShellInit = ''
+    interactiveShellInit = let
+      sessionInit = if isLinux && config.user.sessionCmd != ""
+        then ''
+          if [ -z "$DISPLAY" -a (tty) = "/dev/tty1" ]
+            exec ${ config.user.sessionCmd }
+          end
+        '' else "";
+    in ''
+      ${sessionInit}
+
       set -g fish_key_bindings __fish_user_key_bindings
       set -g fish_cursor_default block;
       set -g fish_cursor_insert line;

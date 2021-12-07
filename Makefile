@@ -17,7 +17,7 @@ check:
 	nix flake check --impure $(NIX_FLAGS)
 
 vm: $(VM_BIN)
-	rm ./plutus.qcow2
+	rm -f ./plutus.qcow2
 	$(VM_BIN) -vga qxl
 
 $(VM_BIN): $(NIX_SRCS)
