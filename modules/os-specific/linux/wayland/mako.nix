@@ -24,4 +24,5 @@ in {
     defaultTimeout = 1500;
     width = 420;
   };
+  config.user.home.extraConfig.wayland.windowManager.sway.config.startup = [ { command = "exec mako"; } ];
 }
