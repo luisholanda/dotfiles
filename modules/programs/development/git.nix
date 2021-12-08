@@ -82,6 +82,7 @@ in {
       user.sessionVariables = mkIf cfg.enable {
         GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or "";
       };
+      user.shellAlias.gt = "git";
     }
     # SSH-specific configurations.
     (mkIf cfg.ssh.always {
