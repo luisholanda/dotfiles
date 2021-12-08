@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkOption mkOptionDefault types mkMerge mkIf listToAttrs makeBinPath;
-  inherit (lib.my) mkEnableOpt mkColorHexValueOpt;
+  inherit (lib.my) mkEnableOpt mkColorHexValueOpt mkPkgsOpt;
 
   mkColor = description: mkColorHexValueOpt { inherit description; };
   colorSubmodule = types.submodule {
@@ -15,6 +15,10 @@ let
 
   modifier = "Mod4";
   cfg = config.modules.services.sway;
+
+  sway = pkgs.sway.overrideAttrs (old: {
+    buildInputs = old.buildInputs ++ cfg.extraPackages;
+  });
 in {
   options.modules.services.sway = {
     enable = mkEnableOpt "Enable Sway WM";
@@ -51,6 +55,8 @@ in {
         description = "Extra keybindings";
       };
     };
+
+    extraPackages = mkPkgsOpt "sway";
   };
 
   config = {
@@ -58,6 +64,7 @@ in {
     user.sessionCmd = "env WLR_RENDERER_ALLOW_SOFTWARE=1 sway";
     user.home.extraConfig.wayland.windowManager.sway = {
       enable = cfg.enable;
+      package = sway;
 
       config = {
         inherit modifier;

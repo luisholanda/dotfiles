@@ -11,18 +11,21 @@ in {
     enable = mkEnableOpt "Enable mako notification daemon.";
   };
 
-  config.user.home.programs.mako = mkIf config.modules.service.mako.enable {
-    enable = true;
-    maxVisible = 3;
-    layer = "overlay";
-    font = "${uiFont} ${builtins.toString uiSize}";
-    backgroundColor = colors.background.hex;
-    textColor = colors.foreground.hex;
-    # TODO: These should be moved to a theme config.
-    borderSize = 0;
-    progressColor = "over ${colors.normal.blue.hex}";
-    defaultTimeout = 1500;
-    width = 420;
+  config = mkIf config.modules.service.mako.enable {
+    user.home.programs.mako = {
+      enable = true;
+      maxVisible = 3;
+      layer = "overlay";
+      font = "${uiFont} ${builtins.toString uiSize}";
+      backgroundColor = colors.background.hex;
+      textColor = colors.foreground.hex;
+      # TODO: These should be moved to a theme config.
+      borderSize = 0;
+      progressColor = "over ${colors.normal.blue.hex}";
+      defaultTimeout = 1500;
+      width = 420;
+    };
+
+    user.home.extraConfig.wayland.windowManager.sway.config.startup = [ { command = "exec mako"; } ];
   };
-  config.user.home.extraConfig.wayland.windowManager.sway.config.startup = [ { command = "exec mako"; } ];
 }
