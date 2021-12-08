@@ -62,6 +62,8 @@ in {
   config = {
     # Environment variable required to make sway work on qemu
     user.sessionCmd = "env WLR_RENDERER_ALLOW_SOFTWARE=1 sway";
+    # Required to make chromium stuff work nicely with wayland.
+    user.sessionVariables.CHROMIUM_FLAGS = "--enable-features=UseOzonePlatform,UseSkiaRenderer,Vulkan --ozone-platform=wayland";
     user.home.extraConfig.wayland.windowManager.sway = {
       enable = cfg.enable;
       package = sway;
