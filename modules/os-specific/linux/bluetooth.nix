@@ -19,15 +19,12 @@ in {
     boot.extraModulePackages = [ cfg.firmware ];
     boot.kernelModules = [ cfg.kernelModule ];
 
-    hardware.bluetooth = mkDefault {
-      enable = true;
-
-      settings.General = {
+    hardware.bluetooth.enable = true;
+    hardware.bluetooth.settings.General = mkDefault {
         AutoConnect = "true";
         Enable = "Source,Sink,Media,Socket";
         FastConnectable = "true";
         MultiProfile = "multiple";
-      };
     };
 
     hardware.pulseaudio.extraModules = [ pkgs.pulseaudio-modules-bt ];
