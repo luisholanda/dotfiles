@@ -11,7 +11,7 @@ in {
     enable = mkEnableOpt "Enable mako notification daemon.";
   };
 
-  config = mkIf config.modules.service.mako.enable {
+  config = mkIf config.modules.services.mako.enable {
     user.home.programs.mako = {
       enable = true;
       maxVisible = 3;

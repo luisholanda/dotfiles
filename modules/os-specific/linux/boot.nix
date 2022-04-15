@@ -18,7 +18,7 @@ in {
         consoleMode = "auto";
         editor = false;
         configurationLimit = 5;
-        memtest86 = true;
+        memtest86.enable = true;
       };
     };
 
@@ -67,7 +67,5 @@ in {
     ];
 
     boot.kernel.sysctl."fs.inotify.max_user_watches" = 512 * 1024;
-
-    zramSwap.enable = true;
   });
 }

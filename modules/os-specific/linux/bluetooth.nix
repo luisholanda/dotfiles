@@ -3,7 +3,7 @@ let
   inherit (lib) mkIf mkOption mkDefault types;
   inherit (lib.my) mkEnableOpt mkPkgOpt;
 
-  cfg = config.modules.hardware.bluetooh;
+  cfg = config.modules.hardware.bluetooth;
 in {
   options.modules.hardware.bluetooth = {
     enable = mkEnableOpt "Enable bluetooth hardware and software support";
