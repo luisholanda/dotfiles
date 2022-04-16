@@ -12,6 +12,7 @@ in {
     editors = {
       neovim.enable = true;
 
+      # XX: should these be configured in some sort of per-language configuration?
       extraPackages = with pkgs; [
         nodePackages.bash-language-server
         nodePackages.pyright
@@ -107,6 +108,16 @@ in {
         };
       };
     };
+
+    packages = with pkgs; [
+      nomacs
+      pcmanfm
+      texlab
+      zathura
+      minecraft
+    ];
+
+    nonfreePackages = with pkgs; [slack notion-app-enhanced];
   };
 
   documentation = {
