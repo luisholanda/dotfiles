@@ -5,7 +5,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) types mkAliasDefinitions mkOption splitString;
+  inherit (lib) types mkAliasDefinitions mkOption splitString getName;
   inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt;
 
   cfg = config.user;
@@ -48,6 +48,18 @@ in {
         The set of packages that should be made available to the user.
         This is in contrast to <option>environment.systemPackages</option>,
         which adds packages to all users.
+      '';
+    };
+
+    nonfreePackages = mkOption {
+      type = listOf package;
+      default = [];
+      example = lib.literalExample "[ pkgs.binance ]";
+      description = ''
+        The set of non-free packages that should be made available to the user.
+
+        This correctly sets <option>nixpkgs.config.allowUnfreePredicate<option> to
+        allow this specific set of packages.
       '';
     };
 
@@ -112,10 +124,12 @@ in {
   config = {
     users.mutableUsers = false;
     users.users.${cfg.name} = {
-      inherit (cfg) description packages shell;
+      inherit (cfg) description shell;
       isNormalUser = true;
       home = cfg.home.dir;
       extraGroups = cfg.groups;
+
+      packages = cfg.packages ++ cfg.nonfreePackages;
 
       hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
     };
@@ -144,5 +158,10 @@ in {
 
     nix.trustedUsers = ["root" cfg.name];
     nix.allowedUsers = ["root" cfg.name];
+
+    nixpkgs.config.allowUnfree = let
+      nonfreeNames = map getName cfg.nonfreePackages;
+    in
+      pkg: builtins.elem (getName pkg) nonfreeNames;
   };
 }

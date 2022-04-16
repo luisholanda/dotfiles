@@ -1,12 +1,12 @@
 local utils = require("utils")
 vim.opt.termguicolors = true
 
-require("completion")
 require("config")
 require("plugins")
 require("essentials")
 require("statusline")
 require("keymaps")
+require("completion")
 
 require("gitsigns").setup({
 	numhl = false,
