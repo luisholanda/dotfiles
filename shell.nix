@@ -23,12 +23,6 @@ in
         help = "run flake checks";
         command = "make check";
       };
-
-      mk = {
-        help = "an easier alias for GNU make";
-        command = "make";
-        package = pkgs.gnumake;
-      };
     };
 
     devshell.startup = {

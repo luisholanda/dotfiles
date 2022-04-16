@@ -112,10 +112,10 @@ in {
   config = {
     users.mutableUsers = false;
     users.users.${cfg.name} = {
-      inherit (cfg) description groups packages shell;
-      createHome = true;
+      inherit (cfg) description packages shell;
       isNormalUser = true;
       home = cfg.home.dir;
+      extraGroups = cfg.groups;
 
       hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
     };
