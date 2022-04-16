@@ -99,6 +99,7 @@ in {
       file = mkAttrsOpt "Files to be added to the home directory.";
 
       programs = mkAttrsOpt "Programs configurable via home-manager";
+      services = mkAttrsOpt "Services configurable via home-manager";
 
       projectDirs = mkOption {
         type = listOf str;

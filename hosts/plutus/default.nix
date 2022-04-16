@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib.my) mkColor;
@@ -8,7 +9,21 @@ in {
   imports = [./hardware.nix];
 
   modules = {
-    editors.neovim.enable = true;
+    editors = {
+      neovim.enable = true;
+
+      extraPackages = with pkgs; [
+        nodePackages.bash-language-server
+        nodePackages.pyright
+        nodePackages.typescript-language-server
+        nodePackages.vim-language-server
+        nodePackages.vls
+        rnix-lsp
+        rust-analyzer
+        sumneko-lua-language-server
+        terraform-ls
+      ];
+    };
 
     services = {
       gammastep.enable = true;

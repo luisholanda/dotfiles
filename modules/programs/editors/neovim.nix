@@ -16,9 +16,12 @@
     "/spell"
   ];
 
-  wrappedNeovim = pkgs.neovim-unwrapped.overrideAttrs (old: {
-    buildInputs = old.buildInputs ++ config.modules.editors.extraPackages;
-  });
+  wrappedNeovim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
+    wrapperArgs = ["--suffix" "PATH" ":" (makeBinPath config.modules.editors.extraPackages)];
+    vimAlias = true;
+    viAlias = true;
+    wrapRc = false;
+  };
 
   nvimPath = "${makeBinPath [wrappedNeovim]}/nvim";
 
@@ -31,11 +34,7 @@ in {
   config = mkIf cfg.enable {
     user.packages = [wrappedNeovim];
 
-    user.shellAliases = {
-      vi = nvimPath;
-      vim = nvimPath;
-      vimdiff = "${nvimPath} -d";
-    };
+    user.shellAliases.vimdiff = "${nvimPath} -d";
 
     user.sessionVariables.EDITOR = nvimPath;
 
