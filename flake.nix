@@ -15,6 +15,10 @@
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+
+    devshell.url = "github:numtide/devshell";
+    devshell.inputs.flake-utils.follows = "flake-utils";
+    devshell.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -22,6 +26,7 @@
     nixpkgs,
     flake-utils,
     pre-commit-hooks,
+    devshell,
     ...
   }: let
     dotfiles = import ./.;
@@ -44,22 +49,23 @@
       basePkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = nixpkgs.lib.attrValues overlays;
+        overlays = [devshell.overlay] ++ nixpkgs.lib.attrValues overlays;
       };
 
       packages = import ./packages {pkgs = basePkgs;};
-
-      # Nixpkgs with our extra packages.
-      pkgs = basePkgs // packages;
 
       lib =
         nixpkgs.lib.extend
         (self: super: {
           my = import ./lib {
-            inherit pkgs inputs;
+            inherit inputs;
+            pkgs = basePkgs;
             lib = self;
           };
         });
+
+      # Nixpkgs with our extra packages.
+      pkgs = basePkgs // packages // {inherit lib;};
 
       pre-commit-check = pre-commit-hooks.lib.${system}.run {
         src = ./.;
@@ -81,17 +87,7 @@
 
       checks = {inherit pre-commit-check;};
 
-      devShell = pkgs.mkShell {
-        name = "dotfiles";
-
-        buildinputs = with pkgs; [
-          gnumake
-        ];
-
-        shellHook = ''
-          ${pre-commit-check.shellHook}
-        '';
-      };
+      devShell = import ./shell.nix {inherit pkgs pre-commit-check;};
 
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
       nixosConfigurations = {
