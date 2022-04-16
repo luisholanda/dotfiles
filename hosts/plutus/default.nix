@@ -30,7 +30,23 @@ in {
       docker.enable = true;
       gammastep.enable = true;
       mako.enable = true;
-      sway.enable = true;
+
+      sway = {
+        enable = true;
+
+        config.output = {
+          HDMI-A-1 = {
+            position = "2560 -750";
+            transform = "90";
+          };
+
+          HDMI-A-2 = {
+            position = "0 0";
+            mode = "2560x1080@74.991Hz";
+          };
+        };
+      };
+
       waybar.enable = true;
     };
 
@@ -38,6 +54,14 @@ in {
       alacritty.enable = false;
       brave.enable = true;
       fish.enable = true;
+
+      firefox = {
+        enable = true;
+        extensions = [];
+
+        userChrome = ./firefox-userChrome.css;
+        userContent = [./firefox-userContent.css];
+      };
 
       git = {
         enable = true;
@@ -55,8 +79,25 @@ in {
     };
   };
 
-  theme.fonts.size.text = 16.0;
-  theme.fonts.size.ui = 16.0;
+  theme.fonts = {
+    family = {
+      monospace = "JetBrainsMono Nerd Font";
+      serif = "Noto Serif";
+      sansSerif = "Noto Sans";
+    };
+
+    nerdfonts = ["JetBrainsMono"];
+    packages = with pkgs; [
+      font-awesome
+      lmodern
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+    ];
+
+    size.text = 12.0;
+    size.ui = 12.0;
+  };
 
   theme.colors = rec {
     background = mkColor "#2B2D3A";

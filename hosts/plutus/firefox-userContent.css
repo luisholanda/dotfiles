@@ -1,0 +1,44 @@
+@-moz-document domain(app.slack.com) {
+  :root {
+    --max-message-width: 80ch;
+    --code-font-size: 13px;
+  }
+
+  /* Limit messages width */
+  .c-message_kit__gutter__right {
+    max-width: var(--max-message-width);
+  }
+
+  .c-message_list__day_divider__label {
+    padding-left: calc(var(--max-message-width) / 2);
+    text-align: left !important;
+  }
+
+  .c-message_kit__hover {
+    max-width: calc(var(--max-message-width) + 360px);
+  }
+
+  .p-message_pane_input {
+    max-width: calc(var(--max-message-width) + 80px);
+  }
+
+  /* Make code styling cleaner */
+  code {
+    border: none !important;
+    background-color: inherit !important;
+  }
+
+  code, pre {
+    font-family: JetBrainsMono Nerd Font Mono !important;
+    font-variant-ligatures: common-ligatures !important;
+    font-size: var(--code-font-size) !important;
+  }
+
+  /* Make close button a little more subtle */
+  .p-channel_sidebar__channel:focus + .p-channel_sidebar__close,
+  .p-channel_sidebar__close_container:focus .p-channel_sidebar__close,
+  .p-channel_sidebar__close_container:hover .p-channel_sidebar__close {
+    opacity: 0.32 !important;
+  }
+}
+

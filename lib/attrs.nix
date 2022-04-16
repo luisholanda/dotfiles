@@ -33,7 +33,7 @@ with lib; rec {
   flattenAttrs = let
     expandAttr = path: value: {
       inherit value;
-      name = concatStringSep "." path;
+      name = concatStringsSep "." path;
       __expanded__ = true;
     };
     isExpanded = v: isAttrs v -> v ? "__expanded__";

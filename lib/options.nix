@@ -61,7 +61,7 @@ in rec {
     with types;
       mkOption {
         inherit description;
-        type = addCheck (hasSuffix ext) path;
+        type = addCheck path (hasSuffix ext);
       };
   mkPathsOpt = description:
     mkOption {
@@ -72,7 +72,7 @@ in rec {
     with types;
       mkOption {
         inherit description;
-        type = addCheck (builtins.all (hasSuffix ext)) (listOf path);
+        type = addCheck (listOf path) (builtins.all (hasSuffix ext));
       };
   mkPkgOpt = default: name:
     mkOption {

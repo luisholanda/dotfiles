@@ -17,7 +17,7 @@ in {
 
     settings = mkOption {
       type = types.attrs;
-      default = {};
+      default = import ./_settings.nix {inherit config;};
       description = "Firefox about:config settings.";
     };
 

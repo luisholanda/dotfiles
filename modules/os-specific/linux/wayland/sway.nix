@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) mkOption mkOptionDefault mkDefault types mkMerge mkIf listToAttrs makeBinPath;
-  inherit (lib.my) mkEnableOpt mkColorHexValueOpt mkPkgsOpt;
+  inherit (lib.my) mkAttrsOpt mkEnableOpt mkColorHexValueOpt mkPkgsOpt;
 
   mkColor = description: mkColorHexValueOpt {inherit description;};
   colorSubmodule = types.submodule {
@@ -71,6 +71,8 @@ in {
         default = [];
         description = "Startup code";
       };
+
+      output = mkAttrsOpt "Configure sway output displays";
     };
 
     extraPackages = mkPkgsOpt "sway";
@@ -78,6 +80,7 @@ in {
 
   config = {
     user.sessionCmd = "exec ${sway}/bin/sway";
+    user.packages = with pkgs; [wl-clipboard];
     user.home.services.kanshi.enable = cfg.enable;
     user.home.extraConfig.wayland.windowManager.sway = {
       inherit (cfg) enable;
@@ -86,6 +89,7 @@ in {
 
       config = {
         inherit modifier;
+        inherit (cfg.config) output;
 
         gaps = {
           inherit (cfg.config.gaps) inner outer;
