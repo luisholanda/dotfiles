@@ -143,7 +143,7 @@ local function configure_servers()
 end
 
 local function setup_callbacks()
-	vim.lsp.handlers["textDocument/codeAction"] = lsputil.codeAction.code_action_handler
+	--vim.lsp.handlers["textDocument/codeAction"] = lsputil.codeAction.code_action_handler
 	--vim.lsp.handlers["textDocument/references"] = lsputil.locations.references_handler
 	--vim.lsp.handlers["textDocument/definition"] = lsputil.locations.definition_handler
 	--vim.lsp.handlers["textDocument/declaration"] = lsputil.locations.declaration_handler
@@ -165,7 +165,7 @@ function M.setup()
 	nvim_lsp = require("lspconfig")
 	lsp_status = require("lsp-status")
 	lsputil = {
-		codeAction = require("lsputil.codeAction"),
+		--codeAction = require("lsputil.codeAction"),
 		locations = require("lsputil.locations"),
 		symbols = require("lsputil.symbols"),
 	}

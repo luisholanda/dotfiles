@@ -132,7 +132,9 @@ gls.mid[5] = {
 			if #vim.lsp.buf_get_clients() == 0 then
 				return 0
 			else
-				return vim.lsp.diagnostic.get_count("Error") or 0
+				return #vim.diagnostic.get(0, {
+					severity = vim.diagnostic.severity.ERROR,
+				}) or 0
 			end
 		end,
 		icon = "   ",
@@ -146,7 +148,9 @@ gls.mid[6] = {
 			if #vim.lsp.buf_get_clients() == 0 then
 				return 0
 			else
-				return vim.lsp.diagnostic.get_count("Warning") or 0
+				return #vim.diagnostic.get(0, {
+					severity = vim.diagnostic.severity.WARN,
+				}) or 0
 			end
 		end,
 		icon = "   ",

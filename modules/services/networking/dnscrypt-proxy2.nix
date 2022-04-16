@@ -22,6 +22,7 @@ in {
   };
 
   config = {
+    networking.resolvconf.useLocalResolver = true;
     services.dnscrypt-proxy2 = {
       inherit (cfg) enable;
       settings =

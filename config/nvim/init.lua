@@ -76,7 +76,7 @@ require("telescope").setup({
 	},
 })
 
-require("lightspeed").setup({ highlight_unique_chars = true })
+require("lightspeed").setup({ jump_to_unique_chars = true })
 
 require("rust-tools").setup({
 	tools = {

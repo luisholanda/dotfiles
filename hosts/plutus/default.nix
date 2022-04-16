@@ -23,10 +23,13 @@ in {
         rust-analyzer
         sumneko-lua-language-server
         terraform-ls
+        ripgrep
+        fd
       ];
     };
 
     services = {
+      dnscrypt-proxy2.enable = true;
       docker.enable = true;
       gammastep.enable = true;
       mako.enable = true;
@@ -78,6 +81,8 @@ in {
       ssh.enable = true;
     };
   };
+
+  services.resolved.enable = true;
 
   theme.fonts = {
     family = {
