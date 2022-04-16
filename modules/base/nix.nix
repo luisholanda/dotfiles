@@ -25,29 +25,26 @@
   binaryCaches = map (x: x.url) caches;
 in {
   config = {
-    nix = {
-      inherit binaryCaches;
+    nix.binaryCaches = binaryCaches;
 
-      package = pkgs.nixUnstable;
-      extraOptions = ''
-        experimental-features = nix-command flakes
-      '';
-      autoOptimiseStore = true;
-      allowedUsers = ["@whell" "@builders"];
-      useSandbox = true;
-      sandboxPaths = lib.optionals isDarwin [
-        "/System/Library/Frameworks"
-        "/System/Library/PrivateFrameworks"
-        "/usr/lib"
-        "/private/tmp"
-        "/private/var/tmp"
-        "/usr/bin/env"
-      ];
+    nix.package = pkgs.nixUnstable;
+    nix.extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+    nix.autoOptimiseStore = true;
+    nix.allowedUsers = ["@whell" "@builders"];
+    nix.useSandbox = true;
+    nix.sandboxPaths = lib.optionals isDarwin [
+      "/System/Library/Frameworks"
+      "/System/Library/PrivateFrameworks"
+      "/usr/lib"
+      "/private/tmp"
+      "/private/var/tmp"
+      "/usr/bin/env"
+    ];
 
-      binaryCachePublicKeys = map (x: x.key) caches;
-      trustedBinaryCaches = binaryCaches;
-      trustedUsers = ["root" config.user.name];
-    };
+    nix.binaryCachePublicKeys = map (x: x.key) caches;
+    nix.trustedBinaryCaches = binaryCaches;
 
     nixpkgs.config.allowUnfree = true;
   };
