@@ -35,7 +35,7 @@ in {
       enable = true;
 
       font.name = defaultMonospace;
-      font.size = fonts.size.text;
+      font.size = builtins.floor fonts.size.text;
 
       settings =
         {

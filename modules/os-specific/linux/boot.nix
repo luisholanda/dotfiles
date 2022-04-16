@@ -11,7 +11,7 @@ in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
   config = mkIf isLinux {
-    boot.cleanTmpDir = mkOptionDefault true;
+    boot.cleanTmpDir = mkDefault true;
 
     boot.loader.grub.enable = false;
     boot.loader.systemd-boot.enable = mkDefault true;
@@ -30,7 +30,6 @@ in {
       "page_alloc.shuffle=1"
       # Reduce TTY output during boot
       "quiet"
-      "vga=current"
     ];
 
     boot.blacklistedKernelModules = [

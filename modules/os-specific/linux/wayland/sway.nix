@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkOption mkOptionDefault types mkMerge mkIf listToAttrs makeBinPath;
+  inherit (lib) mkOption mkOptionDefault mkDefault types mkMerge mkIf listToAttrs makeBinPath;
   inherit (lib.my) mkEnableOpt mkColorHexValueOpt mkPkgsOpt;
 
   mkColor = description: mkColorHexValueOpt {inherit description;};
@@ -19,10 +19,17 @@
 
   modifier = "Mod4";
   cfg = config.modules.services.sway;
+  hmCfg = config.user.home.extraConfig.wayland.windowManager.sway;
 
-  sway = pkgs.sway.overrideAttrs (old: {
-    buildInputs = old.buildInputs ++ cfg.extraPackages;
-  });
+  sway =
+    (pkgs.sway.override {
+      inherit (hmCfg) extraSessionCommands;
+      withBaseWrapper = true;
+      withGtkWrapper = true;
+    })
+    .overrideAttrs (old: {
+      buildInputs = old.buildInputs ++ cfg.extraPackages;
+    });
 in {
   options.modules.services.sway = {
     enable = mkEnableOpt "Enable Sway WM";
@@ -58,18 +65,22 @@ in {
         default = {};
         description = "Extra keybindings";
       };
+
+      startup = mkOption {
+        type = types.listOf types.attr;
+        default = [];
+        description = "Startup code";
+      };
     };
 
     extraPackages = mkPkgsOpt "sway";
   };
 
   config = {
-    # Environment variable required to make sway work on qemu
-    user.sessionCmd = "env WLR_RENDERER_ALLOW_SOFTWARE=1 sway";
-    # Required to make chromium stuff work nicely with wayland.
-    user.sessionVariables.CHROMIUM_FLAGS = "--enable-features=UseOzonePlatform,UseSkiaRenderer,Vulkan --ozone-platform=wayland";
+    #user.sessionCmd = "exec ${sway}/bin/sway";
     user.home.extraConfig.wayland.windowManager.sway = {
       inherit (cfg) enable;
+
       package = sway;
 
       config = {
@@ -121,10 +132,14 @@ in {
       extraSessionCommands = ''
         export SDL_VIDEODRIVER=wayland
         export QT_QPA_PLATFORM=wayland
-        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
         export _JAVA_AWT_WM_NOREPARENTING=1
         export MOZ_ENABLE_WAYLAND=1
         export XDG_CURRENT_DESKTOP=sway
+        # Environment variable required to make sway work on qemu
+        export WLR_RENDERER_ALLOW_SOFTWARE=1
+        # Required to make chromium stuff work nicely with wayland.
+        export CHROMIUM_FLAGS="--enable-features=UseOzonePlatform,UseSkiaRenderer,Vulkan --ozone-platform=wayland"
       '';
 
       wrapperFeatures.gtk = true;

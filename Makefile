@@ -18,7 +18,7 @@ check:
 
 vm: $(VM_BIN)
 	rm -f ./plutus.qcow2
-	$(VM_BIN) -vga qxl
+	$(VM_BIN) -vga qxl -cpu host -smp 4
 
 $(VM_BIN): $(NIX_SRCS)
 	nixos-rebuild build-vm --flake .#$(HOSTNAME) --impure $(NIX_FLAGS)

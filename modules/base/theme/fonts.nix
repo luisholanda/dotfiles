@@ -44,14 +44,14 @@ in {
 
     size = {
       ui = mkOption {
-        type = ints.u8;
-        example = 10;
+        type = float;
+        example = 10.0;
         description = "UI text font size, in points";
       };
 
       text = mkOption {
-        type = ints.u8;
-        example = 10;
+        type = float;
+        example = 10.0;
         description = "Normal text font size, in points";
       };
     };

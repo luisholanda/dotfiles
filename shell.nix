@@ -23,9 +23,16 @@ in
         help = "run flake checks";
         command = "make check";
       };
+
+      run-vm = {
+        help = "run the vm for the current host, or the one specified by HOSTNAME";
+        command = "make vm";
+      };
     };
 
     devshell.startup = {
       enable-pre-commit.text = pre-commit-check.shellHook;
     };
+
+    devshell.packages = with pkgs; [gnumake];
   }

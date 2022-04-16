@@ -128,30 +128,21 @@ in {
 
       users.${cfg.name} =
         {
-          home = {
-            inherit (cfg) sessionVariables;
-            # Necessary for home-manager to work with flakes, otherwise it will
-            # look for a nixpkgs channel.
-            inherit (config.system) stateVersion;
-
-            file = mkAliasDefinitions options.user.home.file;
-          };
+          home.sessionVariables = cfg.sessionVariables;
+          # Necessary for home-manager to work with flakes, otherwise it will
+          # look for a nixpkgs channel.
+          home.stateVersion = config.system.stateVersion;
+          home.file = mkAliasDefinitions options.user.home.file;
 
           programs = mkAliasDefinitions options.user.home.programs;
 
-          xdg = {
-            configFile = mkAliasDefinitions options.user.xdg.configFile;
-            dataFile = mkAliasDefinitions options.user.xdg.dataFile;
-          };
+          xdg.configFile = mkAliasDefinitions options.user.xdg.configFile;
+          xdg.dataFile = mkAliasDefinitions options.user.xdg.dataFile;
         }
         // cfg.home.extraConfig;
     };
 
-    nix = let
-      users = ["root" cfg.name];
-    in {
-      trustedUsers = users;
-      allowedUsers = users;
-    };
+    nix.trustedUsers = ["root" cfg.name];
+    nix.allowedUsers = ["root" cfg.name];
   };
 }
