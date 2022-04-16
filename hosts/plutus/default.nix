@@ -11,16 +11,17 @@ in {
     editors.neovim.enable = true;
 
     services = {
-      sway.enable = true;
+      gammastep.enable = true;
       mako.enable = true;
+      sway.enable = true;
       waybar.enable = true;
     };
 
     programs = {
       alacritty.enable = false;
-      kitty.enable = true;
       brave.enable = true;
       fish.enable = true;
+
       git = {
         enable = true;
         emailAccount = "personalGmail";
@@ -29,7 +30,9 @@ in {
           stgit.enable = true;
         };
       };
+
       gpg.enable = true;
+      kitty.enable = true;
       mpv.enable = true;
       ssh.enable = true;
     };

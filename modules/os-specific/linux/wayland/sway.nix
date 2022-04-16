@@ -138,8 +138,6 @@ in {
         export XDG_CURRENT_DESKTOP=sway
         # Environment variable required to make sway work on qemu
         export WLR_RENDERER_ALLOW_SOFTWARE=1
-        # Required to make chromium stuff work nicely with wayland.
-        export CHROMIUM_FLAGS="--enable-features=UseOzonePlatform,UseSkiaRenderer,Vulkan --ozone-platform=wayland"
       '';
 
       wrapperFeatures.gtk = true;
