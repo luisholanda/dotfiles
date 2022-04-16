@@ -33,7 +33,9 @@ in {
     };
   };
 
-  theme.fonts.size.text = 12;
+  theme.fonts.size.text = 16;
+  theme.fonts.size.ui = 16;
+
   theme.colors = rec {
     background = mkColor "#2B2D3A";
     foreground = mkColor "#E1E3E4";

@@ -5,24 +5,19 @@ let
 in {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  config = mkIf isLinux (mkOptionDefault {
-    boot.cleanTmpDir = true;
+  config = mkIf isLinux {
+    boot.cleanTmpDir = mkOptionDefault true;
 
-    # Always use systemd-boot as boot loader.
-    boot.loader = {
-      # TODO: Why did we need it?
-      efi.canTouchEfiVariables = true;
+    boot.loader.grub.enable = false;
+    boot.loader.systemd-boot.enable = mkDefault true;
 
-      systemd-boot = {
-        enable = true;
-        consoleMode = "auto";
-        editor = false;
-        configurationLimit = 5;
-        memtest86.enable = true;
-      };
-    };
+    # TODO: Why did we need it?
+    boot.loader.efi.canTouchEfiVariables = true;
+    boot.loader.systemd-boot.consoleMode = "auto";
+    boot.loader.systemd-boot.editor = false;
+    boot.loader.systemd-boot.configurationLimit = 5;
 
-    boot.kernelPackages = mkDefault pkgs.linuxPackages_5_14;
+    boot.kernelPackages = mkDefault pkgs.linuxPackages_5_15_hardened;
     boot.kernelParams = [
       # Slab/slub sanity checks, redzoning, and poisoning
       "slub_debug=FZP"
@@ -67,5 +62,5 @@ in {
     ];
 
     boot.kernel.sysctl."fs.inotify.max_user_watches" = 512 * 1024;
-  });
+  };
 }

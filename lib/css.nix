@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, ... }:
 let
   inherit (builtins) isList isAttrs concatStringsSep;
   inherit (lib) mapAttrsToList;

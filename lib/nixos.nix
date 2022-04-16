@@ -4,7 +4,7 @@ with lib.my;
 let sys = "x86_64-linux";
 in {
   # Create a new host based on a given path.
-  mkHost = path: attrs @ { system ? sys, ... }:
+  mkHost = path: attrs @ { system ? sys, modules ? [], ... }:
     nixosSystem {
       inherit system;
       specialArgs = { inherit lib inputs system; };
@@ -14,7 +14,7 @@ in {
           networking.hostName = mkDefault (removeSuffix ".nix" (baseNameOf path));
         }
         (import path)
-      ] ++ (attrValues (filterAttrs (n: v: !elem n [ "system" ]) attrs));
+      ] ++ modules;
     };
 
   # Create new hosts from every path inside dir.
