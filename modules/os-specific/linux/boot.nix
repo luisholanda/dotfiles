@@ -1,9 +1,14 @@
-{ config, lib, pkgs, modulesPath, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}: let
   inherit (lib) mkIf mkOptionDefault mkDefault;
   inherit (pkgs.stdenv) isLinux;
 in {
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
   config = mkIf isLinux {
     boot.cleanTmpDir = mkOptionDefault true;

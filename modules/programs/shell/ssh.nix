@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf;
   inherit (lib.my) mkEnableOpt mkBoolOpt;
 
@@ -12,7 +16,8 @@ in {
 
   config = {
     user.home.programs.ssh = {
-      enable = cfg.enable;
+      inherit (cfg) enable;
+
       forwardAgent = true;
       compression = true;
       serverAliveInterval = 30;

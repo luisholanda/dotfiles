@@ -1,12 +1,16 @@
-{ config, lib, ... }:
-let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib.my) mkEnableOpt;
 in {
   options.modules.programs.gpg.enable = mkEnableOpt "Enable GnuPG configuration.";
 
   config = {
     user.home.programs.gpg = {
-      enable = config.modules.programs.gpg.enable;
+      inherit (config.modules.programs.gpg) enable;
+
       settings = let
         cert-digest-algo = "SHA512";
         list-options = "show-uid-validity";

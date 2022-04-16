@@ -1,11 +1,18 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkAliasDefinitions mkOption types isList optional;
 
   oneOrListOfStr = with types; either str (listOf str);
 
   cfg = config.theme.fonts;
-  toList = f: if isList f then f else [ f ];
+  toList = f:
+    if isList f
+    then f
+    else [f];
 in {
   options.theme.fonts = with types; {
     family = {
@@ -79,8 +86,9 @@ in {
       };
 
       fonts = let
-        enabledNF = pkgs.nerdfonts.override { fonts = cfg.nerdfonts; };
-      in cfg.packages ++ optional (cfg.nerdfonts != []) enabledNF;
+        enabledNF = pkgs.nerdfonts.override {fonts = cfg.nerdfonts;};
+      in
+        cfg.packages ++ optional (cfg.nerdfonts != []) enabledNF;
     };
   };
 }

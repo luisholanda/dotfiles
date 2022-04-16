@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf mkMerge;
   inherit (lib.my) mkAttrsOpt mkEnableOpt mkPkgOpt mkPkgsOpt;
 
@@ -11,12 +15,13 @@ let
     xineramaSupport = false;
     xvSupport = false;
     vapoursynthSupport = true;
-    vapoursynth = pkgs.vapoursynth.withPlugins [ pkgs.vapoursynth-mvtools ];
+    vapoursynth = pkgs.vapoursynth.withPlugins [pkgs.vapoursynth-mvtools];
   };
 
   waylandEnable = config.modules.services.sway.enable;
 
-  defaultMpv = if waylandEnable
+  defaultMpv =
+    if waylandEnable
     then waylandMpv
     else pkgs.mpv;
 
@@ -39,11 +44,9 @@ in {
 
   config = {
     user.home.programs.mpv = {
-      enable = cfg.enable;
-      package = cfg.package;
+      inherit (cfg) enable package scripts;
 
       config = mkMerge [cfg.config mpvDefaultConfig];
-      scripts = cfg.scripts;
     };
   };
 }

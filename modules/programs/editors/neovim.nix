@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf mkMerge makeBinPath removePrefix;
   inherit (lib.filesystem) listFilesRecursive;
   inherit (lib.my) mkEnableOpt;
@@ -25,7 +29,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = [ wrappedNeovim ];
+    user.packages = [wrappedNeovim];
 
     user.shellAliases = {
       vi = nvimPath;
@@ -35,8 +39,13 @@ in {
 
     user.sessionVariables.EDITOR = nvimPath;
 
-    user.xdg.configFile = builtins.listToAttrs
-      (builtins.map (p: { name = "nvim" + p; value.source = neovimConfigSource + p; }) neovimConfigSourceContent);
+    user.xdg.configFile =
+      builtins.listToAttrs
+      (builtins.map (p: {
+          name = "nvim" + p;
+          value.source = neovimConfigSource + p;
+        })
+        neovimConfigSourceContent);
 
     user.xdg.dataFile."nvim/site/pack/packer/start/packer.nvim".source = pkgs.vimPlugins.packer-nvim;
   };

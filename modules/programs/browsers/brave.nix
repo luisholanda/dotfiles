@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib.my) mkEnableOpt mkPkgOpt;
 in {
   options.modules.programs.brave = {

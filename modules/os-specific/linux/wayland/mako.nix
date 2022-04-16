@@ -1,9 +1,13 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf;
   inherit (lib.my) mkEnableOpt;
+  inherit (config.theme) colors;
 
-  colors = config.theme.colors;
   uiFont = builtins.head config.fonts.fontconfig.defaultFonts.sansSerif;
   uiSize = config.theme.fonts.size.ui;
 in {
@@ -26,6 +30,6 @@ in {
       width = 420;
     };
 
-    user.home.extraConfig.wayland.windowManager.sway.config.startup = [ { command = "exec mako"; } ];
+    user.home.extraConfig.wayland.windowManager.sway.config.startup = [{command = "exec mako";}];
   };
 }

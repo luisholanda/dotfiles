@@ -1,11 +1,9 @@
-{ lib, ... }:
+{lib, ...}:
 with builtins;
-with lib;
-rec {
+with lib; rec {
   # Convert an attribute map to a list.
   # attrsToList :: attrs -> [{ name = any; value = any; }]
-  attrsToList = attrs:
-    mapAttrsToList (name: value: { inherit name value; }) attrs;
+  attrsToList = mapAttrsToList (name: value: {inherit name value;});
 
   # Convert a attrs of attrs to a single attrs set where each
   # attribute is the full-path to the attribute in the original set.
@@ -39,7 +37,8 @@ rec {
       __expanded__ = true;
     };
     isExpanded = v: isAttrs v -> v ? "__expanded__";
-  in flip pipe [ (mapAttrsRecursive expandAttr) (collect isExpanded) listToAttrs ];
+  in
+    flip pipe [(mapAttrsRecursive expandAttr) (collect isExpanded) listToAttrs];
 
   # Maps and filters attributes
   # mapFilterAttrs :: (name -> value -> bool)
@@ -58,5 +57,5 @@ rec {
 
   # Count the number of attributes in a set that satisfies a predicate.
   # countAttrs :: (name -> value -> bool) -> attrs -> integer
-  countAttrs = pred: attrs: count(attr: pred attr.name attr.value) (attrsToList attrs);
+  countAttrs = pred: attrs: count (attr: pred attr.name attr.value) (attrsToList attrs);
 }

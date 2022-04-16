@@ -1,11 +1,15 @@
-{ config, lib, options, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  options,
+  pkgs,
+  ...
+}: let
   inherit (lib) types mkAliasDefinitions mkOption splitString;
   inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt;
 
   cfg = config.user;
-in
-{
+in {
   options.user = with types; {
     name = mkOption {
       type = str;
@@ -108,16 +112,12 @@ in
   config = {
     users.mutableUsers = false;
     users.users.${cfg.name} = {
+      inherit (cfg) description groups packages shell;
       createHome = true;
       isNormalUser = true;
       home = cfg.home.dir;
 
-      description = cfg.description;
-      extraGroups = cfg.groups;
       hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
-      packages = cfg.packages;
-
-      shell = cfg.shell;
     };
 
     home-manager = {
@@ -126,30 +126,32 @@ in
       useGlobalPkgs = true;
       useUserPackages = true;
 
-      users.${cfg.name} = {
-        home = {
-          file = mkAliasDefinitions options.user.home.file;
-          # Necessary for home-manager to work with flakes, otherwise it will
-          # look for a nixpkgs channel.
-          stateVersion = config.system.stateVersion;
-          sessionVariables = cfg.sessionVariables;
-        };
+      users.${cfg.name} =
+        {
+          home = {
+            inherit (cfg) sessionVariables;
+            # Necessary for home-manager to work with flakes, otherwise it will
+            # look for a nixpkgs channel.
+            inherit (config.system) stateVersion;
 
-        programs = mkAliasDefinitions options.user.home.programs;
+            file = mkAliasDefinitions options.user.home.file;
+          };
 
-        xdg = {
-          configFile = mkAliasDefinitions options.user.xdg.configFile;
-          dataFile = mkAliasDefinitions options.user.xdg.dataFile;
-        };
-      } // cfg.home.extraConfig;
+          programs = mkAliasDefinitions options.user.home.programs;
+
+          xdg = {
+            configFile = mkAliasDefinitions options.user.xdg.configFile;
+            dataFile = mkAliasDefinitions options.user.xdg.dataFile;
+          };
+        }
+        // cfg.home.extraConfig;
     };
 
     nix = let
-      users = [ "root" cfg.name ];
-    in
-      {
-        trustedUsers = users;
-        allowedUsers = users;
-      };
+      users = ["root" cfg.name];
+    in {
+      trustedUsers = users;
+      allowedUsers = users;
+    };
   };
 }

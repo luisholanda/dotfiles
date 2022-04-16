@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (builtins) readFile concatStringsSep;
   inherit (lib) mkIf mkOption types;
   inherit (lib.my) flattenAttrs mkCssFileOpt mkCssFilesOpt mkEnableOpt mkPkgsOpt;
@@ -23,10 +27,12 @@ in {
 
   config = mkIf cfg.enable {
     user.home.programs.firefox = {
+      inherit (cfg) extensions;
       enable = true;
-      package = if hasWayland then pkgs.firefox-wayland else pkgs.firefox;
-
-      extensions = cfg.extensions;
+      package =
+        if hasWayland
+        then pkgs.firefox-wayland
+        else pkgs.firefox;
 
       profiles = {
         default = {

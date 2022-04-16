@@ -82,18 +82,18 @@ o.wildmode = "list:longest,full"
 o.wildignore = vim.o.wildignore .. "vendor/**,node_modules/**,target/**"
 
 if vim.fn.executable("pbcopy") == 1 then
-    copy = "pbcopy"
-    paste = "pbpaste"
+	copy = "pbcopy"
+	paste = "pbpaste"
 elseif vim.fn.executable("wl-copy") == 1 then
-    copy = "wl-copy -n"
-    paste = "wl-paste -n"
+	copy = "wl-copy -n"
+	paste = "wl-paste -n"
 end
 
 g.clipboard = {
-    name = copy,
-    copy = { ["+"] = copy, ["*"] = copy },
-    paste = { ["+"] = paste, ["*"] = paste },
-    cache_enabled = 1,
+	name = copy,
+	copy = { ["+"] = copy, ["*"] = copy },
+	paste = { ["+"] = paste, ["*"] = paste },
+	cache_enabled = 1,
 }
 o.clipboard = "unnamedplus"
 

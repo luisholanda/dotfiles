@@ -1,4 +1,4 @@
-local g = vim.g;
+local g = vim.g
 
 g.rust_fold = 1
 g.rust_bang_comment_leader = 1

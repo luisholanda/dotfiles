@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (pkgs.stdenv) isDarwin;
   inherit (lib) mkIf mkMerge mkOption types;
   inherit (lib.my) mkBoolOpt mkEnableOpt mkPkgOpt;
@@ -38,7 +42,8 @@ in {
           default = {};
           type = with types; let
             value = either str (either bool int);
-          in attrsOf (either value (attrsOf value));
+          in
+            attrsOf (either value (attrsOf value));
         };
       };
       stgit.enable = mkEnableOpt "Enable the stacked-git wrapper.";
@@ -48,8 +53,7 @@ in {
   config = mkMerge [
     {
       user.home.programs.git = {
-        enable = cfg.enable;
-        package = cfg.package;
+        inherit (cfg) enable package;
 
         userName = account.realName;
         userEmail = account.address;
@@ -58,11 +62,13 @@ in {
         signing.signByDefault = account.gpg.signByDefault;
 
         delta = {
-          enable = cfg.addons.delta.enable;
-          options = {
-            line-numbers = true;
-            syntax-theme = "OneHalfDark";
-          } // cfg.addons.delta.options;
+          inherit (cfg.addons.delta) enable;
+          options =
+            {
+              line-numbers = true;
+              syntax-theme = "OneHalfDark";
+            }
+            // cfg.addons.delta.options;
         };
 
         extraConfig = {
@@ -102,7 +108,7 @@ in {
     })
     # Stacked-git addon.
     (mkIf cfg.addons.stgit.enable {
-      user.packages = [ pkgs.stgit ];
+      user.packages = [pkgs.stgit];
       user.home.programs.git.extraConfig.stgit = {
         keepoptimized = "yes";
         diff-opts = "-M -w -W";
@@ -212,10 +218,8 @@ in {
         lp = "log --patch";
         # log with one line per item.
         l = "log --oneline --no-merges";
-        ll =
-          "log --graph --topo-order --date=short --abbrev-commit --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset'";
-        lll =
-          "log --graph --topo-order --date=iso8601-strict --no-abbrev-commit --abbrev=40 --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn <%ce>]%Creset %Cblue%G?%Creset'";
+        ll = "log --graph --topo-order --date=short --abbrev-commit --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset'";
+        lll = "log --graph --topo-order --date=iso8601-strict --no-abbrev-commit --abbrev=40 --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn <%ce>]%Creset %Cblue%G?%Creset'";
 
         # rebase - forward-port local commits to the updated upstream head.
         rb = "rebase";
@@ -242,8 +246,7 @@ in {
         # reducing the total repository size.
         #
         #By [CodeGnome](http://www.codegnome.com/)
-        pruner =
-          "!git prune --expire=now && git reflog expire --expire-unreachable=now --rewrite --all && git fetch --prune";
+        pruner = "!git prune --expire=now && git reflog expire --expire-unreachable=now --rewrite --all && git fetch --prune";
 
         # repacker: repack a repo the way Linus recommends.
         #

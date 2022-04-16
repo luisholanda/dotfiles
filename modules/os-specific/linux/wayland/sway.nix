@@ -1,9 +1,13 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkOption mkOptionDefault types mkMerge mkIf listToAttrs makeBinPath;
   inherit (lib.my) mkEnableOpt mkColorHexValueOpt mkPkgsOpt;
 
-  mkColor = description: mkColorHexValueOpt { inherit description; };
+  mkColor = description: mkColorHexValueOpt {inherit description;};
   colorSubmodule = types.submodule {
     options = {
       background = mkColor "Background color of the window.";
@@ -65,29 +69,32 @@ in {
     # Required to make chromium stuff work nicely with wayland.
     user.sessionVariables.CHROMIUM_FLAGS = "--enable-features=UseOzonePlatform,UseSkiaRenderer,Vulkan --ozone-platform=wayland";
     user.home.extraConfig.wayland.windowManager.sway = {
-      enable = cfg.enable;
+      inherit (cfg) enable;
       package = sway;
 
       config = {
         inherit modifier;
 
         gaps = {
-          outer = cfg.config.gaps.outer;
-          inner = cfg.config.gaps.inner;
+          inherit (cfg.config.gaps) inner outer;
           smartGaps = true;
         };
 
         input = {
-          "type:keyboard" = {
-            repeat_delay = "150";
-            repeat_rate = "30";
-            xkb_layout = "us";
-            xkb_variant = "intl";
-          } // cfg.config.input.keyboard;
-          "type:pointer" = {
-            accel_profile = "adaptive";
-            natural_scroll = "enabled";
-          } // cfg.config.input.mouse;
+          "type:keyboard" =
+            {
+              repeat_delay = "150";
+              repeat_rate = "30";
+              xkb_layout = "us";
+              xkb_variant = "intl";
+            }
+            // cfg.config.input.keyboard;
+          "type:pointer" =
+            {
+              accel_profile = "adaptive";
+              natural_scroll = "enabled";
+            }
+            // cfg.config.input.mouse;
           "type:tablet_tool" = cfg.config.input.penTablet;
         };
 
@@ -97,10 +104,13 @@ in {
         };
 
         keybindings = let
-          customKeybindings = {
-          "${modifier}+v" = "split toggle";
-          } // cfg.config.keybindings;
-        in mkOptionDefault customKeybindings;
+          customKeybindings =
+            {
+              "${modifier}+v" = "split toggle";
+            }
+            // cfg.config.keybindings;
+        in
+          mkOptionDefault customKeybindings;
 
         terminal = config.user.terminalCmd;
 

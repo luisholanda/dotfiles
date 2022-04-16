@@ -1,8 +1,13 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkOption types optionalString;
   inherit (lib.my) mkEnableOpt;
   inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (config) user;
 
   functionModule = types.submodule {
     options = {
@@ -87,7 +92,7 @@ let
       onSignal = mkOption {
         type = with types; nullOr (either str int);
         default = null;
-        example = [ "SIGHUP" "HUP" 1 ];
+        example = ["SIGHUP" "HUP" 1];
         description = ''
           Tells fish to run this function when the specified signal is
           delievered. The signal can be a signal number or signal name.
@@ -114,7 +119,6 @@ let
   };
 
   cfg = config.modules.programs.fish;
-  user = config.user;
 in {
   options.modules.programs.fish = {
     enable = mkEnableOpt "Enable Fish shell configuration.";
@@ -134,14 +138,17 @@ in {
 
   config.user.shell = pkgs.fish;
   config.user.home.programs.fish = {
-    enable = cfg.enable;
+    inherit (cfg) enable;
+
     interactiveShellInit = let
-      sessionInit = if isLinux && config.user.sessionCmd != ""
+      sessionInit =
+        if isLinux && config.user.sessionCmd != ""
         then ''
           if [ -z "$DISPLAY" -a (tty) = "/dev/tty1" ]
-            exec ${ config.user.sessionCmd }
+            exec ${config.user.sessionCmd}
           end
-        '' else "";
+        ''
+        else "";
     in ''
       ${sessionInit}
 
@@ -153,55 +160,57 @@ in {
       ${pkgs.any-nix-shell}/bin/any-nix-shell fish --info-right | source
     '';
     shellAliases = user.shellAliases // cfg.aliases;
-    functions = {
-      __fish_user_key_bindings = ''
-        fish_default_key_bindings -M insert
-        fish_vi_key_bindings default
+    functions =
+      {
+        __fish_user_key_bindings = ''
+          fish_default_key_bindings -M insert
+          fish_vi_key_bindings default
 
-        set pisces_pairs '(,)' '[,]' '{,}' '","' "','"
+          set pisces_pairs '(,)' '[,]' '{,}' '","' "','"
 
-        for pair in $pisces_pairs
-          _pisces_bind_pair insert (string split -- ',' $pair)
-        end
-
-        # normal backspace, also known as \010 or ^H:
-        bind -M insert \b _pisces_backspace;
-
-        # Terminal.app sends DEL code on ?:
-        ${optionalString isDarwin "bind -M insert \\177 _pisces_backspace"}
-
-        # overrides TAB to provide completion of vars before a closeing '"'
-        bind -M insert \t _pisces_complete
-      '';
-      workon = {
-        argumentNames = "project";
-        description = "Go to the given project";
-        body = ''
-          set --local prev_dir (dir)
-          set --local projects_dirs ${builtins.concatStringsSep " " user.home.projectDirs}
-
-          for proj_dir in $proejcts_dirs
-            set --local project_dir $proj_dir/$project
-            if test -d $project_dir
-              pushd $project_dir
-
-              if test -f $project_dir/shell.nix
-                nix-shell
-              end
-
-              function __on_exit --on-event fish_exit
-                popd
-              end
-
-              return 0
-            end
+          for pair in $pisces_pairs
+            _pisces_bind_pair insert (string split -- ',' $pair)
           end
 
-          echo "Project $project not found"
-          return 1
+          # normal backspace, also known as \010 or ^H:
+          bind -M insert \b _pisces_backspace;
+
+          # Terminal.app sends DEL code on ?:
+          ${optionalString isDarwin "bind -M insert \\177 _pisces_backspace"}
+
+          # overrides TAB to provide completion of vars before a closeing '"'
+          bind -M insert \t _pisces_complete
         '';
-      };
-    } // cfg.functions;
+        workon = {
+          argumentNames = "project";
+          description = "Go to the given project";
+          body = ''
+            set --local prev_dir (dir)
+            set --local projects_dirs ${builtins.concatStringsSep " " user.home.projectDirs}
+
+            for proj_dir in $proejcts_dirs
+              set --local project_dir $proj_dir/$project
+              if test -d $project_dir
+                pushd $project_dir
+
+                if test -f $project_dir/shell.nix
+                  nix-shell
+                end
+
+                function __on_exit --on-event fish_exit
+                  popd
+                end
+
+                return 0
+              end
+            end
+
+            echo "Project $project not found"
+            return 1
+          '';
+        };
+      }
+      // cfg.functions;
 
     plugins = [
       rec {

@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf mkOption mkDefault types;
   inherit (lib.my) mkEnableOpt mkPkgOpt;
 
@@ -16,34 +20,34 @@ in {
   };
 
   config = mkIf cfg.enable {
-    boot.extraModulePackages = [ cfg.firmware ];
-    boot.kernelModules = [ cfg.kernelModule ];
+    boot.extraModulePackages = [cfg.firmware];
+    boot.kernelModules = [cfg.kernelModule];
 
     hardware.bluetooth.enable = true;
     hardware.bluetooth.settings.General = mkDefault {
-        AutoConnect = "true";
-        Enable = "Source,Sink,Media,Socket";
-        FastConnectable = "true";
-        MultiProfile = "multiple";
+      AutoConnect = "true";
+      Enable = "Source,Sink,Media,Socket";
+      FastConnectable = "true";
+      MultiProfile = "multiple";
     };
 
-    hardware.pulseaudio.extraModules = [ pkgs.pulseaudio-modules-bt ];
+    hardware.pulseaudio.extraModules = [pkgs.pulseaudio-modules-bt];
     hardware.pulseaudio.extraConfig = ''
-        load-module module-switch-on-connect
+      load-module module-switch-on-connect
 
-        unload module-bluetooth-policy
-        load-module module-bluetooth-policy auto_switch=2
+      unload module-bluetooth-policy
+      load-module module-bluetooth-policy auto_switch=2
 
-        unload module-bluetooth-discover
-        load-module module-bluetooth-discover headset=native
+      unload module-bluetooth-discover
+      load-module module-bluetooth-discover headset=native
     '';
 
     services.blueman.enable = true;
 
     systemd.user.services.mpris-proxy = {
       description = "MPRIS proxy";
-      after = [ "network.target" "sound.target" ];
-      wantedBy = [ "default.target" ];
+      after = ["network.target" "sound.target"];
+      wantedBy = ["default.target"];
       serviceConfig = {
         ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
         RestartSec = 5;

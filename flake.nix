@@ -1,63 +1,115 @@
 {
   description = "My Nix configurations.";
 
-  inputs =
-    {
-      nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-      home-manager.url = "github:rycee/home-manager/master";
-      home-manager.inputs.nixpkgs.follows = "nixpkgs";
-      agenix.url = "github:ryantm/agenix";
-      agenix.inputs.nixpkgs.follows = "nixpkgs";
-      flake-utils.url = "github:numtide/flake-utils";
-    };
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-  outputs = inputs @ { self, nixpkgs, flake-utils, ... }:
-    let
-      dotfiles = import ./.;
+    home-manager.url = "github:rycee/home-manager/master";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-      systemAttrs = flake-utils.lib.eachDefaultSystem (system:
-        let
-          inherit (lib) nameValuePair;
-          inherit (lib.my) mapModulesRec mapModulesRec' mkHost mkHostsFromDir;
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
 
-          overlays = mapModulesRec ./overlays import;
+    flake-utils.url = "github:numtide/flake-utils";
 
-          # Base nixpkgs without our custom packages.
-          #
-          # Should only be used to build our packages.
-          basePkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            overlays = nixpkgs.lib.attrValues overlays;
-          };
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+    pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
+    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+  };
 
-          packages = import ./packages { pkgs = basePkgs; };
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    flake-utils,
+    pre-commit-hooks,
+    ...
+  }: let
+    dotfiles = import ./.;
 
-          # Nixpkgs with our extra packages.
-          pkgs = basePkgs // packages;
+    systems = with flake-utils.lib.system; [
+      x86_64-linux
+      x86_64-darwin
+      aarch64-darwin
+    ];
 
-          lib = nixpkgs.lib.extend
-            (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
-        in
-        {
-          inherit packages;
+    systemAttrs = flake-utils.lib.eachSystem systems (system: let
+      inherit (lib) nameValuePair;
+      inherit (lib.my) mapModulesRec mapModulesRec' mkHost mkHostsFromDir;
 
-          devShell = import ./shell.nix { inherit pkgs; };
+      overlays = mapModulesRec ./overlays import;
 
-          nixosModules = { inherit dotfiles; } // mapModulesRec ./modules import;
-          nixosConfigurations = {
-            plutus = mkHost ./hosts/plutus {
-              inherit dotfiles;
-              modules = mapModulesRec' ./modules import ++ [
-                inputs.home-manager.nixosModule
-              ];
-            };
+      # Base nixpkgs without our custom packages.
+      #
+      # Should only be used to build our packages.
+      basePkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = nixpkgs.lib.attrValues overlays;
+      };
+
+      packages = import ./packages {pkgs = basePkgs;};
+
+      # Nixpkgs with our extra packages.
+      pkgs = basePkgs // packages;
+
+      lib =
+        nixpkgs.lib.extend
+        (self: super: {
+          my = import ./lib {
+            inherit pkgs inputs;
+            lib = self;
           };
         });
 
-      system = builtins.currentSystem;
-    in
-    systemAttrs // {
+      pre-commit-check = pre-commit-hooks.lib.${system}.run {
+        src = ./.;
+        hooks = {
+          alejandra.enable = true;
+          statix.enable = true;
+
+          stylua = {
+            enable = true;
+            name = "stylua";
+            description = "An Opinionated Lua Code Formatter";
+            types = ["file" "lua"];
+            entry = "${pkgs.stylua}/bin/stylua";
+          };
+        };
+      };
+    in {
+      inherit packages;
+
+      checks = {inherit pre-commit-check;};
+
+      devShell = pkgs.mkShell {
+        name = "dotfiles";
+
+        buildinputs = with pkgs; [
+          gnumake
+        ];
+
+        shellHook = ''
+          ${pre-commit-check.shellHook}
+        '';
+      };
+
+      nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
+      nixosConfigurations = {
+        plutus = mkHost ./hosts/plutus {
+          inherit dotfiles;
+          modules =
+            mapModulesRec' ./modules import
+            ++ [
+              inputs.home-manager.nixosModule
+            ];
+        };
+      };
+    });
+
+    system = builtins.currentSystem;
+  in
+    systemAttrs
+    // {
       nixosModules = systemAttrs.nixosModules."${system}";
       nixosConfigurations = systemAttrs.nixosConfigurations."${system}";
 

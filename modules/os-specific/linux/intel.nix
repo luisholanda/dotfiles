@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf;
   inherit (lib.my) mkBoolOpt;
   inherit (pkgs.stdenv) isLinux;
@@ -8,6 +12,6 @@ in {
 
   config = mkIf (config.host.hardware.isIntel && isLinux) {
     hardware.cpu.intel.updateMicrocode = true;
-    hardware.opengl.extraPackages = with pkgs; [ intel-media-driver vaapiIntel vaapiVdpau libvdpau-va-gl ];
+    hardware.opengl.extraPackages = with pkgs; [intel-media-driver vaapiIntel vaapiVdpau libvdpau-va-gl];
   };
 }

@@ -1,18 +1,27 @@
-{ options, config, lib, pkgs, ... }:
-let
+{
+  options,
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) types mkOption listToAttrs;
   inherit (lib.my) mkColorOpt;
 
   cfg = config.theme.colors;
 
   xResColors = ["black" "red" "green" "yellow" "blue" "magenta" "cyan" "white"];
-  xResourceColorsOpts =
-    let
-      colorToOpt = c: mkColorOpt {
+  xResourceColorsOpts = let
+    colorToOpt = c:
+      mkColorOpt {
         description = "The color to be considered as ${c} by other programs.";
       };
-      colorToOptPair = c: { name = c; value = colorToOpt c; };
-    in builtins.listToAttrs (map colorToOptPair xResColors);
+    colorToOptPair = c: {
+      name = c;
+      value = colorToOpt c;
+    };
+  in
+    builtins.listToAttrs (map colorToOptPair xResColors);
 in {
   options.theme.colors = {
     background = mkColorOpt {
@@ -26,7 +35,8 @@ in {
   };
 
   config = {
-    console.colors = (map (c: cfg.normal."${c}".plain) xResColors)
+    console.colors =
+      (map (c: cfg.normal."${c}".plain) xResColors)
       ++ (map (c: cfg.bright."${c}".plain) xResColors);
   };
 }

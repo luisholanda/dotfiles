@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) hasPrefix isString mkOption splitString types;
 
   gpgModule = types.submodule {
@@ -41,14 +45,18 @@ let
       };
 
       showSignature = mkOption {
-        type = types.enum [ "append" "attach" "none" ];
+        type = types.enum ["append" "attach" "none"];
         default = "none";
         description = "Method to communicate the signature.";
       };
     };
   };
 
-  mailAccountOpts = { name, config, ... }: {
+  mailAccountOpts = {
+    name,
+    config,
+    ...
+  }: {
     options = {
       name = mkOption {
         type = types.str;
@@ -69,7 +77,7 @@ let
       };
 
       flavor = mkOption {
-        type = types.enum [ "plain" "gmail.com" "runbox.com" ];
+        type = types.enum ["plain" "gmail.com" "runbox.com"];
         default = "plain";
         description = ''
           Some email providers have peculiar behavior that require
@@ -90,8 +98,8 @@ let
 
       aliases = mkOption {
         type = types.listOf (types.strMatching ".*@.*");
-        default = [ ];
-        example = [ "webmaster@example.org" "admin@example.org" ];
+        default = [];
+        example = ["webmaster@example.org" "admin@example.org"];
         description = "Alternative email addresses of this account.";
       };
 
@@ -114,7 +122,10 @@ let
       passwordCommand = mkOption {
         type = types.nullOr (types.either types.str (types.listOf types.str));
         default = null;
-        apply = p: if isString p then splitString " " p else p;
+        apply = p:
+          if isString p
+          then splitString " " p
+          else p;
         example = "secret-tool lookup email me@example.org";
         description = ''
           A command, which when run writes the account password on
@@ -158,7 +169,7 @@ let
             };
           };
         };
-        default = { };
+        default = {};
         description = ''
           Standard email folders.
         '';
@@ -166,7 +177,7 @@ let
 
       signature = mkOption {
         type = signatureModule;
-        default = { };
+        default = {};
         description = ''
           Signature configuration.
         '';
@@ -181,7 +192,7 @@ let
       };
     };
 
-    config = { inherit name; };
+    config = {inherit name;};
   };
 
   cfg = config.user;
@@ -192,7 +203,9 @@ in {
       default = "${config.user.home.dir}/Maildir";
       defaultText = "$HOME/Maildir";
       apply = p:
-        if hasPrefix "/" p then p else "${config.home.homeDirectory}/${p}";
+        if hasPrefix "/" p
+        then p
+        else "${config.home.homeDirectory}/${p}";
       description = ''
         The base directory for account maildir directories. May be a
         relative path, in which case it is relative the home
@@ -202,7 +215,7 @@ in {
 
     accounts = mkOption {
       type = with types; attrsOf (submodule mailAccountOpts);
-      default = { };
+      default = {};
       description = "List of email accounts.";
     };
   };

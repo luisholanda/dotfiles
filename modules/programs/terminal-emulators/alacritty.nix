@@ -1,10 +1,13 @@
-{  config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf mkOption types;
   inherit (lib.my) mkEnableOpt;
+  inherit (config.theme) colors fonts;
 
-  colors = config.theme.colors;
-  fonts = config.theme.fonts;
   cfg = config.modules.programs.alacritty;
 in {
   options.modules.programs.alacritty = with types; {
@@ -63,8 +66,7 @@ in {
   config = mkIf cfg.enable {
     user.terminalCmd = "${lib.makeBinPath [cfg.package]}/alacritty";
     user.home.programs.alacritty = {
-      enable = cfg.enable;
-      package = cfg.package;
+      inherit (cfg) enable package;
 
       settings = {
         colors = {
@@ -100,14 +102,13 @@ in {
 
         font = let
           family = fonts.family.monospace;
-          fontWithStyle = style: { inherit family style; };
+          fontWithStyle = style: {inherit family style;};
         in {
+          inherit (cfg.font) size;
           normal = fontWithStyle "Normal";
           bold = fontWithStyle "Bold";
           italic = fontWithStyle "Italic";
           bold_italic = fontWithStyle "Bold Italic";
-
-          size = cfg.font.size;
 
           use_think_strokes = false;
         };
@@ -117,16 +118,19 @@ in {
         selection.save_to_clipboard = true;
 
         window = {
-          decorations = if pkgs.stdenv.isDarwin then "buttonless" else "none";
+          inherit (cfg.window) padding;
+
+          decorations =
+            if pkgs.stdenv.isDarwin
+            then "buttonless"
+            else "none";
           dimensions = {
-            columns = cfg.window.dimensions.columns;
-            lines = cfg.window.dimensions.rows;
+            inherit (cfg.window.dimensions) columns rows;
           };
 
           dynamic_title = cfg.window.dynamicTitle;
           dynamic_padding = true;
           startup_mode = "Maximized";
-          padding = cfg.window.padding;
         };
       };
     };

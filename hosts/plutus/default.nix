@@ -1,9 +1,11 @@
-{ config, lib, ... }:
-let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib.my) mkColor;
-
 in {
-  imports = [ ./hardware.nix ];
+  imports = [./hardware.nix];
 
   modules = {
     editors.neovim.enable = true;
@@ -70,7 +72,7 @@ in {
     name = "luiscm";
     description = "Luis C. M. de Holanda";
     # TODO: move these groups to their respective modules.
-    groups = [ "wheel" "networking" "wideo" "adbusers" "docker" ];
+    groups = ["wheel" "networking" "wideo" "adbusers" "docker"];
     passwordFile = "${config.dotfiles.dir}/hosts/plutus/passfile";
 
     accounts.email.accounts = {
