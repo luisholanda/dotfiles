@@ -77,7 +77,8 @@ in {
   };
 
   config = {
-    #user.sessionCmd = "exec ${sway}/bin/sway";
+    user.sessionCmd = "exec ${sway}/bin/sway";
+    user.home.services.kanshi.enable = cfg.enable;
     user.home.extraConfig.wayland.windowManager.sway = {
       inherit (cfg) enable;
 
