@@ -21,13 +21,12 @@ in {
   # hardware-configuration.nix or fileSystem config.
   fileSystems."/".device = mkDefault "/dev/disk/by-label/nixos";
 
+  # only add stuff here that will be used by _all_ hosts.
   environment.systemPackages = with pkgs; [
     cached-nix-shell
     coreutils
-    vim
-    git
+    curl
     wget
-    gnumake
     unzip
   ];
 }

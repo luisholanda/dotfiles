@@ -27,6 +27,7 @@ in {
     };
 
     services = {
+      docker.enable = true;
       gammastep.enable = true;
       mako.enable = true;
       sway.enable = true;
