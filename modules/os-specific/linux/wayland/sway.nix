@@ -143,5 +143,7 @@ in {
 
       wrapperFeatures.gtk = true;
     };
+
+    xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-wlr];
   };
 }
