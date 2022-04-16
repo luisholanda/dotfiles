@@ -28,6 +28,11 @@ in
         help = "run the vm for the current host, or the one specified by HOSTNAME";
         command = "make vm";
       };
+
+      apply-config = {
+        help = "apply the configuration of the current host";
+        command = "nixos-rebuild switch --flake .#$(uname -n) --impure";
+      };
     };
 
     devshell.startup = {

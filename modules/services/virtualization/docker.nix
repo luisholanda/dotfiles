@@ -12,7 +12,7 @@ in {
 
   config = {
     virtualisation.docker = {
-      inherit (config.modules.service.docker) enable enableOnBoot;
+      inherit (config.modules.services.docker) enable enableOnBoot;
 
       autoPrune.enable = true;
     };
