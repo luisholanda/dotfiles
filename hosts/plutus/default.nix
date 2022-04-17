@@ -60,7 +60,13 @@ in {
 
       firefox = {
         enable = true;
-        extensions = [];
+        extensions = with pkgs.firefox.extensions; [
+          bitwarden
+          multi-account-containers
+          refined-github
+          vim-vixen
+          ublock-origin
+        ];
 
         userChrome = ./firefox-userChrome.css;
         userContent = [./firefox-userContent.css];
@@ -161,10 +167,10 @@ in {
       pcmanfm
       texlab
       zathura
+      slack
+      notion-app-enhanced
       minecraft
     ];
-
-    nonfreePackages = with pkgs; [slack notion-app-enhanced];
   };
 
   documentation = {

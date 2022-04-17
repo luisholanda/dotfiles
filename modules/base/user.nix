@@ -51,18 +51,6 @@ in {
       '';
     };
 
-    nonfreePackages = mkOption {
-      type = listOf package;
-      default = [];
-      example = lib.literalExample "[ pkgs.binance ]";
-      description = ''
-        The set of non-free packages that should be made available to the user.
-
-        This correctly sets <option>nixpkgs.config.allowUnfreePredicate<option> to
-        allow this specific set of packages.
-      '';
-    };
-
     terminalCmd = mkOption {
       type = types.str;
       description = "Command to start the user terminal.";
@@ -125,13 +113,11 @@ in {
   config = {
     users.mutableUsers = false;
     users.users.${cfg.name} = {
-      inherit (cfg) description shell;
+      inherit (cfg) description shell packages;
+
       isNormalUser = true;
       home = cfg.home.dir;
       extraGroups = cfg.groups;
-
-      packages = cfg.packages ++ cfg.nonfreePackages;
-
       hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
     };
 
@@ -159,10 +145,5 @@ in {
 
     nix.trustedUsers = ["root" cfg.name];
     nix.allowedUsers = ["root" cfg.name];
-
-    nixpkgs.config.allowUnfree = let
-      nonfreeNames = map getName cfg.nonfreePackages;
-    in
-      pkg: builtins.elem (getName pkg) nonfreeNames;
   };
 }

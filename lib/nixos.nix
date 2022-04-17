@@ -1,19 +1,18 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  ...
-}:
-with lib;
-with lib.my; let
-  sys = "x86_64-linux";
-in {
+{lib, ...}: let
+  inherit (lib.my) mapModules;
+in rec {
   # Create a new host based on a given path.
   mkHost = path: attrs @ {
-    system ? sys,
+    system,
+    pkgs,
+    inputs,
     modules ? [],
     ...
-  }:
+  }: let
+    inherit (builtins) baseNameOf;
+    inherit (pkgs.lib) mkDefault nixosSystem removeSuffix;
+    inherit (pkgs) lib;
+  in
     nixosSystem {
       inherit system;
       specialArgs = {inherit lib inputs system;};
@@ -29,6 +28,6 @@ in {
     };
 
   # Create new hosts from every path inside dir.
-  mkHostsFromDir = dir: attrs @ {system ? sys, ...}:
+  mkHostsFromDir = dir: attrs:
     mapModules dir (hostPath: mkHost hostPath attrs);
 }

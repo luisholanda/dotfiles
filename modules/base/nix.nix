@@ -45,7 +45,5 @@ in {
 
     nix.binaryCachePublicKeys = map (x: x.key) caches;
     nix.trustedBinaryCaches = binaryCaches;
-
-    nixpkgs.config.allowUnfree = true;
   };
 }

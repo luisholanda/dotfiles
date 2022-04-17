@@ -19,11 +19,16 @@
     devshell.url = "github:numtide/devshell";
     devshell.inputs.flake-utils.follows = "flake-utils";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
+
+    firefox-addons.url = "github:nix-community/nur-combined?dir=repos/rycee/pkgs/firefox-addons";
+    firefox-addons.inputs.flake-utils.follows = "flake-utils";
+    firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
     self,
     nixpkgs,
+    firefox-addons,
     flake-utils,
     pre-commit-hooks,
     devshell,
@@ -49,7 +54,14 @@
       basePkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [devshell.overlay] ++ nixpkgs.lib.attrValues overlays;
+        overlays =
+          (nixpkgs.lib.attrValues overlays)
+          ++ [
+            devshell.overlay
+            (final: prev: {
+              firefox.extensions = firefox-addons.packages.${system};
+            })
+          ];
       };
 
       packages = import ./packages {pkgs = basePkgs;};
@@ -92,7 +104,7 @@
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
       nixosConfigurations = {
         plutus = mkHost ./hosts/plutus {
-          inherit dotfiles;
+          inherit dotfiles pkgs system inputs;
           modules =
             mapModulesRec' ./modules import
             ++ [
