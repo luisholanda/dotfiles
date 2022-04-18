@@ -14,19 +14,16 @@
   emacsConfigFile = emacsConfigSource + "/config.org";
   nixEmacsConfigSource = lib.sourceByRegex emacsConfigSource ["config.org" "lisp" "lisp/.*.el$"];
 
-  baseEmacs = pkgs.emacsPgtkGcc;
+  emacs =
+    (pkgs.emacsWithPackagesFromUsePackage {
+      config = emacsConfigFile;
+      package = pkgs.emacsPgtkGcc;
+      alwaysTangle = true;
+      alwaysEnsure = true;
 
-  emacs = emacsWithPackagesFromUsePackage {
-    config = emacsConfigFile;
-    package = baseEmacs;
-    alwaysEnsure = true;
-    alwaysTangle = true;
-
-    extraEmacsPackages = epkgs: let
-      customPackages = import ./_customEmacsPlugins.nix {inherit pkgs epkgs;};
-    in
-      builtins.attrValues customPackages;
-  };
+      extraEmacsPackages = epkgs: builtins.attrValues (import ./_customEmacsPlugins.nix {inherit pkgs epkgs;});
+    })
+    // {inherit (pkgs.emacsPgtkGcc) nativeComp;};
 
   trivialBuild = pkgs.emacsPackages.trivialBuild.override {inherit emacs;};
 
@@ -56,6 +53,7 @@
       export EMACS_MONO_FONT_FAMILY="${fonts.family.monospace}"
       export EMACS_VARIABLE_PITCH_FONT_FAMILY="${fonts.family.sansSerif}"
       export EMACS_SERIF_FONT_FAMILY="${fonts.family.serif}"
+      export EMACS_UNICODE_FONT_FAMILY="${fonts.family.sansSerif}"
       export EMACS_EMOJI_FONT_FAMILY="${fonts.family.emoji}"
       export EMACS_TEXT_FONT_SIZE="${builtins.toString fonts.size.text}"
       export EMACS_UI_FONT_SIZE="${builtins.toString fonts.size.ui}"
@@ -74,7 +72,7 @@
     dontUnpack = true;
 
     installPhase = ''
-      install -D -t $out ${init}/share/emacs/site-lisp/*
+      install -D -t $out ${init}/share/emacs/{native,site}-lisp/*
     '';
   };
 in {

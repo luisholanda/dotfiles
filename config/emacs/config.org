@@ -687,10 +687,11 @@ compilation, as these values are passed by Nix when building the config.
   
 (defconst *unicode-font*
   (eval-when-compile (getenv "EMACS_UNICODE_FONT_FAMILY")))
+
+(defconst *emoji-font*
+  (eval-when-compile (getenv "EMACS_EMOJI_FONT_FAMILY")))
   
-(defconst *symbol-fonts*
-  '((eval-whem-compile (getenv "EMACS_EMOJI_FONT_FAMILY"))
-    "Symbola")
+(defconst *symbol-fonts* '(*emoji-font* "Symbola"))
 #+end_src
 
 Now, some sizes.
@@ -848,3 +849,5 @@ Add window dividers, mainly to add a border below the mode line.
 #+end_src
 
 ** Mode line
+
+Bla
