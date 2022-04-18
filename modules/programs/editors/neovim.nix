@@ -4,8 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkMerge makeBinPath removePrefix;
-  inherit (lib.filesystem) listFilesRecursive;
+  inherit (lib) mkIf makeBinPath;
   inherit (lib.my) mkEnableOpt;
 
   neovimConfigSource = config.dotfiles.configDir + "/nvim";

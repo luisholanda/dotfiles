@@ -1,4 +1,4 @@
-{config, ...}: {
+_: {
   "devtools.theme" = "dark";
   # Enable userContent.css and userChrome.css for our theme modules
   "toolkit.legacyUserProfileCustomizations.stylesheets" = true;

@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   inherit (lib) hasPrefix isString mkOption splitString types;
@@ -194,8 +193,6 @@
 
     config = {inherit name;};
   };
-
-  cfg = config.user;
 in {
   options.user.accounts.email = {
     maildirBasePath = mkOption {

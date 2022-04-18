@@ -2,10 +2,9 @@
   options,
   config,
   lib,
-  pkgs,
   ...
 }: let
-  inherit (lib) types mkOption listToAttrs;
+  inherit (lib) listToAttrs;
   inherit (lib.my) mkColorOpt;
 
   cfg = config.theme.colors;

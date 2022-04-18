@@ -1,10 +1,8 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
-  inherit (lib) mkDefault mkIf mkMerge;
   inherit (lib.my) mkAttrsOpt mkEnableOpt;
 
   domainsBlacklist =

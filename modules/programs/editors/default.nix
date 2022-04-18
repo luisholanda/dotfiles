@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
+{lib, ...}: let
   inherit (lib.my) mkPkgsOpt;
 in {
   options.modules.editors = {

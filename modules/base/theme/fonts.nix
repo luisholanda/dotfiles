@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkAliasDefinitions mkOption types isList optional;
+  inherit (lib) mkOption types isList optional;
 
   oneOrListOfStr = with types; either str (listOf str);
 

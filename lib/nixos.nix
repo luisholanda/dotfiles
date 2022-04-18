@@ -2,7 +2,7 @@
   inherit (lib.my) mapModules;
 in rec {
   # Create a new host based on a given path.
-  mkHost = path: attrs @ {
+  mkHost = path: {
     system,
     pkgs,
     inputs,

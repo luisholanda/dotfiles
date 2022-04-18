@@ -28,7 +28,6 @@
   };
 
   outputs = inputs @ {
-    self,
     nixpkgs,
     firefox-addons,
     flake-utils,
@@ -46,8 +45,7 @@
     ];
 
     systemAttrs = flake-utils.lib.eachSystem systems (system: let
-      inherit (lib) nameValuePair;
-      inherit (lib.my) mapModulesRec mapModulesRec' mkHost mkHostsFromDir;
+      inherit (lib.my) mapModulesRec mapModulesRec' mkHost;
 
       overlays = mapModulesRec ./overlays import;
 
@@ -62,7 +60,7 @@
           ++ [
             devshell.overlay
             emacs-overlay.overlay
-            (final: prev: {
+            (_final: _prev: {
               firefox.extensions = firefox-addons.packages.${system};
             })
           ];
@@ -72,7 +70,7 @@
 
       lib =
         nixpkgs.lib.extend
-        (self: super: {
+        (self: _super: {
           my = import ./lib {
             inherit inputs;
             pkgs = basePkgs;
@@ -91,10 +89,18 @@
 
           stylua = {
             enable = true;
-            name = "stylua";
+            name = "Stylua";
             description = "An Opinionated Lua Code Formatter";
             types = ["file" "lua"];
             entry = "${pkgs.stylua}/bin/stylua";
+          };
+
+          deadnix = {
+            enable = true;
+            name = "deadnix";
+            description = "A dead code analyser for Nix expressions";
+            types = ["file" "nix"];
+            entry = "${pkgs.deadnix}/bin/deadnix -e -f";
           };
         };
       };

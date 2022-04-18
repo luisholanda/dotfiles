@@ -521,7 +521,7 @@ lets have that as the default.
 Prevents forms from producing output or other noise.
 
 #+begin_src emacs-lisp
-(defmacro quite! (&rest forms)
+(defmacro quiet! (&rest forms)
   "run FORMS without making any noise."
   `(if init-file-debug
        (progn ,@forms)

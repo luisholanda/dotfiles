@@ -5,7 +5,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) types mkAliasDefinitions mkOption splitString getName;
+  inherit (lib) types mkAliasDefinitions mkOption splitString;
   inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt;
 
   cfg = config.user;

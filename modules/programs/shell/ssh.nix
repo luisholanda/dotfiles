@@ -1,10 +1,8 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
-  inherit (lib) mkIf;
   inherit (lib.my) mkEnableOpt mkBoolOpt;
 
   cfg = config.modules.programs.ssh;

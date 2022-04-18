@@ -4,18 +4,8 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkOption mkOptionDefault mkDefault types mkMerge mkIf listToAttrs makeBinPath;
-  inherit (lib.my) mkAttrsOpt mkEnableOpt mkColorHexValueOpt mkPkgsOpt;
-
-  mkColor = description: mkColorHexValueOpt {inherit description;};
-  colorSubmodule = types.submodule {
-    options = {
-      background = mkColor "Background color of the window.";
-      border = mkColor "Border color of the window.";
-      childBorder = mkColor "Border color of child windows.";
-      indicator = mkColor "Split indicator color.";
-    };
-  };
+  inherit (lib) mkOption mkOptionDefault types;
+  inherit (lib.my) mkAttrsOpt mkEnableOpt mkPkgsOpt;
 
   modifier = "Mod4";
   cfg = config.modules.services.sway;
@@ -79,7 +69,7 @@ in {
   };
 
   config = {
-    user.sessionCmd = "exec ${sway}/bin/sway";
+    user.sessionCmd = "${sway}/bin/sway";
     user.packages = with pkgs; [wl-clipboard];
     user.home.services.kanshi.enable = cfg.enable;
     user.home.extraConfig.wayland.windowManager.sway = {

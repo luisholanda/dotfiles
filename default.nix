@@ -1,14 +1,10 @@
 {
   inputs,
-  config,
   lib,
   pkgs,
   ...
 }: let
-  inherit (builtins) map;
-  inherit (lib) filterAttrs mapAttrs mapAttrsToList mkDefault mkIf;
-  inherit (lib.my) mapModulesRec';
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (lib) mkDefault mkIf;
 in {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;

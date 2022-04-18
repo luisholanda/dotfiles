@@ -1,12 +1,10 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
-  inherit (builtins) typesOf concatStringSep;
-  inherit (lib) mkOption types mkIf mapAttrsToList;
-  inherit (lib.my) mkBoolOpt mkCssOpt mkEnableOpt cssOptToStr;
+  inherit (lib) mkOption types mkIf;
+  inherit (lib.my) mkCssOpt mkEnableOpt cssOptToStr;
 
   cfg = config.modules.services.waybar;
 in {

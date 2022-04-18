@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption;
   inherit (pkgs) emacsWithPackagesFromUsePackage;
   inherit (config.theme) fonts;
 
