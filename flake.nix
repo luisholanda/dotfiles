@@ -23,6 +23,8 @@
     firefox-addons.url = "github:nix-community/nur-combined?dir=repos/rycee/pkgs/firefox-addons";
     firefox-addons.inputs.flake-utils.follows = "flake-utils";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
+
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
   outputs = inputs @ {
@@ -32,6 +34,7 @@
     flake-utils,
     pre-commit-hooks,
     devshell,
+    emacs-overlay,
     ...
   }: let
     dotfiles = import ./.;
@@ -58,6 +61,7 @@
           (nixpkgs.lib.attrValues overlays)
           ++ [
             devshell.overlay
+            emacs-overlay.overlay
             (final: prev: {
               firefox.extensions = firefox-addons.packages.${system};
             })
