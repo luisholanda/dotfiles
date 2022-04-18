@@ -11,6 +11,7 @@ in {
   modules = {
     editors = {
       neovim.enable = true;
+      emacs.enable = true;
 
       # XX: should these be configured in some sort of per-language configuration?
       extraPackages = with pkgs; [
@@ -33,6 +34,8 @@ in {
       docker.enable = true;
       gammastep.enable = true;
       mako.enable = true;
+
+      pipewire.enable = true;
 
       sway = {
         enable = true;
@@ -170,6 +173,7 @@ in {
       slack
       notion-app-enhanced
       minecraft
+      helix
     ];
   };
 
