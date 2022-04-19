@@ -89,7 +89,7 @@
 
           stylua = {
             enable = true;
-            name = "Stylua";
+            name = "stylua";
             description = "An Opinionated Lua Code Formatter";
             types = ["file" "lua"];
             entry = "${pkgs.stylua}/bin/stylua";

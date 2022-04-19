@@ -78,6 +78,7 @@ in {
       git = {
         enable = true;
         emailAccount = "personalGmail";
+        ssh.always = false;
         addons = {
           delta.enable = true;
           stgit.enable = true;
@@ -149,6 +150,9 @@ in {
     # TODO: move these groups to their respective modules.
     groups = ["wheel" "networking" "wideo" "adbusers" "docker"];
     passwordFile = "${config.dotfiles.dir}/hosts/plutus/passfile";
+
+    # Run Bazel sandbox inside a tempfs.
+    home.file.".bazelrc".text = "build --sandbox_base=/dev/shm/";
 
     accounts.email.accounts = {
       personalGmail = {
