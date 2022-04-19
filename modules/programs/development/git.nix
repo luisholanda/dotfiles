@@ -88,8 +88,15 @@ in {
       user.sessionVariables = mkIf cfg.enable {
         GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or "";
       };
-      user.shellAliases.gt = "git";
     }
+
+    # Use GitHub cli to authenticate in case we don't want to use SSH.
+    (mkIf (!cfg.ssh.always) {
+      user.home.programs.git.extraConfig = {
+        credential."https://github.com".helper = "!${pkgs.gitAndTools.gh}/bin/gh auth git-credential";
+      };
+    })
+
     # SSH-specific configurations.
     (mkIf cfg.ssh.always {
       user.home.programs.git.extraConfig = {
