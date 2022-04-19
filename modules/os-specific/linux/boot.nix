@@ -5,7 +5,7 @@
   modulesPath,
   ...
 }: let
-  inherit (lib) mkIf mkOptionDefault mkDefault;
+  inherit (lib) mkIf mkDefault;
   inherit (pkgs.stdenv) isLinux;
 in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
@@ -66,5 +66,6 @@ in {
     ];
 
     boot.kernel.sysctl."fs.inotify.max_user_watches" = 512 * 1024;
+    boot.kernel.sysctl."kernel.unprivileged_userns_clone" = 1;
   };
 }
