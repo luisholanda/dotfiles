@@ -11,10 +11,11 @@ in {
       src = [pkg];
       buildInputs = [makeWrapper];
     } ''
-      cp -a ${makeBinPath [pkg]} $out/bin
+      mkdir -p $out/bin
 
-      for bin in $(find $out/bin -type f); do
-        wrapProgram $bin \
+      for bin in $(find ${pkg}/bin -type f); do
+        ln -s $bin $out/bin/$(basename $bin)
+        wrapProgram $out/bin/$(basename $bin) \
           --prefix PATH : ${makeBinPath newPkgs};
       done
     '';

@@ -19,6 +19,7 @@ in {
 
   # only add stuff here that will be used by _all_ hosts.
   environment.systemPackages = with pkgs; [
+    cacert
     cached-nix-shell
     coreutils
     curl

@@ -12,6 +12,7 @@ in {
     editors = {
       neovim.enable = true;
       emacs.enable = true;
+      helix.enable = true;
 
       # XX: should these be configured in some sort of per-language configuration?
       extraPackages = with pkgs; [
@@ -177,7 +178,6 @@ in {
       slack
       notion-app-enhanced
       minecraft
-      helix
     ];
   };
 

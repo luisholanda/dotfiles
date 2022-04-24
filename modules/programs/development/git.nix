@@ -120,9 +120,12 @@ in {
         keepoptimized = "yes";
         diff-opts = "-M -w -W";
 
-        # TODO: add some aliases
-        alias = {};
+        alias = {
+          submit = "git stg-submit";
+        };
       };
+
+      user.home.programs.git.aliases.stg-submit = "!f() { local patch=$\{1:?Must pass patch name}; shift; git push origin $@ $(stg id $patch):refs/heads/$(echo $patch | sed 's/\\(\\w\\)-/\\1\\//'); }; f";
     })
     # MacOS-specific configurations.
     (mkIf isDarwin {
