@@ -8,7 +8,7 @@ function M.setup()
 	colors.setup()
 	saga.init_lsp_saga({
 		border_style = "round",
-		code_action_prompt = { sign = false },
+		code_action_prompt = { enable = false },
 		use_saga_diagnostic_sign = false,
 	})
 	trouble.setup({ auto_close = true, auto_fold = true })

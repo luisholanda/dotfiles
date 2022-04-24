@@ -166,8 +166,8 @@ function M.setup()
 	lsp_status = require("lsp-status")
 	lsputil = {
 		--codeAction = require("lsputil.codeAction"),
-		locations = require("lsputil.locations"),
-		symbols = require("lsputil.symbols"),
+		--locations = require("lsputil.locations"),
+		--symbols = require("lsputil.symbols"),
 	}
 
 	M.update_completion_kinds()
