@@ -3,3 +3,4 @@ result
 *.qcow2
 
 .pre-commit-config.yaml
+nix-access-tokens

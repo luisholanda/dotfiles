@@ -121,6 +121,8 @@ in {
       hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
     };
 
+    environment.shells = [cfg.shell];
+
     home-manager = {
       # Install user packages in /etc/profiles instead. Necessary for
       # nixos-rebuild build-vm to work.

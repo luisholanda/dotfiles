@@ -62,8 +62,8 @@ local function configure_servers()
 		root_dir = nvim_lsp.util.root_pattern("Cargo.lock", "rust-project.json"),
 		cmd = { "rust-analyzer" },
 		init_options = {
-			cargo = { allFeatures = true, loadOutDirsFromCheck = true, runBuildScripts = true },
-			checkOnSave = { allFeatures = true },
+			cargo = { features = "all", loadOutDirsFromCheck = true, runBuildScripts = true },
+			checkOnSave = { features = "all" },
 			completion = { addCallArgumentSnippets = true, postfix = { enable = true } },
 			procMacro = { enable = true },
 		},
@@ -143,16 +143,14 @@ local function configure_servers()
 end
 
 local function setup_callbacks()
-	--vim.lsp.handlers["textDocument/codeAction"] = lsputil.codeAction.code_action_handler
-	--vim.lsp.handlers["textDocument/references"] = lsputil.locations.references_handler
-	--vim.lsp.handlers["textDocument/definition"] = lsputil.locations.definition_handler
-	--vim.lsp.handlers["textDocument/declaration"] = lsputil.locations.declaration_handler
-	--vim.lsp.handlers["textDocument/typeDefinition"] = lsputil.locations
-	--                                                      .typeDefinition_handler
-	--vim.lsp.handlers["textDocument/implementation"] = lsputil.locations
-	--                                                      .implementation_handler
-	--vim.lsp.handlers["textDocument/documentSymbol"] = lsputil.locations.document_handler
-	--vim.lsp.handlers["workspace/symbol"] = lsputil.symbols.workspace_handler
+	vim.lsp.handlers["textDocument/codeAction"] = lsputil.codeAction.code_action_handler
+	vim.lsp.handlers["textDocument/references"] = lsputil.locations.references_handler
+	vim.lsp.handlers["textDocument/definition"] = lsputil.locations.definition_handler
+	vim.lsp.handlers["textDocument/declaration"] = lsputil.locations.declaration_handler
+	vim.lsp.handlers["textDocument/typeDefinition"] = lsputil.locations.typeDefinition_handler
+	vim.lsp.handlers["textDocument/implementation"] = lsputil.locations.implementation_handler
+	vim.lsp.handlers["textDocument/documentSymbol"] = lsputil.locations.document_handler
+	vim.lsp.handlers["workspace/symbol"] = lsputil.symbols.workspace_handler
 	vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
 		signs = true,
 		virtual_text = true,
@@ -165,9 +163,9 @@ function M.setup()
 	nvim_lsp = require("lspconfig")
 	lsp_status = require("lsp-status")
 	lsputil = {
-		--codeAction = require("lsputil.codeAction"),
-		--locations = require("lsputil.locations"),
-		--symbols = require("lsputil.symbols"),
+		codeAction = require("lsputil.codeAction"),
+		locations = require("lsputil.locations"),
+		symbols = require("lsputil.symbols"),
 	}
 
 	M.update_completion_kinds()

@@ -737,11 +737,11 @@ getting loaded upon init, and flasing emacs and conflicting with each other.
 #+begin_src emacs-lisp
 (use-package doom-themes
   :defer t
-  :custom
+  :config
   (doom-themes-visual-bell-config)
   (doom-themes-org-config)
   (doom-themes-set-faces nil
-    ;; extending faces breaks orgmode collapsing for now)
+    ;; extending faces breaks orgmode collapsing for now
     '(org-block-begin-line :extend nil)
     '(org-block-end-line :extend nil)
     ;; Different sized heading are nice.
@@ -749,15 +749,8 @@ getting loaded upon init, and flasing emacs and conflicting with each other.
     '(outline-2 :height 1.1)
     '(outline-3 :height 1.0)))
     
-#+end_src
-
-Now, we set our default theme:
-
-#+begin_src emacs-lisp
-(defun init-theme ()
-  (load-theme 'doom-dracula t))
-  
-(add-hook 'emacs-startup-hook #'init-theme)
+(load-theme 'doom-dracula t)
+    
 #+end_src
 
 ** Fonts

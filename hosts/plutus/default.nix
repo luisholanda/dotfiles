@@ -8,10 +8,12 @@
 in {
   imports = [./hardware.nix];
 
+  host.hardware.isIntel = true;
+
   modules = {
     editors = {
       neovim.enable = true;
-      emacs.enable = true;
+      emacs.enable = false;
       helix.enable = true;
 
       # XX: should these be configured in some sort of per-language configuration?
@@ -155,6 +157,12 @@ in {
     # Run Bazel sandbox inside a tempfs.
     home.file.".bazelrc".text = "build --sandbox_base=/dev/shm/";
 
+    home.projectDirs = [
+      "~/TerraMagna/repositories"
+      "~/Projects"
+      "~/Sources"
+    ];
+
     accounts.email.accounts = {
       personalGmail = {
         primary = true;
@@ -170,6 +178,28 @@ in {
       };
     };
 
+    home.extraConfig.gtk = {
+      enable = true;
+      font.name = config.theme.fonts.family.sansSerif;
+      font.size = builtins.floor config.theme.fonts.size.ui;
+      cursorTheme = {
+        package = pkgs.quintom-cursor-theme;
+        name = "Quintom_Ink";
+        size = 16;
+      };
+      iconTheme.package = pkgs.gnome.adwaita-icon-theme;
+      iconTheme.name = "Adwaita";
+      theme = {
+        name = "Yaru";
+        package = pkgs.yaru-theme;
+      };
+    };
+    home.extraConfig.qt = {
+      enable = true;
+      platformTheme = "gtk";
+    };
+    home.extraConfig.services.gnome-keyring.enable = true;
+
     packages = with pkgs; [
       nomacs
       pcmanfm
@@ -178,6 +208,7 @@ in {
       slack
       notion-app-enhanced
       minecraft
+      libsecret
     ];
   };
 
@@ -186,4 +217,17 @@ in {
     doc.enable = true;
     man.generateCaches = true;
   };
+
+  virtualisation.virtualbox.host.enable = false;
+
+  programs.dconf.enable = true;
+
+  programs.seahorse.enable = true;
+  services.gnome.at-spi2-core.enable = true;
+  security.pam.services.gnome_keyring.text = ''
+    auth     optional    ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so
+    session  optional    ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so auto_start
+
+    password  optional    ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so
+  '';
 }

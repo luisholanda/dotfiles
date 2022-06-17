@@ -126,8 +126,9 @@ in {
 
       extraSessionCommands = ''
         export SDL_VIDEODRIVER=wayland
-        export QT_QPA_PLATFORM=wayland
+        export QT_QPA_PLATFORM=wayland-egl
         export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+        export QT_WAYLAND_FORCE_DPI=physical
         export _JAVA_AWT_WM_NOREPARENTING=1
         export MOZ_ENABLE_WAYLAND=1
         export XDG_CURRENT_DESKTOP=sway
@@ -138,6 +139,12 @@ in {
       wrapperFeatures.gtk = true;
     };
 
-    xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-wlr];
+    xdg.portal.wlr.enable = true;
+    xdg.portal.wlr.settings = {
+      screencast = {
+        chooser_type = "simple";
+        chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
+      };
+    };
   };
 }

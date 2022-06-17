@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption;
+  inherit (lib) mkEnableOption mkIf;
   inherit (pkgs) emacsWithPackagesFromUsePackage;
   inherit (config.theme) fonts;
 
@@ -80,10 +80,10 @@ in {
     enable = mkEnableOption "emacs";
   };
 
-  config = {
+  config = mkIf cfg.enable {
     services.emacs.enable = cfg.enable;
     services.emacs.package = emacs;
-    services.emacs.install = true;
+    services.emacs.install = false;
 
     user.xdg.configFile."emacs".source = emacsd;
   };

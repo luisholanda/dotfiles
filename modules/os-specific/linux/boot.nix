@@ -67,5 +67,9 @@ in {
 
     boot.kernel.sysctl."fs.inotify.max_user_watches" = 512 * 1024;
     boot.kernel.sysctl."kernel.unprivileged_userns_clone" = 1;
+
+    # don't wait for network during boot.
+    systemd.targets.network-online.wantedBy = mkForce [];
+    systemd.services.NetworkManager-wait-online.wantedBy = mkForce [];
   };
 }

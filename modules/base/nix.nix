@@ -1,11 +1,8 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }: let
-  inherit (pkgs.stdenv) isDarwin;
-
   mkCache = url: key: {inherit url key;};
   caches = let
     nixos =
@@ -25,25 +22,32 @@
   binaryCaches = map (x: x.url) caches;
 in {
   config = {
+    nix.package = pkgs.nixUnstable;
+
+    nix.settings = {
+      binary-caches = binaryCaches;
+      auto-optimise-store = true;
+      allowed-users = ["@whell" "@builders"];
+      #sandbox-paths = lib.optionals isDarwin [
+      #  "/System/Library/Frameworks"
+      #  "/System/Library/PrivateFrameworks"
+      #  "/usr/lib"
+      #  "/private/tmp"
+      #  "/private/var/tmp"
+      #  "/usr/bin/env"
+      #];
+      binary-cache-public-keys = map (x: x.key) caches;
+      trusted-binary-caches = binaryCaches;
+      experimental-features = "nix-command flakes";
+    };
+
     nix.binaryCaches = binaryCaches;
 
-    nix.package = pkgs.nixUnstable;
-    nix.extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-    nix.autoOptimiseStore = true;
-    nix.allowedUsers = ["@whell" "@builders"];
     nix.useSandbox = true;
-    nix.sandboxPaths = lib.optionals isDarwin [
-      "/System/Library/Frameworks"
-      "/System/Library/PrivateFrameworks"
-      "/usr/lib"
-      "/private/tmp"
-      "/private/var/tmp"
-      "/usr/bin/env"
-    ];
+    nix.extraOptions = ''
+      include ${config.dotfiles.dir}/nix-access-tokens
+    '';
 
-    nix.binaryCachePublicKeys = map (x: x.key) caches;
-    nix.trustedBinaryCaches = binaryCaches;
+    system.stateVersion = "22.05";
   };
 }

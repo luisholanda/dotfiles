@@ -152,12 +152,15 @@ in {
     in ''
       ${sessionInit}
 
+      set --prepend fish_function_path ${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d
+      fenv source /etc/profile
+      set -e fish_function_path[1]
+
       set -g fish_key_bindings __fish_user_key_bindings
       set -g fish_cursor_default block;
       set -g fish_cursor_insert line;
       set -g fish_cursor_replace_one underscore
       _pure_set_default pure_show_prefix_root_prompt true
-      ${pkgs.any-nix-shell}/bin/any-nix-shell fish --info-right | source
     '';
     shellAliases = user.shellAliases // cfg.aliases;
     functions =
@@ -188,12 +191,14 @@ in {
             set --local prev_dir (dir)
             set --local projects_dirs ${builtins.concatStringsSep " " user.home.projectDirs}
 
-            for proj_dir in $proejcts_dirs
+            for proj_dir in $projects_dirs
               set --local project_dir $proj_dir/$project
               if test -d $project_dir
                 pushd $project_dir
 
-                if test -f $project_dir/shell.nix
+                if test -f $project_dir/flake.nix
+                  nix develop
+                elif test -f $project_dir/shell.nix
                   nix-shell
                 end
 

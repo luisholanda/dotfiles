@@ -119,6 +119,9 @@
             mapModulesRec' ./modules import
             ++ [
               inputs.home-manager.nixosModule
+              {
+                nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
+              }
             ];
         };
       };
