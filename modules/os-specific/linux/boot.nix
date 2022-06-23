@@ -5,7 +5,7 @@
   modulesPath,
   ...
 }: let
-  inherit (lib) mkIf mkDefault;
+  inherit (lib) mkIf mkDefault mkForce;
   inherit (pkgs.stdenv) isLinux;
 in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];

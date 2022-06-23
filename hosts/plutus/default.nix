@@ -13,8 +13,7 @@ in {
   modules = {
     editors = {
       neovim.enable = true;
-      emacs.enable = false;
-      helix.enable = true;
+      emacs.doom.enable = true;
 
       # XX: should these be configured in some sort of per-language configuration?
       extraPackages = with pkgs; [

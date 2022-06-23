@@ -25,7 +25,7 @@ in {
     nix.package = pkgs.nixUnstable;
 
     nix.settings = {
-      binary-caches = binaryCaches;
+      substituters = binaryCaches;
       auto-optimise-store = true;
       allowed-users = ["@whell" "@builders"];
       #sandbox-paths = lib.optionals isDarwin [
@@ -36,9 +36,10 @@ in {
       #  "/private/var/tmp"
       #  "/usr/bin/env"
       #];
-      binary-cache-public-keys = map (x: x.key) caches;
-      trusted-binary-caches = binaryCaches;
+      trusted-public-keys = map (x: x.key) caches;
+      trusted-substituters = binaryCaches;
       experimental-features = "nix-command flakes";
+      max-jobs = "auto";
     };
 
     nix.binaryCaches = binaryCaches;

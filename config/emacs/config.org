@@ -783,7 +783,7 @@ to render regular text with a proportional font.
 
 *** Frame
 
-See Frame Layout documentation for deatils and terminology.
+See Frame Layout documentation for details and terminology.
 
 - Add some padding around the whole window (~internal-border-width~) to provide 
   some air.

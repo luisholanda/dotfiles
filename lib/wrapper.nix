@@ -3,11 +3,28 @@
   lib,
   ...
 }: let
-  inherit (pkgs) makeWrapper;
-  inherit (lib) getName makeBinPath;
-in {
-  addToPath = pkg: newPkgs:
-    pkgs.runCommandLocal ((getName pkg) + "-wrapped") {
+  inherit (pkgs) makeWrapper runCommandLocal;
+  inherit (lib) getName makeBinPath mapAttrsToList flatten escapeShellArg;
+
+  translateWrapArg = v:
+    if builtins.isList v
+    then escapeShellArg (builtins.concatStringsSep ":" v)
+    else escapeShellArg (builtins.toString v);
+
+  wrapProgram = pkg: wrapArgs: let
+    prefix =
+      mapAttrsToList
+      (n: v: "--prefix ${n} : ${translateWrapArg v}")
+      (wrapArgs.prefix or {});
+
+    set =
+      mapAttrsToList
+      (n: v: "--set ${n} ${translateWrapArg v}")
+      (wrapArgs.set or {});
+
+    wrapProgramArgs = builtins.concatStringsSep " " (flatten [prefix set]);
+  in
+    runCommandLocal ((getName pkg) + "-wrapped") {
       src = [pkg];
       buildInputs = [makeWrapper];
     } ''
@@ -15,8 +32,14 @@ in {
 
       for bin in $(find ${pkg}/bin -type f); do
         ln -s $bin $out/bin/$(basename $bin)
-        wrapProgram $out/bin/$(basename $bin) \
-          --prefix PATH : ${makeBinPath newPkgs};
+        wrapProgram $out/bin/$(basename $bin) ${wrapProgramArgs};
       done
     '';
+in {
+  inherit wrapProgram;
+
+  addToPath = pkg: newPkgs:
+    wrapProgram pkg {
+      prefix.PATH = makeBinPath newPkgs;
+    };
 }

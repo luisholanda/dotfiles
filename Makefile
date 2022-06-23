@@ -14,12 +14,12 @@ endif
 
 c: check
 check:
-	nix flake check --impure $(NIX_FLAGS)
+	nix flake check --impure $(NIX_FLAGS) path:.
 
 vm: $(VM_BIN)
 	rm -f ./plutus.qcow2
 	$(VM_BIN) -vga virtio -cpu host -smp 4
 
 $(VM_BIN): $(NIX_SRCS)
-	nixos-rebuild build-vm --flake .#$(HOSTNAME) --impure $(NIX_FLAGS)
+	nixos-rebuild build-vm --flake path:.#$(HOSTNAME) --impure $(NIX_FLAGS)
 

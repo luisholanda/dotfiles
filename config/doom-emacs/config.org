@@ -1,0 +1,1784 @@
+#+title: config.org
+#+startup: fold
+#+property: header-args:emacs-lisp :results silent
+
+At time of writing, building a from-scratch Emacs configuration is a PITA. So I
+decided to start a Doom-based configuration instead, but ditching ~evil~ and
+focusing on ~objed~ or other [[https://kakoune.org][Kakoune]]/[[https://helix-editor.com/][Helix]]-like keymap package.
+
+* Goals
+** Unix specific
+
+The configuration should support Linux and MacOS, /only/.
+
+
+* =init.el=
+
+First, an easy to reach =init.el= content.
+
+#+begin_src emacs-lisp
+(doom! :input
+       ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
+       ;;chinese
+       ;;japanese
+       ;;layout            ; auie,ctsrnm is the superior home row
+
+       :completion
+       (company +childframe)           ; the ultimate code completion backend
+       ;;helm              ; the *other* search engine for love and life
+       ;;ido               ; the other *other* search engine...
+       ;;ivy               ; a search engine for love and life
+       ;;(corfu +orderless)
+       (vertico +orderless +icons)           ; the search engine of the future
+
+       :ui
+       ;;deft              ; notational velocity for Emacs
+       doom              ; what makes DOOM look the way it does
+       doom-dashboard    ; a nifty splash screen for Emacs
+       ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       ;;(emoji +ascii +github +unicode)  ; 🙂
+       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       ;;hydra
+       ;;indent-guides     ; highlighted indent columns
+       ligatures         ; ligatures and symbols to make your code pretty again
+       minimap           ; show a map of the code on the side
+       modeline          ; snazzy, Atom-inspired modeline, plus API
+       ;;nav-flash         ; blink cursor line after big motions
+       ;;neotree           ; a project drawer, like NERDTree for vim
+       ophints           ; highlight the region an operation acts on
+       (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       ;;tabs              ; a tab bar for Emacs
+       ;;treemacs          ; a project drawer, like neotree but cooler
+       ;;unicode           ; extended unicode support for various languages
+       vc-gutter         ; vcs diff in the fringe
+       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       ;;window-select     ; visually switch windows
+       workspaces        ; tab emulation, persistence & separate workspaces
+       zen               ; distraction-free coding or writing
+
+       :editor
+       (evil +everywhere); come to the dark side, we have cookies
+       file-templates    ; auto-snippets for empty files
+       fold              ; (nigh) universal code folding
+       (format +onsave)  ; automated prettiness
+       ;;god               ; run Emacs commands without modifier keys
+       ;;lispy             ; vim for lisp, for people who don't like vim
+       ;;multiple-cursors  ; editing in many places at once
+       ;;objed             ; text object editing for the innocent
+       parinfer          ; turn lisp into python, sort of
+       rotate-text       ; cycle region at point between text candidates
+       snippets          ; my elves. They type so I don't have to
+       ;;word-wrap         ; soft wrapping with language-aware indent
+
+       :emacs
+       dired             ; making dired pretty [functional]
+       electric          ; smarter, keyword-based electric-indent
+       ;;ibuffer         ; interactive buffer management
+       undo              ; persistent, smarter undo for your inevitable mistakes
+       vc                ; version-control and Emacs, sitting in a tree
+
+       :term
+       eshell            ; the elisp shell that works everywhere
+       ;;shell             ; simple shell REPL for Emacs
+       ;;term              ; basic terminal emulator for Emacs
+       ;;vterm             ; the best terminal emulation in Emacs
+
+       :checkers
+       (syntax +childframe)              ; tasing you for every semicolon you forget
+       (spell +aspell +flyspell +everywhere) ; tasing you for misspelling mispelling
+       grammar           ; tasing grammar mistake every you make
+
+       :tools
+       ;;ansible
+       ;;biblio            ; Writes a PhD for you (citation needed)
+       ;;debugger          ; FIXME stepping through code, to help you add bugs
+       ;;direnv
+       ;;docker
+       ;;editorconfig      ; let someone else argue about tabs vs spaces
+       ;;ein               ; tame Jupyter notebooks with emacs
+       (eval +overlay)     ; run code, run (also, repls)
+       ;;gist              ; interacting with github gists
+       lookup              ; navigate your code and its documentation
+       (lsp +peek)               ; M-x vscode
+       magit             ; a git porcelain for Emacs
+       make              ; run make tasks from Emacs
+       ;;pass              ; password manager for nerds
+       ;;pdf               ; pdf enhancements
+       ;;prodigy           ; FIXME managing external services & code builders
+       ;;rgb               ; creating color strings
+       taskrunner        ; taskrunner for all your projects
+       (terraform +lsp)         ; infrastructure as code
+       ;;tmux              ; an API for interacting with tmux
+       tree-sitter
+       ;;upload            ; map local to remote projects via ssh/ftp
+
+       :os
+       (:if IS-MAC macos)  ; improve compatibility with macOS
+       ;;tty               ; improve the terminal Emacs experience
+
+       :lang
+       ;;agda              ; types of types of types of types...
+       ;;beancount         ; mind the GAAP
+       (cc +lsp +tree-sitter)         ; C > C++ == 1
+       ;;clojure           ; java with a lisp
+       ;;common-lisp       ; if you've seen one lisp, you've seen them all
+       coq               ; proofs-as-programs
+       ;;crystal           ; ruby at the speed of c
+       ;;csharp            ; unity, .NET, and mono shenanigans
+       ;;data              ; config/data formats
+       ;;(dart +flutter)   ; paint ui and not much else
+       ;;dhall
+       ;;elixir            ; erlang done right
+       ;;elm               ; care for a cup of TEA?
+       emacs-lisp        ; drown in parentheses
+       ;;erlang            ; an elegant language for a more civilized age
+       ;;ess               ; emacs speaks statistics
+       ;;factor
+       ;;faust             ; dsp, but you get to keep your soul
+       ;;fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
+       ;;fsharp            ; ML stands for Microsoft's Language
+       ;;fstar             ; (dependent) types and (monadic) effects and Z3
+       ;;gdscript          ; the language you waited for
+       ;;(go +lsp)         ; the hipster dialect
+       ;;(graphql +lsp)    ; Give queries a REST
+       ;;(haskell +lsp)    ; a language that's lazier than I am
+       ;;hy                ; readability of scheme w/ speed of python
+       ;;idris             ; a language you can depend on
+       ;;(java +lsp)       ; the poster child for carpal tunnel syndrome
+       (javascript +lsp +tree-sitter)        ; all(hope(abandon(ye(who(enter(here))))))
+       (json +lsp +tree-sitter)              ; At least it ain't XML
+       ;;julia             ; a better, faster MATLAB
+       ;;kotlin            ; a better, slicker Java(Script)
+       ;;latex             ; writing papers in Emacs has never been so fun
+       lean              ; for folks with too much to prove
+       ;;ledger            ; be audit you can be
+       ;;lua               ; one-based indices? one-based indices
+       markdown          ; writing docs for people to ignore
+       ;;nim               ; python + lisp at the speed of c
+       (nix +tree-sitter)               ; I hereby declare "nix geht mehr!"
+       ;;ocaml             ; an objective camel
+       (org +pretty)               ; organize your plain life in plain text
+       ;;php               ; perl's insecure younger brother
+       ;;plantuml          ; diagrams for confusing people more
+       ;;purescript        ; javascript, but functional
+       (python +lsp +pyright +tree-sitter)            ; beautiful is better than ugly
+       ;;qt                ; the 'cutest' gui framework ever
+       ;;racket            ; a DSL for DSLs
+       ;;raku              ; the artist formerly known as perl6
+       ;;rest              ; Emacs as a REST client
+       ;;rst               ; ReST in peace
+       ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       (rust +lsp +tree-sitter)              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       ;;scala             ; java, but good
+       ;;(scheme +guile)   ; a fully conniving family of lisps
+       (sh +lsp +tree-sitter)                ; she sells {ba,z,fi}sh shells on the C xor
+       ;;sml
+       ;;solidity          ; do you need a blockchain? No.
+       ;;swift             ; who asked for emoji variables?
+       ;;terra             ; Earth and Moon in alignment for performance.
+       (web +tree-sitter)               ; the tubes
+       (yaml +lsp)              ; JSON, but readable
+       ;;zig               ; C, but simpler
+
+       :email
+       ;;(mu4e +org +gmail)
+       ;;notmuch
+       ;;(wanderlust +gmail)
+
+       :app
+       ;;calendar
+       ;;emms
+       ;;everywhere        ; *leave* Emacs!? You must be joking
+       ;;irc               ; how neckbeards socialize
+       ;;(rss +org)        ; emacs as an RSS reader
+       ;;twitter           ; twitter client https://twitter.com/vnought
+
+       :config
+       literate
+       (default +bindings +smartparens))
+#+end_src
+
+* Base
+
+#+begin_src emacs-lisp
+;;; config.el -*- lexical-binding: t; -*-
+#+end_src
+
+** Constants
+
+Let's define some constants we'll use throughout our configuration. Yeah, Doom
+already define those, but we want to keep all constants as ~*<name>*~.
+
+*** Operating System
+
+#+begin_src emacs-lisp
+(defconst *is-macos* IS-MAC)
+(defconst *is-linux* IS-LINUX)
+#+end_src
+
+*** Emacs version
+
+#+begin_src emacs-lisp
+(defconst *is-emacs-28* EMACS28+)
+(defconst *is-emacs-29* EMACS29+)
+#+end_src
+
+** Performance
+
+*** Update UI less frequently.
+
+#+begin_src emacs-lisp
+(setq idle-update-delay 1.0
+      jit-lock-defer-time 0)
+#+end_src
+
+*** Pixel scroll
+
+In Emacs > 29, we can use Po Lu's ~pixel-scroll-precision-mode~ to get a faster
+and better scrolling.
+
+#+begin_src emacs-lisp
+(when *is-emacs-29*
+    (pixel-scroll-precision-mode))
+#+end_src
+
+** Behavior
+*** UTF-8 by default
+
+Emacs is very conservative about assuming encoding. Everything is utf-8 these days,
+lets have that as the default.
+
+#+begin_src emacs-lisp
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(set-file-name-coding-system 'utf-8)
+(set-clipboard-coding-system 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+#+end_src
+
+*** Final EOL
+Always set a EOL at the end of files.
+
+#+begin_src emacs-lisp
+(setq require-final-newline t)
+#+end_src
+
+* Behavior
+** Completion (=corfu=)
+We ditch =company= in favor of using the newer and faster [[https://github.com/minad/corfu][corfu]]. During my previous
+usage of Doom, I constantly fight with the load that =company= caused in the editor.
+Although =nativecomp= improved things considerably, I still prefer using a more light-weight
+alternative.
+
+*** Module
+
+#+begin_quote
+Even though we are defining these here, =corfu= configuration is its
+own module that needs to be explicitly enabled in =init.el=.
+#+end_quote
+
+We start installing the packages we will need.
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/packages.el
+(package! corfu)
+(when (featurep! +orderless)
+  (package! orderless))
+(package! kind-icon)
+(package! cape :recipe (:host github :repo "minad/cape" :branch "main"))
+(package! corfu-doc :recipe (:host github :repo "galeo/corfu-doc" :branch "main"))
+(package! pcmpl-args)
+#+end_src
+
+Now, we integrate corfu with LSP.
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
+;; Start by reseting the lsp-completion provider
+(add-hook 'doom-init-modules-hook
+          (lambda ()
+            (after! lsp-mode
+              (setq lsp-completion-provider :none))))
+
+;;Set orderless filtering for LSP-mode completions
+(add-hook 'lsp-completion-mode-hook
+          (lambda ()
+            (setf (alist-get 'lsp-capf completion-category-defaults)
+                  '((styles . (orderless))))))
+#+end_src
+
+Then, configure the packages.
+
+**** =corfu=
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
+(use-package corfu
+  :custom
+  (corfu-separator ?\s) ;; Orderless field separator
+  (corfu-auto t)        ;; Enable auto-completion
+  (corfu-cycle t)       ;; Enable cycling for `corfu-nex/previous`
+  (corfu-echo-documentation nil) ;; Disable echoing documentation, as we use corfu-doc
+  (corfu-quit-no-match 'separator)
+  (corfu-preselect-first t)
+  :hook (doom-first-buffer . global-corfu-mode)
+  :bind (:map corfu-map
+         ("SPC" . corfu-insert-separator)
+         ("TAB" . corfu-next)
+         ([tab] . corfu-next)
+         ("S-TAB" . corfu-previous)
+         ([backtab] . corfu-previous)))
+#+end_src
+
+**** =corfu-doc=
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
+(use-package corfu-doc
+  :hook (corfu-mode . corfu-doc-mode)
+  :bind (:map corfu-map
+         ("M-n" . corfu-doc-scroll-down)
+         ("M-p" . corfu-doc-scroll-up)
+         ("M-d" . corfu-doc-toggle)))
+#+end_src
+
+**** =orderless=
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
+(use-package orderless
+  :when (featurep! +orderless)
+  :init
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion))))))
+#+end_src
+
+**** =kind-icon=
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
+(use-package kind-icon
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+end_src
+
+**** =cape=
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
+(use-package cape
+  :defer t
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file-capf)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev-capf)
+  (add-to-list 'completion-at-point-functions #'cape-keyword-capf))
+#+end_src
+
+**** =pcmpl-args=
+
+#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
+(add-hook! global-corfu-mode
+  (lambda (&rest _)
+    (require 'pcmpl-args)
+    ;; Silence the pcomplete capf, no errors or messages!
+    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+    ;; Ensure that pcomplete does not write to the buffer
+    ;; and behaves as a pure `completion-at-point-funcion'.
+    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)))
+#+end_src
+
+*** Enable indentation + completion with =TAB=
+
+Use a smarter behavior for =TAB=, it will indent or complete based on the current context.
+
+#+begin_src emacs-lisp
+(setq tab-always-indent 'complete)
+
+;; Dirty hack to get c completion running
+;; Discussion in https://github.com/minad/corfu/issues/34
+(when (equal tab-always-indent 'complete)
+  (map! :map c-mode-base-map
+        :i [remap c-indent-line-or-region] #'completion-at-point))
+#+end_src
+
+*** Enable completion on Shell
+
+Use completion only on request inside shell buffers .
+
+#+begin_src emacs-lisp
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (setq-local corfu-auto nil)
+            (corfu-mode)))
+#+end_src
+
+Inside a =corfu= popup, a =RET= will only call =corfu-=insert=, but will not send the input
+to Eshell, thus requiring us to press =RET= again. This is unnecessary and we can add
+a advice to automatically press it for us.
+
+#+begin_src emacs-lisp
+(defun corfu-send-shell (&rest _)
+  "Send completion candidate when inside comint/eshell."
+  (cond
+    ((and (derived-mode-p 'eshell-mode) (fboundp 'eshell-send-input))
+     (eshell-send-input))
+    ((and (derived-mode-p 'comint-mode) (fboundp ' comint-send-input))
+     (comint-send-input))))
+
+(advice-add #'corfu-insert :after #'corfu-send-shell)
+#+end_src
+
+** Formatting (=apheleia=)
+The current Doom =:editor format= module is not good and causes a lot of issues,
+they want to replace the current implementation with [[https://github.com/radian-software/apheleia][apheleia]]. This part of the config
+creates a replacement that we can use now.
+
+First, we install the package itself.
+
+#+begin_src emacs-lisp :tangle modules/editor/format/packages.el
+(package! apheleia
+  :recipe (:host github :repo "radian-software/apheleia"))
+#+end_src
+
+*** Configuration
+
+Some helper variables that we will use throughout the configuration.
+
+#+begin_src emacs-lisp :tangle modules/editor/format/config.el
+;;; editor/format/config.el -*- lexical-binding: t; -*-
+
+(defvar +format-preserve-indentation t
+  "If non-nil, the leading indentation is preserved when formatting the whole
+ buffer. This is particularly useful for partials.
+
+Indentation is always preserved when formatting regions.")
+
+(defvar +format-with-lsp t
+  "If non-nil, format with LSP formatter if it's available.
+
+This can be set buffer-locally with `setq-hook!' to disable LSP formatting in
+selected buffers.")
+
+(defvaralias '+format-with 'apheleia-formatter
+  "Set this to explicitly use a certain formatter for the current buffer.")
+#+end_src
+
+Enable formatting on-save if =+onsave= is enabled.
+
+#+begin_src emacs-lisp :tangle modules/editor/format/config.el
+(when (featurep! +onsave)
+  (add-hook 'doom-first-file-hook #'apheleia-global-mode))
+#+end_src
+
+Fix integration between =apheleia= and some modes.
+
+#+begin_src emacs-lisp :tangle modules/editor/format/config.el
+(defadvice! +format--inhibit-reformat-on-prefix-arg-a (orig-fn &optional arg)
+  "Make it so \\[save-buffer] with prefix arg inhibits reformatting."
+  :around #'save-buffer
+  (let ((apheleia-mode (and apheleia-mode (member arg '(nil 1)))))
+    (funcall orig-fn)))
+
+(add-hook! 'apheleia-post-format-hook
+  ;; HACK `web-mode' doesn't update syntax highlighting after arbitrary buffer
+  ;;      modifications, so we must trigger refontification manually.
+  (defun +format--fix-web-mode-fontification-h ()
+    (when (eq major-mode 'web-mode)
+      (setq web-mode-fontification-off nil)
+      (when (and web-mode-scan-beg web-mode-scan-end global-font-lock-mode)
+        (save-excursion
+          (font-lock-fontify-region web-mode-scan-beg web-mode-sacn-end)))))
+  (defun +format--refresh-git-gutter-h ()
+    (when (bound-and-true-p git-gutter-mode)
+      (git-gutter))))
+#+end_src
+
+Now we replace the =+format/*= functions to use our module.
+
+First, the logic to format a specific region.
+#+begin_src emacs-lisp :tangle modules/editor/format/autoload/format.el
+;;; editor/format/autoload.el -*- lexical-binding: t; -*-
+
+(defun +format--current-indentation ()
+  (save-excursion
+    (goto-char (point-min))
+    (skip-chars-forward " \t\n")
+    (current-indentation)))
+
+(defun +format-region (start end &optional callback)
+  "Format from START to END with `apheleia'."
+  (when-let* ((command (apheleia--get-formatter-command
+                        (if current-prefix-arg
+                            'prompt
+                         'interactive)))
+              (cur-buffer (current-buffer))
+              (formatted-buffer (get-buffer-create " *apheleia-formatted*"))
+              (indent 0))
+    (with-current-buffer formatted-buffer
+      (erase-buffer)
+      (setq-local coding-system-for-read 'utf-8)
+      (setq-local coding-system-for-write 'utf-8)
+      ;; Ensure this temp buffer seems as much like the origin buffer as
+      ;; possible, in case the formatter is an elisp function, like `gofmt'.
+      (cl-loop for (var . val)
+               in (cl-remove-if-not #'listp (buffer-local-variables origin-buffer))
+               ;; Making enable-multibyte-characters buffer-local causes
+               ;; an error.
+               unless (eq var 'enable-multibyte-characters)
+               do (set (make-local-variable var) val))
+      (insert-buffer-substring-no-properties cur-buffer start end)
+      ;; Since we're piping a region to the formatter, remove any leading
+      ;; indentation to make it look like a file.
+      (setq indent (+format--current-indentation))
+      (when (> indent 0)
+        (indent-rigidly (point-min) (point-max) (- indent)))
+      (apheleia-format-buffer
+       command
+       (lambda ()
+         (with-current-buffer formatted-buffer
+           (when (> indent 0)
+             ;; restore indentation without affecting new indentation
+             (indent-rigidly (point-min) (point-max)
+                             (max 0 (- indent (+format--current-indentation))))))
+         (with-current-buffer cur-buffer
+           (delete-region start end)
+           (insert-buffer-substring-no-properties formatted-buffer)
+           (when callback (funcall callback))
+           (kill-buffer formatted-buffer)))))))
+#+end_src
+
+Now, the high-level functions that Doom uses.
+#+begin_src emacs-lisp :tangle modules/editor/format/autoload/format.el
+(defun +format--use-lsp? (feature)
+  "Return non-nil if we should use the LSP formatter for the specifi FEATURE."
+  (and +format-with-lsp
+       (bound-and-true-p lsp-mode)
+       (lsp-feature? feature)))
+
+;;;###autoload
+(defun +format/buffer (&optional arg)
+  "Reformat the current buffer using LSP or `format-all-buffer'."
+  (interactive)
+  (call-interactively
+    (if (+format--use-lsp? "textDocument/formatting")
+        #'lsp-format-buffer
+      #'apheleia-format-buffer)))
+
+;;;###autoload
+(defun +format/region (beg end &optional arg)
+  "Runs the active formatter on the lines within BEG and END.
+
+WARNING: this may not work everywhere. It will throw errors if the region
+contains a syntax error in isolation. It is mostly useful for formatting
+snippets or single lines."
+  (interactive "rP")
+  (if (+format--use-lsp? "textDocument/rangeFormatting")
+      (call-interactively #'lsp-format-region)
+    (+format-region beg end)))
+
+;;;###autoload
+(defun +format/region-or-buffer ()
+  "Runs the active formatter on the selected region (or whole buffer, if nothing
+ is selected)."
+  (interactive)
+  (call-interactively
+    (if (doom-region-active-p)
+        #'+format/region
+      #'+format/buffer)))
+#+end_src
+
+Not all the default formatters provided by =apheleia= are what we want to use. This
+part of the configuration replace them with what we want.
+
+#+begin_quote
+Note that these are not inside the module, but in our configuration.
+#+end_quote
+
+#+begin_src emacs-lisp
+(after! apheleia
+  ;; Also use `isort' for python.
+  (setf (alist-get 'isort apheleia-formatters)
+        '("isort" "--stdout" "-"))
+  (setf (alist-get 'python-mode apheleia-mode-alist)
+        '(isort black))
+  ;; Use `alejandra' for Nix instead of `nixfmt'.
+  (setf (alist-get 'alejandra apheleia-formatters)
+        '("alejandra" "--threads" "1" "--quiet"))
+  (setf (alist-get 'nix-mode apheleia-mode-alist)
+        '(alejandra)))
+#+end_src
+
+** Language Server Protocol (LSP)
+
+Although Doom already handles a bunch of stuff for us, we need to change some
+things.
+
+First, we install everything via Nix, so =lsp-mode= don't need to asks us anything.
+
+#+begin_src emacs-lisp
+(setq lsp-enable-suggest-server-download nil)
+#+end_src
+
+*** Hover
+#+begin_src emacs-lisp
+(setq lsp-ui-doc-position 'at-point
+      lsp-ui-doc-delay 0.5
+      lsp-ui-doc-show-with-cursor t
+      lsp-ui-doc-show-with-mouse t)
+#+end_src
+
+*** Semantic Highlighting
+First, enable the feature.
+#+begin_src emacs-lisp
+(setq lsp-semantic-tokens-enable t
+      lsp-semantic-tokens-honor-refresh-requests t)
+#+end_src
+
+Now, we have to fix a problem in the current =lsp-mode= implementation: it is not
+possible to define a face for a specific pair $(token, modifier)$, as can be
+done in VSCode.
+This causes problems as some languages /need/ this functionality to be properly
+highlighted. As an example, in Rust, with the default configuration, both the ~async~
+keyword and ~async fn~ /function names/ will have the same face, always.
+
+#+begin_src emacs-lisp
+(defvar lsp-semantic-token-modifier-pair-faces
+  '()
+  "An association list that contains faces to be applied to specific
+pairs of token <> modifier.
+
+The list is expected to have the format (major-mode -> token -> modifier -> face),
+that is, it should be an association list of association lists.")
+
+(defun +lsp-semantic-tokens-build-pair-alist (faces modifier-faces)
+  "Builds an association list for each pair in `lsp-semantic-token-modifier-pair-faces',
+in a way that can be directly used by `lsp-semantic-token--fontify'.
+
+Each pair is represented as a key (+ (* <idx in faces> (length modifier-faces)) <idx in modifier-faces>).
+
+This has O(n*m) complexity, so it should be called only once by request.
+"
+  (setq pair-faces '()
+        mod-faces-length (length modifier-faces)
+        major-mode-faces (assq major-mode lsp-semantic-token-modifier-pair-faces))
+  (cl-loop for idx-f from 0 to (1- (length faces)) do
+    (when-let* ((face (aref faces idx-f))
+                (token-name (car (rassoc face lsp-semantic-token-faces)))
+                (token-faces (cdr (assoc token-name major-mode-faces))))
+        (cl-loop for idx-m from 0 to (1- mod-faces-length) do
+          (when-let* ((mod-face (aref modifier-faces idx-m))
+                      (mod-name (car (rassoc mod-face lsp-semantic-token-modifier-faces)))
+                      (idx (+ (* idx-f mod-faces-length) idx-m))
+                      (face (cdr (assoc mod-name token-faces))))
+            (setf (alist-get idx pair-faces) face)))))
+  pair-faces)
+
+(defun +lsp-semantic-tokens--fontify-with-pairs (old-fontify-region beg-orig end-orig &optional loudly)
+  "Apply fonts to retrieved semantic tokens.
+OLD-FONTIFY-REGION is the underlying region fontification function,
+e.g., `font-lock-fontify-region'.
+BEG-ORIG and END-ORIG deliminate the requested fontification region and maybe
+modified by OLD-FONTIFY-REGION.
+LOUDLY will be forwarded to OLD-FONTIFY-REGION as-is."
+  ;; TODO: support multiple language servers per buffer?
+  (let ((faces (seq-some #'lsp--workspace-semantic-tokens-faces lsp--buffer-workspaces))
+        (modifier-faces
+         (when lsp-semantic-tokens-apply-modifiers
+           (seq-some #'lsp--workspace-semantic-tokens-modifier-faces lsp--buffer-workspaces)))
+        old-bounds
+        beg end)
+    (cond
+     ((or (eq nil faces)
+          (eq nil lsp--semantic-tokens-cache)
+          (eq nil (plist-get lsp--semantic-tokens-cache :response)))
+      ;; default to non-semantic highlighting until first response has arrived
+      (funcall old-fontify-region beg-orig end-orig loudly))
+     ((not (= lsp--cur-version (plist-get lsp--semantic-tokens-cache :_documentVersion)))
+      ;; delay fontification until we have fresh tokens
+      '(jit-lock-bounds 0 . 0))
+     (t
+      (setq old-bounds (funcall old-fontify-region beg-orig end-orig loudly))
+      ;; this is to prevent flickering when semantic token highlighting
+      ;; is layered on top of, e.g., tree-sitter-hl, or clojure-mode's syntax highlighting.
+      (setq beg (min beg-orig (cadr old-bounds))
+            end (max end-orig (cddr old-bounds)))
+      ;; if we're using the response to a ranged request, we'll only be able to fontify within
+      ;; that range (and hence shouldn't clear any highlights outside of that range)
+      (let ((token-region (plist-get lsp--semantic-tokens-cache :_region)))
+        (if token-region
+            (progn
+              (lsp--semantic-tokens-putcache :_truncated (or (< beg (car token-region))
+                                                             (> end (cdr token-region))))
+              (setq beg (max beg (car token-region)))
+              (setq end (min end (cdr token-region))))
+          (lsp--semantic-tokens-putcache :_truncated nil)))
+      (-let* ((inhibit-field-text-motion t)
+              (data (lsp-get (plist-get lsp--semantic-tokens-cache :response) :data))
+              (i0 0)
+              (i-max (1- (length data)))
+              (current-line 1)
+              (line-delta)
+              (column 0)
+              (face)
+              (line-start-pos)
+              (line-min)
+              (line-max-inclusive)
+              (text-property-beg)
+              (text-property-end))
+        (save-mark-and-excursion
+          (save-restriction
+            (widen)
+            (goto-char beg)
+            (goto-char (line-beginning-position))
+            (setq line-min (line-number-at-pos))
+            (with-silent-modifications
+              (goto-char end)
+              (goto-char (line-end-position))
+              (setq line-max-inclusive (line-number-at-pos))
+              (forward-line (- line-min line-max-inclusive))
+              (let ((skip-lines (- line-min current-line)))
+                (while (and (<= i0 i-max) (< (aref data i0) skip-lines))
+                  (setq skip-lines (- skip-lines (aref data i0))
+                        i0 (+ i0 5)))
+                (setq current-line (- line-min skip-lines)))
+              (forward-line (- current-line line-min))
+              (setq line-start-pos (point))
+              (setq pair-faces (+lsp-semantic-tokens-build-pair-alist faces modifier-faces))
+              (cl-loop
+               for i from i0 to i-max by 5 do
+               (setq line-delta (aref data i))
+               (unless (= line-delta 0)
+                 (forward-line line-delta)
+                 (setq line-start-pos (point)
+                       column 0
+                       current-line (+ current-line line-delta)))
+               (setq column (+ column (aref data (1+ i)))
+                     face-idx (aref data (+ i 3))
+                     face (aref faces face-idx)
+                     text-property-beg (+ line-start-pos column)
+                     text-property-end (+ text-property-beg (aref data (+ i 2))))
+               (when face
+                 (put-text-property text-property-beg text-property-end 'face face))
+               (cl-loop for j from 0 to (1- (length modifier-faces)) do
+                        (when (and (aref modifier-faces j)
+                                   (> (logand (aref data (+ i 4)) (lsh 1 j)) 0))
+                          (setq mod-face (alist-get (+ (* face-idx
+                                                           (length modifier-faces))
+                                                       j)
+                                                     pair-faces
+                                                     (aref modifier-faces j)))
+                          (add-face-text-property text-property-beg text-property-end
+                                                  mod-face)))
+               when (> current-line line-max-inclusive) return nil)))))
+            `(jit-lock-bounds ,beg . ,end)))))
+#+end_src
+
+Now we replace =lsp-mode='s default implementation with our own.
+
+#+begin_src emacs-lisp
+(advice-add 'lsp-semantic-tokens--fontify :override
+            #'+lsp-semantic-tokens--fontify-with-pairs)
+#+end_src
+
+*** Code Lens
+#+begin_src emacs-lisp
+(setq lsp-lens-place-position 'above-line)
+#+end_src
+
+*** UI
+
+Prefer thing at-point than in the sideline (conflicts with Inlay Hints).
+
+#+begin_src emacs-lisp
+(setq lsp-ui-sideline-enable nil
+      lsp-ui-peek-enable t
+      lsp-ui-imenu-kind-position 'left
+      lsp-ui-doc-max-height 30)
+#+end_src
+
+* Appearance
+** Text
+*** Constants
+
+First, some sizes.
+
+#+begin_src emacs-lisp
+(defconst *line-spacing* 0.25)
+
+(defconst *text-font-height* (string-to-number (getenv "EMACS_TEXT_FONT_SIZE")))
+(defconst *ui-font-height* (string-to-number (getenv "EMACS_UI_FONT_SIZE")))
+#+end_src
+
+Now, the fonts we will use. These are passed via environment variables
+via our Nix module.
+
+#+begin_src emacs-lisp
+(defconst *fixed-pitch-font* (getenv "EMACS_MONO_FONT_FAMILY")
+    "Font used for monospaced text.")
+
+(defconst *variable-pitch-font* (getenv "EMACS_VARIABLE_PITCH_FONT_FAMILY")
+    "Font used for variable text.")
+
+(defconst *serif-font* (getenv "EMACS_SERIF_FONT_FAMILY")
+    "Font used for serif text.")
+
+(defconst *unicode-font* (getenv "EMACS_UNICODE_FONT_FAMILY")
+    "Font used to display unicode symbols.")
+#+end_src
+
+*** Font faces
+Let's start changing the global Doom font faces.
+
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family *fixed-pitch-font* :size *text-font-height*)
+      doom-variable-pitch-font (font-spec :family *variable-pitch-font* :size *text-font-height*)
+      doom-serif-font (font-spec :family *serif-font* :size *text-font-height*)
+      doom-unicode-font (font-spec :family *unicode-font* :size *text-font-height*))
+#+end_src
+
+Now, the modeline:
+
+#+begin_src emacs-lisp
+(custom-set-faces
+  `(mode-line ((t (:font ,doom-variable-pitch-font)))))
+#+end_src
+
+~org-mode~...
+
+#+begin_src emacs-lisp
+(custom-set-faces!
+  '(org-document-title :height 1.2)
+  '(org-level-1 :weight extra-bold :height 1.45)
+  '(org-level-2 :weight bold :height 1.35)
+  '(org-level-3 :weight bold :height 1.2)
+  '(org-level-4 :weight semi-bold :height 1.00)
+  '(org-level-5 :weight semi-bold :height 1.00)
+  '(org-level-6 :weight semi-bold :height 1.00)
+  '(org-level-8 :weight semi-bold)
+  '(org-level-9 :weight semi-bold))
+
+;; Make quotes and verses italic
+(setq org-fontify-quote-and-verse-blocks t)
+#+end_src
+*** Line length/spacing
+
+#+begin_src emacs-lisp
+(setq-default fill-column 90)
+(setq-default line-spacing *line-spacing*)
+#+end_src
+
+*** Underline
+
+Underline at a descent position, not baseline position.
+
+#+begin_src emacs-lisp
+(setq x-underline-at-descent-line t)
+#+end_src
+
+*** Mixed Pitch
+In some modes (like ~org-mode~), we would like to use mixed pitch. To do this, we
+need to add a hook that runs /after/ the UI is initialized.
+
+#+begin_src emacs-lisp
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+    "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+
+(defun init-mixed-pitch-h ()
+    "Hook `mixed-pitch-mode' into each mode in `mixxed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of those."
+    (when (memq major-mode mixed-pitch-modes)
+        (mixed-pitch-mode 1))
+    (dolist (hook mixed-pitch-modes)
+        (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+
+(add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+(add-hook 'org-mode-hook #'+org-pretty-mode)
+#+end_src
+
+** Layout
+*** Frame
+
+See Frame Layout documentation for details and terminology.
+
+- Add some padding around the whole window (~internal-border-width~) to provide
+  some air.
+- Remove GUI elements.
+- Make the title-bar transparent on macOS.
+
+#+begin_src emacs-lisp
+(when *is-macos*
+  (setq frame-title-format nil)
+  (dolist (filter '((ns-transparent-titlebar . t)
+                    (ns-appearance . unbound)))
+    (cl-pushnew filter default-frame-alist :test #'equal)))
+#+end_src
+
+*** Padding
+
+Add margins inside windows to make text fell less crowded. Padding around the frame
+is configured via the ~internal-border-width~ in the Frame section.
+
+#+begin_src emacs-lisp
+(setq-default left-margin-width 1
+              right-margin-width 1)
+#+end_src
+
+** Interface
+*** Number line
+#+begin_src emacs-lisp
+(setq display-line-numbers-type 'visual)
+#+end_src
+
+*** Disable =hl-line-mode=
+
+#+begin_src emacs-lisp
+(setq global-hl-line-mode '())
+#+end_src
+
+** Theme
+*** =font-lock= faces customization
+The default faces for =doom-horizon= is nice, but we need to change a few things.
+
+Beginning with documentation and comments, they should be in italics.
+#+begin_src emacs-lisp
+(custom-theme-set-faces! 'doom-horizon
+  `(font-lock-doc-face
+    :slant italic
+    :foreground ,(doom-color 'doc-comments))
+  `(font-lock-comment-face
+    :slant italic
+    :foreground ,(doom-color 'comments)))
+#+end_src
+
+Now some tokens.
+#+begin_src emacs-lisp
+(custom-theme-set-faces! 'doom-horizon
+  `(font-lock-string-face
+    :foreground ,(doom-darken (doom-color 'green) 0.1))
+  `(font-lock-variable-name-face
+    :foreground ,(doom-color 'fg))
+  ;; We will need to adjust the & operator later in the Tree-Sitter config.
+  `(tree-sitter-hl-face:operator
+    :foreground ,(doom-color 'fg))
+      )
+#+end_src
+
+*** =tree-sitter= faces customization
+Doom pins =tree-sitter= packages, let's live on the edge!
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! tree-sitter :pin nil)
+(package! tree-sitter-langs :pin nil)
+#+end_src
+
+Now, let's define faces that are missing from the upstream package.
+
+**** LSP Semantic Tokens Faces
+
+#+begin_src emacs-lisp
+(defface tree-sitter-hl-face:namespace
+  '((default :inherit default))
+  "Face used for namespaces/modules.")
+
+(defface tree-sitter-hl-face:namespace.builtin
+  '((default :inherit tree-sitter-hl-face:namespace))
+  "Face used for a built-in namespace.")
+
+(defface tree-sitter-hl-face:class
+  '((default :inherit tree-sitter-hl-face:type))
+  "Face used for class names.")
+
+(defface tree-sitter-hl-face:enum
+  '((default :inherit tree-sitter-hl-face:type))
+  "Face used for enum names.")
+
+(defface tree-sitter-hl-face:interface
+  '((default :inherit tree-sitter-hl-face:type))
+  "Face used for interface names.")
+
+(defface tree-sitter-hl-face:struct
+  '((default :inherit tree-sitter-hl-face:class))
+  "Face used for struct names.")
+
+(defface tree-sitter-hl-face:enum.member
+  '((default :inherit tree-sitter-hl-face:property))
+  "Face used for enum members.")
+
+(defface tree-siter-hl-face:modifier
+  '((default :inherit tree-sitter-hl-face:keyword))
+  "Face used for keyword modifiers.")
+
+(defface tree-sitter-hl-face:decorator
+  '((default :inherit tree-sitter-hl-face:function.call))
+  "Face used for decorators.")
+
+(defface tree-sitter-hl-face:operator
+  '((default :inherit default))
+  "Face used for operators.")
+
+(defface tree-sitter-hl-face:static
+  '((default :weight semi-bold))
+  "Face used for static members.")
+
+(defface tree-sitter-hl-face:deprecated
+  '((default :strike-through t))
+  "Face used for deprecated elements.")
+#+end_src
+
+**** Rust Analyzer Semantic Tokens Faces
+Although most tokens in RA can use pre-defined faces, some need extra faces. We
+define these here as we can also use it for other languages.
+
+#+begin_src emacs-lisp
+(defface tree-sitter-hl-face:unresolved
+  `((default
+      :inherit default
+      :background ,(doom-blend (doom-color 'bg)
+                               (doom-color 'red)
+                               0.6)))
+  "Face used for unresolved references.")
+
+(defface tree-sitter-hl-face:function.mutable
+  '((default :inherit tree-sitter-hl-face:variable.special))
+  "Face used for functions that mutate arguments.")
+
+(defface tree-sitter-hl-face:variable.mutable
+  '((default :inherit tree-sitter-hl-face:variable :underline t))
+  "Face used for mutable variables.")
+
+(defface tree-sitter-hl-face:namespace.root
+  '((default :inherit tree-sitter-hl-face:namespace))
+  "Face used for the root of a namespace.")
+
+(defface tree-sitter-hl-face:type.lifetime
+  '((default :inherit tree-sitter-hl-face:string))
+  "Face used for lifetimes.")
+
+(defface tree-sitter-hl-face:function.async
+  '((default :inherit tree-sitter-hl-face:function.call))
+  "Face used for async functions.")
+
+(defface tree-sitter-hl-face:variable.callable
+  '((default :inherit tree-sitter-hl-face:variable))
+  "Face used for variables that can be called as a function.")
+
+(defface tree-sitter-hl-face:rust.unsafe
+  `((default :foreground ,(doom-color 'red) :slant italic))
+  "Face used for unsafe operations.")
+
+(defface tree-sitter-hl-face:union
+  '((default :inherit tree-sitter-hl-face:type))
+  "Face used for union types.")
+
+(defface tree-sitter-hl-face:type.alias
+  '((default :inherit tree-sitter-hl-face:type))
+  "Face used for type aliases.")
+
+(defface tree-sitter-hl-face:boolean
+  '((default :inherit tree-sitter-hl-face:number))
+  "Face used for booleans.")
+
+(defface tree-sitter-hl-face:operator.logical
+  '((default :inherit tree-sitter-hl-face:operator))
+  "Face used for logical operators.")
+
+(defface tree-sitter-hl-face:variable.consuming
+  `((default
+      :inherit tree-sitter-hl-face:variable
+      :foreground ,(doom-darken (doom-color 'fg) 0.2)
+      :slant italic))
+  "Face used for variables being consumed by a function call.")
+
+(defface tree-sitter-hl-face:variable.parameter.consuming
+  `((default
+      :inherit tree-sitter-hl-face:variable.parameter
+      :foreground ,(doom-darken (doom-color 'fg) 0.2)
+      :slant italic))
+  "Face used for variables being consumed by a function call.")
+#+end_src
+
+*** =lsp-semantic= faces customization
+Being honest, the default ~lsp-face-semhl-*~ faces /suck/, period. With almost all
+themes that I tested, everything is only two colors! This part of the configuration
+tries to fix this issue.
+
+=lsp-mode= requires all legends to be defined in ~lsp-semantic-token-faces~ and
+in ~lsp-semantic-token-modifier-faces~ to be recognized. As our hack to implement
+composite matching uses face equality, we need to define placeholders for all legends that
+we only use in these matches.
+
+#+begin_src emacs-lisp
+(defface placeholder-face:declaration '() "")
+(defface placeholder-face:definition '() "")
+(defface placeholder-face:readonly '() "")
+(defface placeholder-face:static '() "")
+(defface placeholder-face:abstract '() "")
+(defface placeholder-face:async '() "")
+(defface placeholder-face:modification '() "")
+(defface placeholder-face:default-library '() "")
+
+(defface placeholder-face:ra-attribute '() "")
+(defface placeholder-face:ra-callable '() "")
+(defface placeholder-face:ra-constant '() "")
+(defface placeholder-face:ra-consuming '() "")
+(defface placeholder-face:ra-control-flow '() "")
+(defface placeholder-face:ra-crate-root '() "")
+(defface placeholder-face:ra-intra-doc-link '() "")
+(defface placeholder-face:ra-library '() "")
+(defface placeholder-face:ra-mutable '() "")
+(defface placeholder-face:ra-public '() "")
+(defface placeholder-face:ra-reference '() "")
+(defface placeholder-face:ra-trait '() "")
+#+end_src
+
+Now, let's make =lsp-mode= use new faces for tokens.
+
+#+begin_src emacs-lisp
+(setq-default lsp-semantic-token-faces
+        '( ;; Built-in LSP tokens
+        ("namespace" . tree-sitter-hl-face:namespace)
+        ("type" . tree-sitter-hl-face:type)
+        ("class" . tree-sitter-hl-face:class)
+        ("enum" . tree-sitter-hl-face:enum)
+        ("interface" . tree-sitter-hl-face:interface)
+        ("struct" . tree-sitter-hl-face:struct)
+        ("typeParameter" . tree-sitter-hl-face:type.parameter)
+        ("paramenter" . tree-sitter-hl-face:variable.parameter)
+        ("variable" . tree-sitter-hl-face:variable)
+        ("property" . tree-sitter-hl-face:property)
+        ("enumMember" . tree-sitter-hl-face:enum.member)
+        ("function" . tree-sitter-hl-face:function.call)
+        ("method" . tree-sitter-hl-face:method.call)
+        ("macro" . tree-sitter-hl-face:function.macro)
+        ("keyword" . tree-sitter-hl-face:keyword)
+        ("modifier" . tree-sitter-hl-face:modifier)
+        ("comment" . tree-sitter-hl-face:comment)
+        ("string" . tree-sitter-hl-face:string)
+        ("number" . tree-sitter-hl-face:number)
+        ("regexp" . tree-sitter-hl-face:string.special)
+        ("operator" . tree-sitter-hl-face:operator)
+        ("decorator" . tree-sitter-hl-face:decorator)
+        ("label" . tree-sitter-hl-face:label)
+
+        ;; Rust-Analyzer extras
+        ("derive" . tree-sitter-hl-face:function.macro)
+        ("typeAlias" . tree-sitter-hl-face:type.alias)
+        ("union" . tree-sitter-hl-face:union)
+        ("boolean" . tree-sitter-hl-face:boolean)
+        ("character" . tree-sitter-hl-face:string)
+        ("escapeSequence" . tree-sitter-hl-face:escape)
+        ;; TODO create a new face for this?
+        ("formatSpecifier" . tree-sitter-hl-face:string.special)
+        ("logical" . tree-sitter-hl-face:operator.logical)
+        ("macroBang" . tree-sitter-hl-face:function.macro)
+        ("builtinAttribute" . tree-sitter-hl-face:function.builtin)
+        ("builtinType" . tree-sitter-hl-face:type.builtin)
+        ("constParameter" . tree-sitter-hl-face:constant)
+        ("lifetime" . tree-sitter-hl-face:type.lifetime)
+        ("selfKeyword" . tree-sitter-hl-face:keyword)
+        ("selfTypeKeyword" . tree-sitter-hl-face:keyword)
+        ("unresolvedReference" . tree-sitter-hl-face:unresolved)))
+#+end_src
+
+Followed by setting new faces for modifiers. Note that we use our ~placeholder-face:*~
+to define new modifiers that doesn't have specific styles.
+
+#+begin_src emacs-lisp
+(setq-default lsp-semantic-token-modifier-faces
+        '( ;; Built-in LSP modifiers (most omitted).
+        ("declaration" . placeholder-face:declaration)
+        ("definition" . placeholder-face:definition)
+        ("readonly" . placeholder-face:readonly)
+        ("static" . placeholder-face:static)
+        ("deprecated" . tree-sitter-hl-face:deprecated)
+        ("abstract" . placeholder-face:abstract)
+        ("async" . placeholder-face:async)
+        ("modification" . placeholder-face:modification)
+        ("documentation" . tree-sitter-hl-face:doc)
+        ("defaultLibrary" . placeholder-face:default-library)
+
+        ;; Rust-Analyzer extras
+        ("crateRoot" . tree-sitter-hl-face:namespace.root)
+        ("unsafe" . tree-sitter-hl-face:rust.unsafe)
+        ("injected" . tree-sitter-hl-face:embedded)
+        ("attribute". placeholder-face:ra-attribute)
+        ("callable" . placeholder-face:ra-callable)
+        ("constant" . placeholder-face:ra-constant)
+        ("consuming" . placeholder-face:ra-consuming)
+        ("controlFlow" . placeholder-face:ra-control-flow)
+        ("intraDocLink" . placeholder-face:ra-intra-dock-link)
+        ("library" . placeholder-face:ra-library)
+        ("mutable" . placeholder-face:ra-mutable)
+        ("public" . placeholder-face:ra-public)
+        ("reference" . placeholder-face:ra-reference)
+        ("trait" . placeholder-face:ra-trait)))
+#+end_src
+
+*** Enable theme
+Now we can set the theme.
+
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-horizon)
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(add-hook 'after-init-hook #'doom-init-theme-h 'append)
+(delq! t custom-theme-load-path)
+#+end_src
+
+** Org
+There is a bunch of stuff here, so let's get going!
+
+*** Symbols
+Replace some commands and checkboxes with Unicode stuff :blush:
+
+#+begin_src emacs-lisp
+(appendq! +ligatures-extra-symbols
+          `(:checkbox      "☐"
+            :pending       "◼"
+            :checkedbox    "☑"
+            :list_property "∷"
+            :em_dash       "—"
+            :ellipses      "…"
+            :arrow_right   "→"
+            :arrow_left    "←"
+            :title         "𝙏"
+            :subtitle      "𝙩"
+            :author        "𝘼"
+            :date          "𝘿"
+            :property      "☸"
+            :options       "⌥"
+            :startup       "⏻"
+            :macro         "𝓜"
+            :html_head     "🅷"
+            :html          "🅗"
+            :latex_class   "🄻"
+            :latex_header  "🅻"
+            :beamer_header "🅑"
+            :latex         "🅛"
+            :attr_latex    "🄛"
+            :attr_html     "🄗"
+            :attr_org      "⒪"
+            :begin_quote   "❝"
+            :end_quote     "❞"
+            :caption       "☰"
+            :header        "›"
+            :results       "🠶"
+            :begin_export  "⏩"
+            :end_export    "⏪"
+            :properties    "⚙"
+            :end           "∎"
+            :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
+            :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
+            :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
+            :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
+            :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
+(set-ligatures! 'org-mode
+  :merge t
+  :checkbox      "[ ]"
+  :pending       "[-]"
+  :checkedbox    "[X]"
+  :list_property "::"
+  :em_dash       "---"
+  :ellipsis      "..."
+  :arrow_right   "->"
+  :arrow_left    "<-"
+  :title         "#+title:"
+  :subtitle      "#+subtitle:"
+  :author        "#+author:"
+  :date          "#+date:"
+  :property      "#+property:"
+  :options       "#+options:"
+  :startup       "#+startup:"
+  :macro         "#+macro:"
+  :html_head     "#+html_head:"
+  :html          "#+html:"
+  :latex_class   "#+latex_class:"
+  :latex_header  "#+latex_header:"
+  :beamer_header "#+beamer_header:"
+  :latex         "#+latex:"
+  :attr_latex    "#+attr_latex:"
+  :attr_html     "#+attr_html:"
+  :attr_org      "#+attr_org:"
+  :begin_quote   "#+begin_quote"
+  :end_quote     "#+end_quote"
+  :caption       "#+caption:"
+  :header        "#+header:"
+  :begin_export  "#+begin_export"
+  :end_export    "#+end_export"
+  :results       "#+RESULTS:"
+  :property      ":PROPERTIES:"
+  :end           ":END:"
+  :priority_a    "[#A]"
+  :priority_b    "[#B]"
+  :priority_c    "[#C]"
+  :priority_d    "[#D]"
+  :priority_e    "[#E]")
+(plist-put +ligatures-extra-symbols :name "⁍")
+#+end_src
+
+*** Remove =hl-line-mode=
+
+With our current mixed pitch setup for =org-mode=,  having the line highlighting
+looks weird, so we need to disable it.
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook (hl-line-mode -1))
+#+end_src
+
+** Splash Screen
+Emacs can render an image as the splash screen, I kindly /borrowed/ the custom Emacs E
+from [[https://tecosaur.github.io/emacs-config/config.html#splash-screen][@tecosaur]]'s configuration :speak-no-evil:.
+
+Just make it theme-appropriate and follow the frame size. One thing that I needed
+to change in the original configuration is that the SVG wasn't scaling properly.
+
+#+begin_src emacs-lisp
+(defvar fancy-splash-image-template
+  (expand-file-name "misc/splash-images/emacs-e-template.svg" doom-private-dir)
+  "Default template svg used for the splash image, with substitutions from ")
+
+(defvar fancy-splash-sizes
+  `((:height 300 :min-height 50 :padding (0 . 2))
+    (:height 250 :min-height 42 :padding (2 . 4))
+    (:height 200 :min-height 35 :padding (3 . 3))
+    (:height 150 :min-height 28 :padding (3 . 3))
+    (:height 100 :min-height 20 :padding (2 . 2))
+    (:height 75  :min-height 15 :padding (2 . 1))
+    (:height 50  :min-height 10 :padding (1 . 0))
+    (:height 1   :min-height 0  :padding (0 . 0)))
+  "list of plists with the following properties
+  :height the height of the image
+  :min-height minimum `frame-height' for image
+  :padding `+doom-dashboard-banner-padding' (top . bottom) to apply
+  :template non-default template file
+  :file file to use instead of template")
+
+(defvar fancy-splash-template-colours
+  '(("$colour1" . keywords) ("$colour2" . type) ("$colour3" . base5) ("$colour4" . base8))
+  "list of colour-replacement alists of the form (\"$placeholder\" . 'theme-colour) which applied the template")
+
+(unless (file-exists-p (expand-file-name "theme-splashes" doom-cache-dir))
+  (make-directory (expand-file-name "theme-splashes" doom-cache-dir) t))
+
+(defun fancy-splash-filename (theme-name height)
+  (expand-file-name (concat (file-name-as-directory "theme-splashes")
+                            theme-name
+                            "-" (number-to-string height) ".svg")
+                    doom-cache-dir))
+
+(defun fancy-splash-clear-cache ()
+  "Delete all cached fancy splash images"
+  (interactive)
+  (delete-directory (expand-file-name "theme-splashes" doom-cache-dir) t)
+  (message "Cache cleared!"))
+
+(defun fancy-splash-viewbox-size (height)
+  "Compute the size necessary to fit the image with height HEIGHT."
+  (let ((vb-width (ceiling (* 0.80378 (float height))))
+        (vb-height (+ height 7)))
+    (message "vb-width: %s" (type-of vb-width))
+    (message "vb-height: %s" (type-of vb-height))
+    `(("$vbWidth" . ,vb-width) ("$vbHeight" . ,vb-height))))
+
+(defun fancy-splash-generate-image (template height)
+  "Read TEMPLATE and create an image if HEIGHT with colour substitutions as
+   described by `fancy-splash-template-colours' for the current theme"
+  (with-temp-buffer
+    (insert-file-contents template)
+    (re-search-forward "$height" nil t)
+    (replace-match (number-to-string height) nil nil)
+    (goto-char (point-min))
+    (re-search-forward "$scale" nil t)
+    (replace-match (number-to-string (/ height 107)) nil nil)
+    (dolist (substitution fancy-splash-template-colours)
+      (goto-char (point-min))
+      (while (re-search-forward (car substitution) nil t)
+        (replace-match (doom-color (cdr substitution)) nil nil)))
+    (write-region nil nil
+                  (fancy-splash-filename (symbol-name doom-theme) height) nil nil)))
+
+(defun fancy-splash-generate-images ()
+  "Perform `fancy-splash-generate-image' in bulk"
+  (dolist (size fancy-splash-sizes)
+    (unless (plist-get size :file)
+      (fancy-splash-generate-image (or (plist-get size :template)
+                                       fancy-splash-image-template)
+                                   (plist-get size :height)))))
+
+(defun ensure-theme-splash-images-exist (&optional height)
+  (unless (file-exists-p (fancy-splash-filename
+                          (symbol-name doom-theme)
+                          (or height
+                              (plist-get (car fancy-splash-sizes) :height))))
+    (fancy-splash-generate-images)))
+
+(defun get-appropriate-splash ()
+  (let ((height (frame-height)))
+    (cl-some (lambda (size) (when (>= height (plist-get size :min-height)) size))
+             fancy-splash-sizes)))
+
+(setq fancy-splash-last-size nil)
+(setq fancy-splash-last-theme nil)
+(defun set-appropriate-splash (&rest _)
+  (let ((appropriate-image (get-appropriate-splash)))
+    (unless (and (equal appropriate-image fancy-splash-last-size)
+                 (equal doom-theme fancy-splash-last-theme)))
+    (unless (plist-get appropriate-image :file)
+      (ensure-theme-splash-images-exist (plist-get appropriate-image :height)))
+    (setq fancy-splash-image
+          (or (plist-get appropriate-image :file)
+              (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
+    (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
+    (setq fancy-splash-last-size appropriate-image)
+    (setq fancy-splash-last-theme doom-theme)
+    (+doom-dashboard-reload)))
+
+(add-hook 'window-size-change-functions #'set-appropriate-splash)
+(add-hook 'doom-load-theme-hook #'set-appropriate-splash)
+#+end_src
+
+I really don't use the dashboard commands, so let's remove them! While we're at it,
+let's also remove the modeline, ~hl-line-mode~, and the cursor.
+
+#+begin_src emacs-lisp
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode) (hl-line-mode -1))
+(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+#+end_src
+
+Following our borrowing strategy, let's also add a phrase to the dashboard.
+
+#+begin_src emacs-lisp
+(defvar splash-phrase-source-folder
+  (expand-file-name "misc/splash-phrases" doom-private-dir)
+  "A folder of text files with a fun phrase on each line.")
+
+(defvar splash-phrase-sources
+  (let* ((files (directory-files splash-phrase-source-folder nil "\\.txt\\'"))
+         (sets (delete-dups (mapcar
+                             (lambda (file)
+                               (replace-regexp-in-string "\\(?:-[0-9]+-\\w+\\)?\\.txt" "" file))
+                             files))))
+    (mapcar (lambda (sset)
+              (cons sset
+                    (delq nil (mapcar
+                               (lambda (file)
+                                 (when (string-match-p (regexp-quote sset) file)
+                                   file))
+                               files))))
+            sets))
+  "A list of cons giving the phrase set name, and a list of files which contain phrase components.")
+
+(defvar splash-phrase-set
+  (nth (random (length splash-phrase-sources)) (mapcar #'car splash-phrase-sources))
+  "The default phrase set. See `splash-phrase-sources'.")
+
+(defun splase-phrase-set-random-set ()
+  "Set a new random splash phrase set."
+  (interactive)
+  (setq splash-phrase-set
+        (nth (random (1- (length splash-phrase-sources)))
+             (cl-set-difference (mapcar #'car splash-phrase-sources) (list splash-phrase-set))))
+  (+doom-dashboard-reload t))
+
+(defvar splase-phrase--cache nil)
+
+(defun splash-phrase-get-from-file (file)
+  "Fetch a random line from FILE."
+  (let ((lines (or (cdr (assoc file splase-phrase--cache))
+                   (cdar (push (cons file
+                                     (with-temp-buffer
+                                       (insert-file-contents (expand-file-name file splash-phrase-source-folder))
+                                       (split-string (string-trim (buffer-string)) "\n")))
+                               splase-phrase--cache)))))
+    (nth (random (length lines)) lines)))
+
+(defun splash-phrase (&optional set)
+  "Construct a splash phrase from SET. See `splash-phrase-sources'."
+  (mapconcat
+   #'splash-phrase-get-from-file
+   (cdr (assoc (or set splash-phrase-set) splash-phrase-sources))
+   " "))
+
+(defun doom-dashboard-phrase ()
+  "Get a splash phrase, flow it over multiple lines as needed, and make fontify it."
+  (mapconcat
+   (lambda (line)
+     (+doom-dashboard--center
+      +doom-dashboard--width
+      (with-temp-buffer
+        (insert-text-button
+         line
+         'action
+         (lambda (_) (+doom-dashboard-reload t))
+         'face 'doom-dashboard-menu-title
+         'mouse-face 'doom-dashboard-menu-title
+         'help-echo "Random phrase"
+         'follow-link t)
+        (buffer-string))))
+   (split-string
+    (with-temp-buffer
+      (insert (splash-phrase))
+      (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
+      (fill-region (point-min) (point-max))
+      (buffer-string))
+    "\n")
+   "\n"))
+
+(defadvice! doom-dashboard-widget-loaded-with-phrase ()
+  :override #'doom-dashboard-widget-loaded
+  (setq line-spacing 0.2)
+  (insert
+   "\n"
+   (doom-dashboard-phrase)
+   "\n"))
+#+end_src
+
+** Popup rules
+
+#+begin_src emacs-lisp
+(set-popup-rules!
+  '(("^\\*info\\*"
+     :slot 2 :side left :width 83 :quit nil)
+    ("^\\*\\(?:Wo\\)?Man "
+     :vslot -6 :size 0.45 :select t :quit nil :ttl 0)
+    ("^\\*ielm\\*$"
+     :vslot 2 :size 0.4 :quit nil :ttl nil)
+    ("^\\*Ilist\\*$"
+     :slot 2 :side left :size 0.3 :quit nil :ttl nil)
+    ;; `help-mode', `helpful-mode'
+    ("^\\*[Hh]elp"
+     :slot 2 :vslot -8 :size 0.45 :select t)
+    ("^\\*Checkdoc Status\\*$"
+     :vslot -2 :select ignore :quit t :ttl 0)
+    ("^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
+     :slot -2 :size 0.45 :side right :autosave t :quit current :ttl nil
+     :modeline t)
+    ("^ \\*\\(?:undo-tree\\|vundo tree\\)\\*"
+     :slot 2 :side left :size 20 :select t :quit t)
+    ("^\\*\\(?:doom \\|Pp E\\)"  ; transient buffers (no interaction required)
+     :vslot -3 :size +popup-shrink-to-fit :autosave t :select ignore :quit t :ttl 0)
+    ("^\\*Backtrace" :vslot 99 :size 0.4 :quit nil)
+    ("^\\*\\(?:Proced\\|timer-list\\|Process List\\|Abbrevs\\|Output\\|Occur\\|unsent mail\\)\\*" :ignore t)
+    ("^\\*Flycheck errors\\*$"
+     :vslot -2 :select t :quit t :ttl 0)))
+#+end_src
+
+* Languages
+** Rust
+*** Custom Semantic Tokens
+
+#+begin_src emacs-lisp
+(let* ((token-faces (default-value 'lsp-semantic-token-faces))
+       (token-face (lambda (tok) (cdr (assoc tok token-faces))))
+       (injected-token (lambda (tok) `("injected" . ,(funcall token-face tok))))
+       (inj-token (lambda (tok) `(,tok ,(funcall injected-token tok)))))
+  (setf (alist-get #'rustic-mode
+                   lsp-semantic-token-modifier-pair-faces)
+        `(,(funcall inj-token "namespace")
+          ,(funcall inj-token "type")
+          ,(funcall inj-token "class")
+          ,(funcall inj-token "enum")
+          ,(funcall inj-token "interface")
+          ,(funcall inj-token "struct")
+          ,(funcall inj-token "typeParameter")
+          ("parameter"
+            ("mutable" . tree-sitter-hl-face:variable.mutable)
+            ("consuming" . tree-sitter-hl-face:parameter.consuming)
+            ,(funcall injected-token "parameter"))
+          ("variable"
+            ("mutable" . tree-sitter-hl-face:variable.mutable)
+            ("callable" . tree-sitter-hl-face:variable.callable)
+            ("consuming" . tree-sitter-hl-face:variable.consuming)
+            ,(funcall injected-token "variable"))
+          ,(funcall inj-token "property")
+          ,(funcall inj-token "enumMember")
+          ("function"
+            ("mutable" . tree-sitter-hl-face:function.mutable)
+            ("async" . tree-sitter-hl-face:function.async)
+            ("unsafe" . tree-sitter-hl-face:rust.unsafe)
+            ,(funcall injected-token "function"))
+          ("method"
+            ("mutable" . tree-sitter-hl-face:function.mutable)
+            ("async" . tree-sitter-hl-face:function.async)
+            ("unsafe" . tree-sitter-hl-face:rust.unsafe)
+            ,(funcall injected-token "method"))
+          ,(funcall inj-token "macro")
+          ,(funcall inj-token "keyword")
+          ,(funcall inj-token "modifier")
+          ,(funcall inj-token "comment")
+          ,(funcall inj-token "string")
+          ,(funcall inj-token "regexp")
+          ,(funcall inj-token "operator")
+          ,(funcall inj-token "decorator")
+          ,(funcall inj-token "label")
+          ,(funcall inj-token "derive")
+          ,(funcall inj-token "typeAlias")
+          ,(funcall inj-token "union")
+          ,(funcall inj-token "boolean")
+          ,(funcall inj-token "character")
+          ,(funcall inj-token "escapeSequence")
+          ,(funcall inj-token "formatSpecifier")
+          ,(funcall inj-token "operator")
+          ,(funcall inj-token "arithmetic")
+          ,(funcall inj-token "bitwise")
+          ,(funcall inj-token "comparison")
+          ,(funcall inj-token "logical")
+          ,(funcall inj-token "punctuation")
+          ,(funcall inj-token "attributeBracket")
+          ,(funcall inj-token "angle")
+          ,(funcall inj-token "brace")
+          ,(funcall inj-token "bracket")
+          ,(funcall inj-token "parenthesis")
+          ,(funcall inj-token "colon")
+          ,(funcall inj-token "dot")
+          ,(funcall inj-token "semi")
+          ,(funcall inj-token "macroBang")
+          ,(funcall inj-token "builtinAttribute")
+          ,(funcall inj-token "builtinType")
+          ,(funcall inj-token "constParameter")
+          ,(funcall inj-token "enumMember")
+          ,(funcall inj-token "generic")
+          ,(funcall inj-token "lifetime")
+          ,(funcall inj-token "selfKeyword")
+          ,(funcall inj-token "selfTypeKeyword")
+          ,(funcall inj-token "toolModule")
+          ,(funcall inj-token "unresolvedReference"))))
+#+end_src
+
+*** Rust-Analyzer config
+
+#+begin_src emacs-lisp
+(after! lsp-mode
+  (setq lsp-rust-analyzer-server-display-inlay-hints t
+        lsp-rust-analyzer-display-chaining-hints t
+        lsp-rust-analyzer-display-closure-return-type-hints t
+        lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial"
+        lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t
+        lsp-rust-analyzer-display-parameter-hints t
+        lsp-rust-analyzer-display-reborrow-hins t
+        lsp-rust-analyzer-hide-clsoure-initialization t
+        lsp-rust-analyzer-cargo-watch-command "clippy"))
+#+end_src
+
+** YAML
+*** LSP Settings
+#+begin_src emacs-lisp
+(after! lsp-mode
+  (setq lsp-yaml-schema-store-local-db (f-join doom-cache-dir "lsp" "lsp-yaml-schemas.json")))
+#+end_src
+
+** Coq
+
+#+begin_src emacs-lisp
+(custom-set-faces!
+  `(proof-lock-face :background ,(doom-blend (doom-color 'bg)
+                                             (doom-color 'green)
+                                             0.95)))
+#+end_src
+* Tools
+** Bazel
+*** =bazel-mode=
+It has awesome Emacs support with =bazel-mode=, let's install it.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! bazel
+          :recipe (:host github
+                   :repo "bazelbuild/emacs-bazel-mode"
+                   :files ("bazel.el")))
+#+end_src
+
+Now we configure it.
+
+#+begin_src emacs-lisp
+(use-package! bazel
+  :config
+  (setq bazel-buildifier-before-save t
+        bazel-fix-visibility 'ask))
+#+end_src
+
+*** Tree-Sitter support
+
+Starklark doesn't have a tree-sitter grammar yet, but it doesn't need to, as we
+can use the Python grammar instead.
+
+#+begin_src emacs-lisp
+(defadvice! bazel-tree-sitter (&rest _)
+  :after 'tree-sitter--setup
+  (dolist (entry '((bazel-build-mode . python)
+                               (bazel-workspace-mode . python)))
+                (cl-pushnew entry tree-sitter-major-mode-language-alist
+                            :key #'car)))
+#+end_src
+
+Now, we need to let Tree-Sitter know of Starlark native API and also native Bazel
+targets for =BUILD= files.
+
+#+begin_src emacs-lisp
+(add-hook! bazel-build-mode
+           (tree-sitter-hl-add-patterns nil
+             [;; Android rules
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                        "^android_(binary|library|(instrumentation|local)_test|device)$")))
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin "^aar_import$")))
+              ;; C/C++ rules
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                        "^cc_(binary|import|(proto_)?library|test)$")))
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                        "^fdo_(prefetch_hints|profile)$")))
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                        "^propeller_optimize$")))
+              ;; Java Rules
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                        "^java_(binary|import|((lite_)?proto_)?library|test|plugin|runtime)$")))
+              ;; Objetive-C
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                 "^(apple_static|(j2)?objc)_library|objc_import|available_xcodes|xcode_(config|version)$")))
+              ;; Shell
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                 "^sh_(binary|library|test)$")))
+              ;; Language agnostic rules
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                 "^action_listener|extra_action|alias|config_setting|filegroup|gen(query|rule)|test_suite$")))
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                 "^constraint_(setting|value)|platform|toolchain(_type)?$")))
+
+              ;; Native API
+              ;; native names
+              ((call function: (identifier) @function.builtin
+                (.match? @function.builtin
+                 "^existing_rules?|exports_files|glob|package_(group|name)|repository_name|subpackages$")))
+              ((call function: [
+                attribute
+                  object: (identifier) @variable.builtin
+                  (.match? @variable.builtin "^native|json$")]))
+              ]))
+#+end_src
+
+Now we deal with =WORKSPACE= files.
+
+#+begin_src emacs-lisp
+(add-hook! bazel-workspace-mode
+           (tree-sitter-hl-add-patterns nil
+             [((call function: (identifier) @function.builtin
+                (.match? @function.builtin "^bind|(new_)?local_repository$")))]))
+#+end_src
+
+We'll ignore ~*.bzl~ files for now, as listing the entire native API will be a PITA.
+
+** Terraform
+*** LSP Settings
+
+#+begin_src emacs-lisp
+(after! lsp-mode
+  (setq lsp-terraform-ls-enable-show-reference t))
+#+end_src

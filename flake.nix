@@ -25,6 +25,9 @@
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
     emacs-overlay.url = "github:nix-community/emacs-overlay";
+
+    doom-emacs.url = "github:doomemacs/doomemacs";
+    doom-emacs.flake = false;
   };
 
   outputs = inputs @ {
@@ -34,6 +37,7 @@
     pre-commit-hooks,
     devshell,
     emacs-overlay,
+    doom-emacs,
     ...
   }: let
     dotfiles = import ./.;
@@ -63,6 +67,7 @@
             (_final: _prev: {
               firefox.extensions = firefox-addons.packages.${system};
             })
+            (_final: _prev: {inherit doom-emacs;})
           ];
       };
 

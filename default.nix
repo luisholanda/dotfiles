@@ -23,6 +23,7 @@ in {
     cached-nix-shell
     coreutils
     curl
+    jq
     wget
     unzip
   ];
