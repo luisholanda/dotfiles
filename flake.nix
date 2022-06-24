@@ -28,6 +28,8 @@
 
     doom-emacs.url = "github:doomemacs/doomemacs";
     doom-emacs.flake = false;
+    git-stack.url = "github:gitext-rs/git-stack";
+    git-stack.flake = false;
   };
 
   outputs = inputs @ {
@@ -38,6 +40,7 @@
     devshell,
     emacs-overlay,
     doom-emacs,
+    git-stack,
     ...
   }: let
     dotfiles = import ./.;
@@ -51,7 +54,7 @@
     systemAttrs = flake-utils.lib.eachSystem systems (system: let
       inherit (lib.my) mapModulesRec mapModulesRec' mkHost;
 
-      overlays = mapModulesRec ./overlays import;
+      overlays = mapModulesRec' ./overlays import;
 
       # Base nixpkgs without our custom packages.
       #
@@ -60,14 +63,17 @@
         inherit system;
         config.allowUnfree = true;
         overlays =
-          (nixpkgs.lib.attrValues overlays)
+          overlays
           ++ [
             devshell.overlay
             emacs-overlay.overlay
             (_final: _prev: {
               firefox.extensions = firefox-addons.packages.${system};
             })
-            (_final: _prev: {inherit doom-emacs;})
+            (_final: _prev: {
+              inherit doom-emacs;
+              srcs = {inherit git-stack;};
+            })
           ];
       };
 

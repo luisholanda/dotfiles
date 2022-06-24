@@ -149,6 +149,22 @@
         "type": "github"
       }
     },
+    "git-stack": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1655411590,
+        "narHash": "sha256-L114qOQWTPiRr99qDPkn3wcKpgHE9Daw8BRubU0iScw=",
+        "owner": "gitext-rs",
+        "repo": "git-stack",
+        "rev": "19fa27a3ea9c594ed353b7ce311f6c7aca1f607a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gitext-rs",
+        "repo": "git-stack",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -267,6 +283,7 @@
         "emacs-overlay": "emacs-overlay",
         "firefox-addons": "firefox-addons",
         "flake-utils": "flake-utils_2",
+        "git-stack": "git-stack",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
         "pre-commit-hooks": "pre-commit-hooks"

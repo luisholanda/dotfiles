@@ -84,6 +84,7 @@ in {
         addons = {
           delta.enable = true;
           stgit.enable = true;
+          stack.enable = true;
         };
       };
 
