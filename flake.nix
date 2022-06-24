@@ -25,6 +25,8 @@
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
     emacs-overlay.url = "github:nix-community/emacs-overlay";
+    emacs-overlay.inputs.flake-utils.follows = "flake-utils";
+    emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
     doom-emacs.url = "github:doomemacs/doomemacs";
     doom-emacs.flake = false;

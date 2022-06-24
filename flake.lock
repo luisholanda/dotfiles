@@ -61,8 +61,12 @@
     },
     "emacs-overlay": {
       "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1655495667,
@@ -134,21 +138,6 @@
         "type": "github"
       }
     },
-    "flake-utils_2": {
-      "locked": {
-        "lastModified": 1653893745,
-        "narHash": "sha256-0jntwV3Z8//YwuOjzhV2sgJJPt+HY6KhU7VZUL0fKZQ=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "1ed9fb1935d260de5fe1c2f7ee0ebaae17ed2fa1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "git-stack": {
       "flake": false,
       "locked": {
@@ -191,20 +180,6 @@
       }
     },
     "nixpkgs": {
-      "locked": {
-        "lastModified": 1655451545,
-        "narHash": "sha256-uLHNGkZbINBZ8Yz9z+/6xF77EVLPTasDyfE/sQpzZ4A=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "3802c98cffe636d54dc8f2812d143e50b4b07bb0",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_2": {
       "locked": {
         "lastModified": 1655451545,
         "narHash": "sha256-uLHNGkZbINBZ8Yz9z+/6xF77EVLPTasDyfE/sQpzZ4A=",
@@ -282,10 +257,10 @@
         "doom-emacs": "doom-emacs",
         "emacs-overlay": "emacs-overlay",
         "firefox-addons": "firefox-addons",
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils",
         "git-stack": "git-stack",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks"
       }
     },
