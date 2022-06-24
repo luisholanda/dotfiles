@@ -22,7 +22,7 @@
       EMACS_MONO_FONT_FAMILY = monospace;
       EMACS_VARIABLE_PITCH_FONT_FAMILY = sansSerif;
       EMACS_SERIF_FONT_FAMILY = serif;
-      EMACS_UNICODE_FONT_FAMILY = sansSerif;
+      EMACS_UNICODE_FONT_FAMILY = "Latin Modern Math";
       EMACS_TEXT_FONT_SIZE = fonts.size.text;
       EMACS_UI_FONT_SIZE = fonts.size.ui;
     };
@@ -77,6 +77,9 @@ in {
       # :lang cc
       rtags
 
+      # :lang coq
+      lmmath
+
       # :lang markdown
       nodePackages.markdownlint-cli2
       proselint
@@ -96,6 +99,7 @@ in {
       nodePackages.yaml-language-server
       nodePackages.bash-language-server
       nodePackages.vscode-json-languageserver
+      nodePackages.typescript-language-server
       terraform-ls
       bazel-buildtools
     ];

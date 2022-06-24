@@ -16,7 +16,7 @@ The configuration should support Linux and MacOS, /only/.
 
 First, an easy to reach =init.el= content.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle init.el
 (doom! :input
        ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
        ;;chinese
@@ -1671,9 +1671,9 @@ Following our borrowing strategy, let's also add a phrase to the dashboard.
 
 #+begin_src emacs-lisp
 (custom-set-faces!
-  `(proof-lock-face :background ,(doom-blend (doom-color 'bg)
-                                             (doom-color 'green)
-                                             0.95)))
+  `(proof-locked-face :background ,(doom-blend (doom-color 'bg)
+                                               (doom-color 'green)
+                                               0.95)))
 #+end_src
 * Tools
 ** Bazel
