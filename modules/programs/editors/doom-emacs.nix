@@ -25,6 +25,7 @@
       EMACS_UNICODE_FONT_FAMILY = "Latin Modern Math";
       EMACS_TEXT_FONT_SIZE = fonts.size.text;
       EMACS_UI_FONT_SIZE = fonts.size.ui;
+      LSP_USE_PLISTS = true;
     };
   };
 
@@ -76,6 +77,7 @@ in {
 
       # :lang cc
       rtags
+      clang-tools_14
 
       # :lang coq
       lmmath
@@ -99,7 +101,7 @@ in {
       nodePackages.yaml-language-server
       nodePackages.bash-language-server
       nodePackages.vscode-json-languageserver
-      nodePackages.typescript-language-server
+      nodePackages.typescript
       terraform-ls
       bazel-buildtools
     ];

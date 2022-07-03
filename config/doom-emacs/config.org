@@ -796,6 +796,12 @@ Prefer thing at-point than in the sideline (conflicts with Inlay Hints).
       lsp-ui-doc-max-height 30)
 #+end_src
 
+*** Disable Servers
+
+#+begin_src emacs-lisp
+(setq lsp-disabled-clients '((typescript-mode . deno)))
+#+end_src
+
 * Appearance
 ** Text
 *** Constants
@@ -1675,6 +1681,14 @@ Following our borrowing strategy, let's also add a phrase to the dashboard.
                                                (doom-color 'green)
                                                0.95)))
 #+end_src
+
+** Nix
+
+#+begin_src emacs-lisp
+(use-package! lsp-nix
+  :after lsp-mode)
+#+end_src
+
 * Tools
 ** Bazel
 *** =bazel-mode=
