@@ -20,6 +20,12 @@
     .overrideAttrs (old: {
       buildInputs = old.buildInputs ++ cfg.extraPackages;
     });
+
+  screenshot = pkgs.writeScriptBin "screenshot" ''
+    #!${pkgs.bash}/bin/bash
+    filename="screenshot-$(date +%F-%T)"
+    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Screenshots/$filename.png
+  '';
 in {
   options.modules.services.sway = {
     enable = mkEnableOpt "Enable Sway WM";
@@ -70,7 +76,7 @@ in {
 
   config = {
     user.sessionCmd = "${sway}/bin/sway";
-    user.packages = with pkgs; [wl-clipboard];
+    user.packages = [screenshot] ++ (with pkgs; [wl-clipboard]);
     user.home.services.kanshi.enable = cfg.enable;
     user.home.extraConfig.wayland.windowManager.sway = {
       inherit (cfg) enable;
@@ -113,6 +119,7 @@ in {
           customKeybindings =
             {
               "${modifier}+v" = "split toggle";
+              "${modifier}+Shift+s" = "bash -c \"\"";
             }
             // cfg.config.keybindings;
         in
