@@ -32,6 +32,7 @@ in {
     };
 
     services = {
+      audio.spotify.enable = true;
       dnscrypt-proxy2.enable = true;
       docker.enable = true;
       gammastep.enable = true;

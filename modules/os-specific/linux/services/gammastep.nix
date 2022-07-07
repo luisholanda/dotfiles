@@ -13,7 +13,7 @@ in {
     user.home.services.gammastep = {
       inherit (config.location) provider;
       inherit (config.modules.services.gammastep) enable;
-      user.home.services.gammastep.settings.general.adjustment-method = mkIf config.modules.services.sway.enable "wayland";
+      settings.general.adjustment-method = mkIf config.modules.services.sway.enable "wayland";
     };
   };
 }

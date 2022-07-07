@@ -135,12 +135,13 @@ in {
           # Necessary for home-manager to work with flakes, otherwise it will
           # look for a nixpkgs channel.
           home.stateVersion = config.system.stateVersion;
-          home.file = mkAliasDefinitions options.user.home.file;
+          home.file = cfg.home.file;
 
           programs = mkAliasDefinitions options.user.home.programs;
+          services = cfg.home.services;
 
-          xdg.configFile = mkAliasDefinitions options.user.xdg.configFile;
-          xdg.dataFile = mkAliasDefinitions options.user.xdg.dataFile;
+          xdg.configFile = cfg.xdg.configFile;
+          xdg.dataFile = cfg.xdg.dataFile;
         }
         // cfg.home.extraConfig;
     };

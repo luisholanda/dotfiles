@@ -8,6 +8,8 @@ in {
   options.modules.programs.gpg.enable = mkEnableOpt "Enable GnuPG configuration.";
 
   config = {
+    programs.gnupg.agent.enable = true;
+    programs.gnupg.agent.pinentryFlavor = "gtk2";
     user.home.programs.gpg = {
       inherit (config.modules.programs.gpg) enable;
 
