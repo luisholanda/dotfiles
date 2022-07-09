@@ -36,7 +36,7 @@ in {
       dnscrypt-proxy2.enable = true;
       docker.enable = true;
       gammastep.enable = true;
-      mako.enable = true;
+      mako.enable = false;
 
       pipewire.enable = true;
 
