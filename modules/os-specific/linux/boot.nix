@@ -71,5 +71,7 @@ in {
     # don't wait for network during boot.
     systemd.targets.network-online.wantedBy = mkForce [];
     systemd.services.NetworkManager-wait-online.wantedBy = mkForce [];
+
+    hardware.enableAllFirmware = true;
   };
 }
