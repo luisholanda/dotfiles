@@ -9,6 +9,8 @@ in {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
 
+  environment.memoryAllocator.provider = "mimalloc";
+
   system.configurationRevision = with inputs; mkIf (self ? rev) self.rev;
   system.stateVersion = "21.11";
 
