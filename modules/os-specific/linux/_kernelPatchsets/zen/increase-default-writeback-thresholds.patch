@@ -1,0 +1,37 @@
+From 598f06b26605fd12c5d955ef86ff3add25343efc Mon Sep 17 00:00:00 2001
+From: "Jan Alexander Steffens (heftig)" <jan.steffens@gmail.com>
+Date: Mon, 27 Jan 2020 18:19:11 +0100
+Subject: [PATCH] ZEN: INTERACTIVE: Increase default writeback thresholds
+
+---
+ mm/page-writeback.c | 8 ++++++++
+ 1 files changed, 8 insertions(+)
+
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 2caf780a42e7ae..c288fa998fdc5b 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -71,7 +71,11 @@ static long ratelimit_pages = 32;
+ /*
+  * Start background writeback (via writeback threads) at this percentage
+  */
++#ifdef CONFIG_ZEN_INTERACTIVE
++int dirty_background_ratio = 20;
++#else
+ int dirty_background_ratio = 10;
++#endif
+ 
+ /*
+  * dirty_background_bytes starts at 0 (disabled) so that it is a function of
+@@ -88,7 +92,11 @@ int vm_highmem_is_dirtyable;
+ /*
+  * The generator of dirty data starts writeback at this percentage
+  */
++#ifdef CONFIG_ZEN_INTERACTIVE
++int vm_dirty_ratio = 50;
++#else
+ int vm_dirty_ratio = 20;
++#endif
+ 
+ /*
+  * vm_dirty_bytes starts at 0 (disabled) so that it is a function of

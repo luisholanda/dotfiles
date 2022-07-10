@@ -6,7 +6,48 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkForce;
+  inherit (lib) mapAttrsFlatten;
+  inherit (pkgs) fetchpatch;
   inherit (pkgs.stdenv) isLinux;
+  inherit (config.host.hardware) isIntel isAMD;
+  inherit (config.boot) isContainer;
+
+  kernel = pkgs.linuxPackagesFor (pkgs.linuxPackages_5_18_hardened.kernel.override {
+    structuredExtraConfig = import ./_kernelConfig.nix {
+      inherit lib isIntel isAMD isContainer mkForce;
+      inherit (pkgs.stdenv.targetPlatform) isx86;
+    };
+    ignoreConfigErrors = true;
+  });
+
+  buildPatchset = path: let
+    patches = import path;
+    toPatch = name: {
+      url,
+      sha256 ? null,
+    }: {
+      inherit name;
+      patch =
+        if builtins.isPath url
+        then url
+        else
+          fetchpatch {
+            inherit url sha256;
+            name = name + ".patch";
+          };
+    };
+  in
+    mapAttrsFlatten toPatch patches;
+  clearLinuxPatches = buildPatchset ./_kernelPatchsets/clearLinux.nix;
+
+  grayskyMoreUarchesPatch = rec {
+    name = "more-uarches-for-kernel-5.17";
+    patch = fetchpatch {
+      name = name + ".patch";
+      url = "https://raw.githubusercontent.com/graysky2/kernel_compiler_patch/bdef5292bba2493d46386840a8b5a824d534debc/more-uarches-for-kernel-5.17%2B.patch";
+      sha256 = "sha256-PYrvXEnkC5/KmCVBG+thlOTKD/LxI5cBcn7J4c/mg/0=";
+    };
+  };
 in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
@@ -22,7 +63,8 @@ in {
     boot.loader.systemd-boot.editor = false;
     boot.loader.systemd-boot.configurationLimit = 5;
 
-    boot.kernelPackages = mkDefault pkgs.linuxPackages_5_15_hardened;
+    boot.kernelPackages = mkDefault kernel;
+    boot.kernelPatches = clearLinuxPatches ++ [grayskyMoreUarchesPatch];
     boot.kernelParams = [
       # Slab/slub sanity checks, redzoning, and poisoning
       "slub_debug=FZP"
@@ -72,6 +114,8 @@ in {
     systemd.targets.network-online.wantedBy = mkForce [];
     systemd.services.NetworkManager-wait-online.wantedBy = mkForce [];
 
-    hardware.enableAllFirmware = true;
+    hardware.enableRedistributableFirmware = true;
+
+    services.thermald.enable = true;
   };
 }
