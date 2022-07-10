@@ -6,19 +6,28 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkForce;
-  inherit (lib) mapAttrsFlatten;
+  inherit (lib) mapAttrsFlatten optional;
   inherit (pkgs) fetchpatch;
   inherit (pkgs.stdenv) isLinux;
-  inherit (config.host.hardware) isIntel isAMD;
+  inherit (config.host.hardware) isIntel isAMD isLaptop;
   inherit (config.boot) isContainer;
 
-  kernel = pkgs.linuxPackagesFor (pkgs.linuxPackages_5_18_hardened.kernel.override {
-    structuredExtraConfig = import ./_kernelConfig.nix {
-      inherit lib isIntel isAMD isContainer mkForce;
-      inherit (pkgs.stdenv.targetPlatform) isx86;
+  kernel = let
+    inherit (pkgs) clang13Stdenv linuxPackages_zen;
+
+    baseKernelPackages = linuxPackages_zen;
+    configuratedKernel = baseKernelPackages.kernel.override {
+      stdenv = clang13Stdenv;
+      structuredExtraConfig = import ./_kernelConfig.nix {
+        inherit lib isIntel isAMD isContainer isLaptop mkForce mkIf;
+        inherit (pkgs.stdenv.targetPlatform) isx86;
+      };
+      ignoreConfigErrors = false;
+
+      kernelPatches = clearLinuxPatches ++ (optional isLaptop grayskyMoreUarchesPatch);
     };
-    ignoreConfigErrors = true;
-  });
+  in
+    pkgs.linuxPackagesFor configuratedKernel;
 
   buildPatchset = path: let
     patches = import path;
@@ -38,6 +47,7 @@
     };
   in
     mapAttrsFlatten toPatch patches;
+
   clearLinuxPatches = buildPatchset ./_kernelPatchsets/clearLinux.nix;
 
   grayskyMoreUarchesPatch = rec {
@@ -64,7 +74,6 @@ in {
     boot.loader.systemd-boot.configurationLimit = 5;
 
     boot.kernelPackages = mkDefault kernel;
-    boot.kernelPatches = clearLinuxPatches ++ [grayskyMoreUarchesPatch];
     boot.kernelParams = [
       # Slab/slub sanity checks, redzoning, and poisoning
       "slub_debug=FZP"

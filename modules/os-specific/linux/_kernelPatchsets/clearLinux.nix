@@ -25,14 +25,6 @@ let
       num = 108;
       sha256 = "sha256-813V/iYoivXlgsWOWv6NBktiAU7nivNI1FAiE4VGD1k=";
     };
-    initialize-ata-before-graphics = {
-      num = 109;
-      sha256 = "sha256-FtTHjAEjEYWeTiBYCG/1UwOr3gKVWjpCBd8xpo5dWp0=";
-    };
-    #give-rdrand-some-credit = {
-    #  num = 110;
-    #  sha256 = "sha256-6MSXo4if6rXvdQQ9MpSMmQKDU+mq8ZSqN72dcnYZD7k=";
-    #};
     ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit = {
       num = 111;
       sha256 = "sha256-DeP5Mx7l6sNai+J+cslOQbk7IsWEI2lgmoNjef4nbTY=";
