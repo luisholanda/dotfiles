@@ -9,10 +9,8 @@ in {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
 
-  environment.memoryAllocator.provider = "mimalloc";
-
   system.configurationRevision = with inputs; mkIf (self ? rev) self.rev;
-  system.stateVersion = "21.11";
+  system.stateVersion = mkDefault "22.05";
 
   ## Reasonable global defaults
   # This is here to appease `nix flake check` for generic hosts with no

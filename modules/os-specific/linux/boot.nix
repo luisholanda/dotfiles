@@ -6,7 +6,7 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkForce;
-  inherit (lib) mapAttrsFlatten optional;
+  inherit (lib) mapAttrsFlatten;
   inherit (pkgs) fetchpatch;
   inherit (pkgs.stdenv) isLinux;
   inherit (config.host.hardware) isIntel isAMD isLaptop;
@@ -49,15 +49,6 @@
     mapAttrsFlatten toPatch patches;
 
   clearLinuxPatches = buildPatchset ./_kernelPatchsets/clearLinux.nix;
-
-  grayskyMoreUarchesPatch = rec {
-    name = "more-uarches-for-kernel-5.17";
-    patch = fetchpatch {
-      name = name + ".patch";
-      url = "https://raw.githubusercontent.com/graysky2/kernel_compiler_patch/bdef5292bba2493d46386840a8b5a824d534debc/more-uarches-for-kernel-5.17%2B.patch";
-      sha256 = "sha256-PYrvXEnkC5/KmCVBG+thlOTKD/LxI5cBcn7J4c/mg/0=";
-    };
-  };
 in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 

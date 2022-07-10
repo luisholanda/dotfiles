@@ -117,7 +117,7 @@
           };
         };
       };
-    in {
+    in rec {
       inherit packages;
 
       checks = {inherit pre-commit-check;};
@@ -125,29 +125,23 @@
       devShell = import ./shell.nix {inherit pkgs pre-commit-check;};
 
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
-      nixosConfigurations = {
-        plutus = mkHost ./hosts/plutus {
-          inherit dotfiles pkgs system inputs;
-          modules =
-            mapModulesRec' ./modules import
-            ++ [
-              inputs.home-manager.nixosModule
-              {
-                nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
-              }
-            ];
-        };
-        hermes = mkHost ./hosts/hermes {
-          inherit dotfiles pkgs system inputs;
-          modules =
-            mapModulesRec' ./modules import
-            ++ [
-              inputs.home-manager.nixosModule
-              {
-                nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
-              }
-            ];
-        };
+      nixosConfigurations = let
+        extraModules = [
+          dotfiles
+          inputs.home-manager.nixosModule
+          {
+            nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
+          }
+        ];
+
+        mkHost' = path:
+          mkHost path {
+            inherit dotfiles pkgs system inputs;
+            modules = (mapModulesRec' ./modules import) ++ extraModules;
+          };
+      in {
+        plutus = mkHost' ./hosts/plutus;
+        hermes = mkHost' ./hosts/hermes;
       };
     });
 
