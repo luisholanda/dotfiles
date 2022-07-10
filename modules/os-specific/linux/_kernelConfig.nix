@@ -80,6 +80,7 @@ with (lib.kernel); let
     };
 
     filesystems = {
+      F2FS_FS = yes;
       XFS_FS = yes;
       NFS_FS = no;
       EXT2_FS = no;
