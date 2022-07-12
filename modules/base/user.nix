@@ -129,8 +129,9 @@ in {
       useGlobalPkgs = true;
       useUserPackages = true;
 
-      users.${cfg.name} =
-        {
+      users.${cfg.name} = let
+        cleanExtraConfig = builtins.removeAttrs cfg.home.extraConfig ["programs" "services"];
+      in cleanExtraConfig // {
           home.sessionVariables = cfg.sessionVariables;
           # Necessary for home-manager to work with flakes, otherwise it will
           # look for a nixpkgs channel.
@@ -138,12 +139,11 @@ in {
           home.file = cfg.home.file;
 
           programs = mkAliasDefinitions options.user.home.programs;
-          services = cfg.home.services;
+          services = mkAliasDefinitions options.user.home.services;
 
           xdg.configFile = cfg.xdg.configFile;
           xdg.dataFile = cfg.xdg.dataFile;
-        }
-        // cfg.home.extraConfig;
+        };
     };
 
     nix.trustedUsers = ["root" cfg.name];

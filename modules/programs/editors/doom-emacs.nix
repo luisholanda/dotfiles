@@ -2,11 +2,13 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }: let
   inherit (lib) mkEnableOption mkIf makeBinPath;
   inherit (lib.my) wrapProgram;
   inherit (config.theme) fonts;
+  inherit (inputs) doom-emacs;
 
   emacsCfg = config.modules.editors.emacs;
   editorPkgs = config.modules.editors.extraPackages;
@@ -18,7 +20,7 @@
     prefix.PATH = makeBinPath editorPkgs;
     set = with fonts.family; {
       DOOMDIR = doomEmacsConfigSource;
-      EMACSDIR = "~/.config/emacs";
+      EMACSDIR = "${config.user.home.dir}/.config/emacs";
       EMACS_MONO_FONT_FAMILY = monospace;
       EMACS_VARIABLE_PITCH_FONT_FAMILY = sansSerif;
       EMACS_SERIF_FONT_FAMILY = serif;

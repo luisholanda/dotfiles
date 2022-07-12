@@ -24,7 +24,7 @@
       };
       ignoreConfigErrors = false;
 
-      kernelPatches = clearLinuxPatches ++ (optional isLaptop grayskyMoreUarchesPatch);
+      kernelPatches = clearLinuxPatches;
     };
   in
     pkgs.linuxPackagesFor configuratedKernel;
@@ -117,7 +117,11 @@ in {
     ];
 
     boot.kernel.sysctl."fs.inotify.max_user_watches" = 512 * 1024;
-    boot.kernel.sysctl."kernel.unprivileged_userns_clone" = 1;
+
+    boot.resumeDevice = let
+      inherit (builtins) length head;
+      inherit (config) swapDevices;
+    in mkIf (length swapDevices > 0) ((head swapDevices).device);
 
     # don't wait for network during boot.
     systemd.targets.network-online.wantedBy = mkForce [];

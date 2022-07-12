@@ -30,8 +30,8 @@
     } ''
       mkdir -p $out/bin
 
-      for bin in $(find ${pkg}/bin -type f); do
-        ln -s $bin $out/bin/$(basename $bin)
+      for bin in $(find ${pkg}/bin -not -name '.*' -a \( -type f -o -type l \) ); do
+        ln -s $(realpath $bin) $out/bin/$(basename $bin)
         wrapProgram $out/bin/$(basename $bin) ${wrapProgramArgs};
       done
     '';

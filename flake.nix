@@ -137,6 +137,17 @@
               }
             ];
         };
+        hermes = mkHost ./hosts/hermes {
+          inherit dotfiles pkgs system inputs;
+          modules =
+            mapModulesRec' ./modules import
+            ++ [
+              inputs.home-manager.nixosModule
+              {
+                nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
+              }
+            ];
+        };
       };
     });
 

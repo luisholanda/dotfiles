@@ -31,7 +31,7 @@ in
 
       apply-config = {
         help = "apply the configuration of the current host";
-        command = "nixos-rebuild switch --flake path:.#$(uname -n) --impure --show-trace";
+        command = "TMPDIR=/nix/tmp nixos-rebuild switch --flake path:.#$(uname -n) --impure --show-trace";
       };
     };
 

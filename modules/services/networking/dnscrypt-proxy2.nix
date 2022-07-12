@@ -7,8 +7,7 @@
 
   domainsBlacklist =
     builtins.fetchurl {
-      url = "https://raw.githubusercontent.com/notracking/hosts-blocklists/b5083b66309399c47a2414885285cdb
-754256898/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt";
+      url = "https://raw.githubusercontent.com/notracking/hosts-blocklists/b5083b66309399c47a2414885285cdb754256898/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt";
       sha256 = "1n9bfij0fg17rpa0d8b4nk285m54x773pm7zfpz2mixlc5k09jcd";
     };
 

@@ -45,9 +45,9 @@ in {
     nix.binaryCaches = binaryCaches;
 
     nix.useSandbox = true;
-    nix.extraOptions = ''
-      include ${config.dotfiles.dir}/nix-access-tokens
-    '';
+    #nix.extraOptions = ''
+    #  include ${config.dotfiles.dir}/nix-access-tokens
+    #'';
 
     system.stateVersion = "22.05";
   };

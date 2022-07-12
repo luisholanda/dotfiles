@@ -5,27 +5,29 @@
   ...
 }: let
   inherit (lib) mkOption mkOptionDefault types;
-  inherit (lib.my) mkAttrsOpt mkEnableOpt mkPkgsOpt;
+  inherit (lib.my) mkAttrsOpt mkEnableOpt mkPkgsOpt addToPath;
+  inherit (config.user.home.extraConfig) gtk;
 
   modifier = "Mod4";
   cfg = config.modules.services.sway;
   hmCfg = config.user.home.extraConfig.wayland.windowManager.sway;
 
-  sway =
-    (pkgs.sway.override {
+  sway = addToPath (pkgs.sway.override {
       inherit (hmCfg) extraSessionCommands;
       withBaseWrapper = true;
       withGtkWrapper = true;
-    })
-    .overrideAttrs (old: {
-      buildInputs = old.buildInputs ++ cfg.extraPackages;
-    });
+  }) (cfg.extraPackages ++ (with pkgs; [ swaylock ]));
 
   screenshot = pkgs.writeScriptBin "screenshot" ''
     #!${pkgs.bash}/bin/bash
     filename="screenshot-$(date +%F-%T)"
     ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Screenshots/$filename.png
   '';
+
+  swaylockCmd = builtins.concatStringsSep " " ([
+    "swaylock"
+    "--daemonize"
+  ]);
 in {
   options.modules.services.sway = {
     enable = mkEnableOpt "Enable Sway WM";
@@ -52,6 +54,7 @@ in {
         };
       in {
         mouse = libinputOpt;
+        touchpad = libinputOpt;
         keyboard = libinputOpt;
         penTablet = libinputOpt;
       };
@@ -63,12 +66,20 @@ in {
       };
 
       startup = mkOption {
-        type = types.listOf types.attr;
+        type = types.listOf types.attrs;
         default = [];
         description = "Startup code";
       };
 
       output = mkAttrsOpt "Configure sway output displays";
+    };
+
+    lock.settings = mkOption {
+      type = with types; attrsOf (oneOf [ bool float int str ]);
+      default = {
+        font = config.theme.fonts.family.sansSerif;
+        font-size = config.theme.fonts.size.ui;
+      };
     };
 
     extraPackages = mkPkgsOpt "sway";
@@ -77,7 +88,27 @@ in {
   config = {
     user.sessionCmd = "${sway}/bin/sway";
     user.packages = [screenshot] ++ (with pkgs; [wl-clipboard]);
+
+    security.pam.services.swaylock = {};
+
+    user.home.programs.swaylock.settings = lib.mkAliasDefinitions cfg.lock.settings;
     user.home.services.kanshi.enable = cfg.enable;
+    user.home.services.swayidle = let
+    in {
+      inherit (cfg) enable;
+      events = [
+        { event = "before-sleep"; command = "${pkgs.playerctl}/bin/playerctl pause"; }
+        { event = "before-sleep"; command = swaylockCmd; }
+        { event = "lock"; command = swaylockCmd; }
+      ];
+      timeouts = [
+        { timeout = 5 * 60; command = swaylockCmd; }
+        { timeout = 6 * 60;
+          command = "swaymsg 'output * dpms off'";
+          resumeCommand = "swaymsg 'output * dpms on'"; }
+      ];
+    };
+
     user.home.extraConfig.wayland.windowManager.sway = {
       inherit (cfg) enable;
 
@@ -107,6 +138,13 @@ in {
               natural_scroll = "enabled";
             }
             // cfg.config.input.mouse;
+          "type:touchpad" =
+            {
+              tap = "enabled";
+              natural_scroll = "enabled";
+              dwt = "enabled";
+            }
+            // cfg.config.input.penTablet;
           "type:tablet_tool" = cfg.config.input.penTablet;
         };
 
@@ -116,16 +154,37 @@ in {
         };
 
         keybindings = let
+          bctl = "${pkgs.brightnessctl}/bin/brightnessctl";
+          pamixer = "${pkgs.pamixer}/bin/pamixer";
+          toWob = "> $XDG_RUNTIME_DIR/wob.sock";
+
           customKeybindings =
             {
               "${modifier}+v" = "split toggle";
               "${modifier}+Shift+s" = "bash -c \"\"";
+              "--locked XF86MonBrightnessDown" = "exec ${bctl} set 5%- | sed -En 's/.*Current brightness: [0-9]+ \\(([0-9]+)%\\).*/\\1/p' ${toWob}";
+              "--locked XF86MonBrightnessUp" = "exec ${bctl} set 5%+ | sed -En 's/.*Current brightness: [0-9]+ \\(([0-9]+)%\\).*/\\1/p' ${toWob}";
+              "--locked XF86AudioMute" = "exec ${pamixer} -t";
+              "--locked XF86AudioLowerVolume" = "exec ${pamixer} -d 5 && ${pamixer} --get-volume ${toWob}";
+              "--locked XF86AudioRaiseVolume" = "exec ${pamixer} -i 5 && ${pamixer} --get-volume ${toWob}";
+              "--locked XF86AudioMicMute" = "exec ${pamixer} -t --default-source";
             }
             // cfg.config.keybindings;
         in
           mkOptionDefault customKeybindings;
 
         terminal = config.user.terminalCmd;
+
+        startup = let
+          wobSock = "$XDG_RUNTIME_DIR/wob.sock";
+        in cfg.config.startup
+          ++ [
+            { command = "rm -f ${wobSock} && mkfifo ${wobSock} && tail -f ${wobSock} | ${pkgs.wob}/bin/wob"; }
+            { always = true; command = "gsettings set org.gnome.desktop.interface gtk-theme '${gtk.theme.name}'"; }
+            { always = true; command = "gsettings set org.gnome.desktop.interface icon-theme '${gtk.iconTheme.name}'"; }
+            { always = true; command = "gsettings set org.gnome.desktop.interface cursor-theme '${gtk.cursorTheme.name}'"; }
+            { always = true; command = "gsettings set org.gnome.desktop.interface font-name '${gtk.font.name}'"; }
+          ];
 
         window.hideEdgeBorders = "smart";
         workspaceAutoBackAndForth = true;

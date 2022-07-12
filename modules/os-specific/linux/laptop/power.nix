@@ -32,6 +32,8 @@ in {
       {
         DISK_IOSCHED = "bfq bfq";
         PLATFORM_PROFILE_ON_AC = "balanced";
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
+        CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
       }
       (mkIf isIntel {
         CPU_ENERGY_PERF_POLICY_ON_AC = "performance";

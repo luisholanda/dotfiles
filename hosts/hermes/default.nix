@@ -42,6 +42,10 @@ in {
       sway.enable = true;
 
       waybar.enable = true;
+      wluma = {
+        enable = true;
+        configFile = ./wluma.toml;
+      };
     };
 
     programs = {
@@ -55,7 +59,7 @@ in {
         ssh.always = false;
         addons = {
           delta.enable = true;
-          stack.enable = true;
+          stack.enable = false;
         };
       };
 
@@ -115,15 +119,15 @@ in {
   };
 
   dotfiles = {
-    dir = /home/luiscm/Sources/new-dotfiles;
+    dir = /home/luiscm/.dotfiles;
   };
 
   user = {
     name = "luiscm";
     description = "Luis Holanda";
     # TODO: move these groups to their respective modules.
-    groups = ["wheel" "networking" "wideo" "adbusers" "docker"];
-    passwordFile = "${config.dotfiles.dir}/hosts/plutus/passfile";
+    groups = ["wheel" "networking" "video" "adbusers" "docker"];
+    passwordFile = "${config.dotfiles.dir}/hosts/hermes/passfile";
 
     # Run Bazel sandbox inside a tempfs.
     home.file.".bazelrc".text = "build --sandbox_base=/dev/shm/";
@@ -208,4 +212,24 @@ in {
       Network.EnableIPv6 = true;
     };
   };
+
+  system.userActivationScripts = {
+    rfkillUnblockWlan = {
+      text = ''
+        rfkill unblock wlan
+      '';
+      deps = [];
+    };
+  };
+
+  services.greetd = {
+    enable = true;
+    settings.default_session = {
+      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd fish";
+      user = "greeter";
+    };
+  };
+
+  # / is too small to build things in /tmp
+  nix.envVars.TMPDIR = "/nix/tmp";
 }

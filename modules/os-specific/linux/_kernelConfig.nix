@@ -108,10 +108,14 @@ with (lib.kernel); let
       SND_SOC_SOF_INTEL_TOPLEVEL = ifIntel;
     };
 
-    extras = {
+    power = {
+      HIBERNATION = yes;
       PM_AUTOSLEEP = yes;
       WQ_POWER_EFFICIENT_DEFAULT = yes;
       ENERGY_MODEL = yes;
+    };
+
+    extras = {
       NUMA = no;
       BT_HS = yes;
 
