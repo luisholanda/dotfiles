@@ -22,13 +22,6 @@ in {
       serverAliveCountMax = 5;
       hashKnownHosts = true;
       controlMaster = "auto";
-
-      matchBlocks = {
-        "github.com" = {
-          identityFile = "~/.ssh/github";
-          identitiesOnly = true;
-        };
-      };
     };
 
     programs.ssh.startAgent = cfg.agent.enable;

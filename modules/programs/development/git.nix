@@ -27,10 +27,13 @@ in {
 
     ssh = {
       always = mkBoolOpt true "Always use ssh for Git connections.";
-      key = mkOption {
-        type = with types; either str path;
+      keys = mkOption {
+        type = with types; attrsOf (either str path);
         description = "SSH key to use for SSH Git connections.";
-        default = "~/.ssh/github";
+        default = {
+          "github.com" = "~/.ssh/github";
+          "git.sr.ht" = "~/.ssh/sourcehut";
+        };
       };
     };
 
@@ -89,6 +92,18 @@ in {
       user.sessionVariables = mkIf cfg.enable {
         GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or "";
       };
+
+      user.home.programs.ssh.matchBlocks =
+        builtins.mapAttrs (hostname: identityFile: {
+          inherit hostname identityFile;
+          user = "git";
+          identitiesOnly = true;
+          extraOptions = {
+            PreferredAuthentications = "publickey";
+            AddKeysToAgent = "yes";
+          };
+        })
+        cfg.ssh.keys;
     }
 
     # Use GitHub cli to authenticate in case we don't want to use SSH.
@@ -102,16 +117,6 @@ in {
     (mkIf cfg.ssh.always {
       user.home.programs.git.extraConfig = {
         url."git@github.com:".insteadOf = "https://github.com/";
-      };
-
-      user.home.programs.ssh.matchBlocks."github.com" = {
-        hostname = "github.com";
-        user = "git";
-        identityFile = cfg.ssh.key;
-        extraOptions = {
-          PreferredAuthentications = "publickey";
-          AddKeysToAgent = "yes";
-        };
       };
     })
     # Stacked-git addon.
