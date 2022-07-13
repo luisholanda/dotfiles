@@ -30,7 +30,7 @@ in {
     systemd.services.ydotoold = {
       path = with pkgs; [ ydotool ];
       script = "ydotoold --socket-perm 0622";
-      wantedBy = [ "graphical-session.target" ];
+      wantedBy = [ "multi-user.target" ];
     };
   };
 }

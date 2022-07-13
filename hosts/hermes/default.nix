@@ -47,10 +47,7 @@ in {
       sway.enable = true;
       sway.wallpaper = webbPhoto;
 
-      wluma = {
-        enable = true;
-        configFile = ./wluma.toml;
-      };
+      clight.enable = true;
     };
 
     programs = {
