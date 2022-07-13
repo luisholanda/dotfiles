@@ -74,6 +74,8 @@ in {
       output = mkAttrsOpt "Configure sway output displays";
     };
 
+    wallpaper = mkPathOpt "Wallpaper to use in Sway";
+
     lock.settings = mkOption {
       type = with types; attrsOf (oneOf [ bool float int str ]);
       default = {
@@ -116,7 +118,11 @@ in {
 
       config = {
         inherit modifier;
-        inherit (cfg.config) output;
+
+        output = cfg.config.output
+                 // {
+                  "*".bg = "${cfg.wallpaper} fill";
+                 };
 
         gaps = {
           inherit (cfg.config.gaps) inner outer;

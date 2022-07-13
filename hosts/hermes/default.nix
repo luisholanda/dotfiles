@@ -5,6 +5,12 @@
   ...
 }: let
   inherit (lib.my) mkColor;
+  inherit (builtins) fetchurl;
+
+  webbPhoto = fetchurl {
+    url = "https://stsci-opo.org/STScI-01G7DB1FHPMJCCY59CQGZC1YJQ.png";
+    sha256 = "sha256:02514givrdssjkhj8m8kj8ndlz455968x14g3ghxvdwp29vmw16x";
+  };
 in {
   imports = [./hardware.nix];
 
@@ -35,13 +41,12 @@ in {
       dnscrypt-proxy2.enable = true;
       docker.enable = true;
       gammastep.enable = true;
-      mako.enable = false;
 
       pipewire.enable = true;
 
       sway.enable = true;
+      sway.wallpaper = webbPhoto;
 
-      waybar.enable = true;
       wluma = {
         enable = true;
         configFile = ./wluma.toml;
