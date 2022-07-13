@@ -107,6 +107,12 @@ in {
     xdg = {
       configFile = mkAttrsOpt "Files to be added to $XDG_CONFIG_HOME";
       dataFile = mkAttrsOpt "Files to be added to $XDG_DATA_HOME";
+
+      configDir = mkOption {
+        type = str;
+        default = "${cfg.home.dir}/.config";
+        description = "Configuration directory for the user.";
+      };
     };
   };
 
