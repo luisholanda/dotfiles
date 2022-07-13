@@ -36,7 +36,7 @@ in
             export TMPDIR=/nix/tmp
           fi
 
-          nixos-rebuild switch --flake path:.#$(uname -n) --impure -j $(expr 3 \\* $(nproc) / 4) $@
+          nixos-rebuild switch --flake path:.#$(uname -n) --impure -j $(expr 3 \* $(nproc) / 4) $@
         '';
       };
     };

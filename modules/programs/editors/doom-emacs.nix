@@ -13,7 +13,7 @@
   emacsCfg = config.modules.editors.emacs;
   editorPkgs = config.modules.editors.extraPackages;
 
-  baseEmacs = pkgs.emacsPgtkGcc or pkgs.emacsPgtkNativeComp;
+  baseEmacs = pkgs.emacsPgtkNativeComp;
 
   doomEmacsConfigSource = config.dotfiles.configDir + "/doom-emacs";
   doomEmacs = wrapProgram baseEmacs {

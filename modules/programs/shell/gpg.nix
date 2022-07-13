@@ -18,7 +18,7 @@ in {
         list-options = "show-uid-validity";
       in {
         inherit cert-digest-algo list-options;
-        default-key = "E88FEEF182345568289945A7DA2223669494475C";
+        default-key = "6209F03056D0A60684B83B6B552912613CB92BF6";
         personal-cipher-preferences = "AES256 AES192 AES";
         personal-digest-preferences = "SHA512 SHA384 SHA256";
         personal-compress-preferences = "ZLIB BZIP2 ZIP Uncompressed";
