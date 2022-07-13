@@ -4,19 +4,16 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkOption mkOptionDefault types;
-  inherit (lib.my) mkAttrsOpt mkEnableOpt mkPkgsOpt addToPath;
+  inherit (lib) mkIf mkOption mkOptionDefault types optionalString;
+  inherit (lib.my) mkAttrsOpt mkEnableOpt mkPkgsOpt addToPath mkPathOpt;
   inherit (config.user.home.extraConfig) gtk;
+  inherit (config.host.hardware) isLaptop;
 
   modifier = "Mod4";
   cfg = config.modules.services.sway;
   hmCfg = config.user.home.extraConfig.wayland.windowManager.sway;
 
-  sway = addToPath (pkgs.sway.override {
-      inherit (hmCfg) extraSessionCommands;
-      withBaseWrapper = true;
-      withGtkWrapper = true;
-  }) (cfg.extraPackages ++ (with pkgs; [ swaylock ]));
+  sway = addToPath pkgs.sway (cfg.extraPackages ++ (with pkgs; [ swaylock ]));
 
   screenshot = pkgs.writeScriptBin "screenshot" ''
     #!${pkgs.bash}/bin/bash
@@ -88,6 +85,16 @@ in {
   };
 
   config = {
+    host.laptop.gestures = let
+      do = "${pkgs.ydotool}/bin/ydotool";
+      swaymsg = "${pkgs.sway}/bin/swaymsg";
+    in mkIf isLaptop {
+      nextWorkspace = "${swaymsg} workspace next";
+      prevWorkspace = "${swaymsg} workspace prev";
+      goForward = "${do} key -d 5 158:0 158:1";
+      goBack = "${do} key -d 5 159:0 159:1";
+    };
+
     user.sessionCmd = "${sway}/bin/sway";
     user.packages = [screenshot] ++ (with pkgs; [wl-clipboard]);
 

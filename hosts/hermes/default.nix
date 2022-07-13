@@ -131,7 +131,7 @@ in {
     name = "luiscm";
     description = "Luis Holanda";
     # TODO: move these groups to their respective modules.
-    groups = ["wheel" "networking" "video" "adbusers" "docker"];
+    groups = ["wheel" "networking" "video" "adbusers" "docker" "input"];
     passwordFile = "${config.dotfiles.dir}/hosts/hermes/passfile";
 
     # Run Bazel sandbox inside a tempfs.

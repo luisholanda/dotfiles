@@ -86,4 +86,10 @@ in rec {
       type = types.listOf types.package;
       description = "Packages to use for ${name}.";
     };
+  mkStrOpt = description:
+    mkOption {
+      inherit description;
+      default = "";
+      type = types.str;
+    };
 }
