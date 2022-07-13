@@ -16,7 +16,7 @@
   baseEmacs = pkgs.emacsPgtkNativeComp;
 
   doomEmacsConfigSource = config.dotfiles.configDir + "/doom-emacs";
-  doomEmacs = wrapProgram baseEmacs {
+  emacs = wrapProgram baseEmacs {
     prefix.PATH = makeBinPath editorPkgs;
     set = with fonts.family; {
       DOOMDIR = doomEmacsConfigSource;
@@ -31,13 +31,9 @@
     };
   };
 
-  doom = pkgs.writeScriptBin "doom" ''    #
-       exec ~/.config/emacs/bin/doom $@
-  '';
-
-  emacs = pkgs.writeScriptBin "emacs" ''
-    version=$(emacseditor --version | cut -d' ' -f2)
-    exec ${doomEmacs}/bin/emacs-$version $@
+  doom = pkgs.writeScriptBin "doom" ''
+    #!${pkgs.stdenv.shell}
+    exec ~/.config/emacs/bin/doom $@
   '';
 in {
   options.modules.editors.emacs.doom.enable = mkEnableOption "doom-emacs";
@@ -107,10 +103,6 @@ in {
       terraform-ls
       bazel-buildtools
     ];
-
-    services.emacs.enable = true;
-    services.emacs.package = doomEmacs;
-    services.emacs.install = true;
 
     user.packages = [doom emacs];
   };
