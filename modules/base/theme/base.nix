@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }: let
   inherit (lib) mkOption types;
   inherit (lib.my) mkPkgOpt mkStrOpt;
-  inherit (config.user.home.xdg) configDir;
+  inherit (config.user.xdg) configDir;
 
   mkNamedPackageOpt = description: mkOption {
     inherit description;
@@ -43,7 +43,7 @@ in {
       };
     };
 
-    user.home."xtheme.init" = {
+    user.xdg.configFile."xtheme.init" = {
       text = ''cat ${configDir}/xtheme/* | ${pkgs.xorg.xrdb}/bin/xrdb -load'';
       executable = true;
     };

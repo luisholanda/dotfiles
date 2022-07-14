@@ -1,49 +1,93 @@
 { config, lib, pkgs, ... }: let
   inherit (lib) mkIf;
-  inherit (lib.my) mkColor;
+  inherit (lib.my) mkBoolOpt mkColor;
 
-  thisThemeName = "dracula";
-  activeThemeName = config.theme.active;
+  draculaIcons = pkgs.stdenv.mkDerivation {
+    pname = "dracula-icon-theme";
+    version = "3.0";
+
+    src = builtins.fetchurl {
+      url = "https://github.com/dracula/gtk/files/5214870/Dracula.zip";
+      sha256 = lib.fakeSha256;
+    };
+
+    propagatedBuildInputs = with pkgs; [
+      gnome.adwaita-icon-theme
+      gnome-icon-theme
+      hicolor-icon-theme
+    ];
+
+    dontDropIconThemeCahce = true;
+
+    installPhase = ''
+      install -d "$out/share/icons";
+      cp -R $src/Dracula $out/Dracula;
+    '';
+
+    postFixup = "gtk-update-icon-cache $out/share/icons/Dracula";
+  };
 in {
-  config = mkIf (thisThemeName == activeThemeName) {
+  options.theme.dracula.active = mkBoolOpt
+    (config.theme.active == "dracula")
+    "Is this theme active?";
+
+  config = mkIf config.theme.dracula.active {
+    theme = rec {
+      cursorTheme = gtkTheme;
+      gtkTheme = {
+        package = pkgs.dracula-theme;
+        name = "Dracula";
+      };
+      iconTheme = {
+        package = draculaIcons;
+        name = "Dracula";
+      };
+    };
     theme.colors = {
       background = mkColor "#282A36";
       foreground = mkColor "#F8F8F2";
       selection = mkColor "#44475A";
       currentLine = mkColor "#44475A";
       normal = {
-        black = mkColor "#21222c";
-        red = mkColor "#ff5555";
-        green = mkColor "#50fa7b";
-        yellow = mkColor "#f1fa8c";
-        blue = mkColor "#bd93f9";
-        magenta = mkColor "#ff79c6";
-        cyan = mkColor "#8be9fd";
-        white = mkColor "#f8f8f2";
+        black = mkColor "#21222C";
+        red = mkColor "#FF5555";
+        green = mkColor "#50FA7B";
+        yellow = mkColor "#F1FA8C";
+        blue = mkColor "#BD93F9";
+        magenta = mkColor "#FF79C6";
+        cyan = mkColor "#8BE9FD";
+        white = mkColor "#F8F8F2";
       };
       bright = {
-        black = mkColor "#6272a4";
-        red = mkColor "#ff6e6e";
-        green = mkColor "#69ff94";
-        yellow = mkColor "#ffffa5";
-        blue = mkColor "#d6acff";
-        magenta = mkColor "#ff92df";
-        cyan = mkColor "#a4ffff";
-        white = mkColor "#ffffff";
+        black = mkColor "#6272A4";
+        red = mkColor "#FF6E6E";
+        green = mkColor "#69FF94";
+        yellow = mkColor "#FFFFA5";
+        blue = mkColor "#D6ACFF";
+        magenta = mkColor "#FF92DF";
+        cyan = mkColor "#A4FFFF";
+        white = mkColor "#FFFFFF";
       };
     };
 
     theme.fonts = {
       family = {
         emoji = "Noto Color Emoji";
-        monospace = "Iosevka";
+        monospace = "Iosevka Custom";
         sansSerif = "Noto Sans";
         serif = "Noto Serif";
       };
 
       size = { ui = 12.0; text = 12.0; };
 
-      packages = with pkgs; [ iosevka-custom ];
+      packages = with pkgs; [
+        iosevka-custom
+        font-awesome
+        lmodern
+        noto-fonts
+        noto-fonts-cjk
+        noto-fonts-emoji
+      ];
     };
   };
 }

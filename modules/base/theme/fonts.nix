@@ -91,8 +91,10 @@ in {
         cfg.packages ++ optional (cfg.nerdfonts != []) enabledNF;
     };
 
-    user.home.xdg.configFile."xtheme/05-fonts".text = let
-      mono = builtins.head cfg.family.monospace;
+    user.xdg.configFile."xtheme/05-fonts".text = let
+      mono = if builtins.isList cfg.family.monospace
+        then builtins.head cfg.family.monospace
+        else cfg.family.monospace;
     in ''
       *.font: xft:${mono}:pixelsize=${toString(cfg.size.text)}
       Emacs.font: ${mono}:pixelsize=${toString(cfg.size.text)}

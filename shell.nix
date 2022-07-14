@@ -21,7 +21,7 @@ in
 
       flake-check = {
         help = "run flake checks";
-        command = "make check";
+        command = "nix flake check path:. --impure";
       };
 
       run-vm = {

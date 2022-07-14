@@ -30,6 +30,10 @@ in rec {
           hex = mkColorValueOpt "#" "#-started hexadecimal value of this color.";
           plain = mkColorValueOpt "" "plain hexadecimal value of this color.";
           xHex = mkColorValueOpt "0x" "0x-started hexadecimal value of this color.";
+          rgb = mkOption {
+            description = "RGB components of the color.";
+            example = "42,42,42";
+          };
         };
       };
     };

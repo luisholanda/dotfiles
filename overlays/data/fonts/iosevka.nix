@@ -27,29 +27,29 @@ in {
     inherit (customizedIosevka) version;
 
     nativeBuildInputs = [
-      customizedIosevka
       nerd-font-patcher
     ];
 
+    src = customizedIosevka;
+
     buildPhase = ''
       runHook preBuild
-      fontdir="${customizedIosevka}/share/fonts/truetype"
+      fontdir="$src/share/fonts/truetype"
       for font in $fontdir/*; do
         nerd-font-patcher $font \
           --adjust-line-height \
           --complete \
           --careful \
-          --outputdir ttfs &
+          --outputdir ttfs
       done
-      wait
       runHook postBuild
     '';
 
     installPhase = ''
       runHook preInstall
       fontdir="$out/share/fonts/truetype"
-      install -d "$fontdir"
-      install ttfs/* "$fontdir"
+      mkdir -p "$fontdir"
+      mv ttfs/* "$fontdir"
       runHook postInstall
     '';
   };

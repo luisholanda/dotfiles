@@ -74,51 +74,7 @@ in {
 
   services.resolved.enable = true;
 
-  theme.fonts = {
-    family = {
-      monospace = "JetBrainsMono Nerd Font";
-      serif = "Noto Serif";
-      sansSerif = "Noto Sans";
-    };
-
-    nerdfonts = ["JetBrainsMono"];
-    packages = with pkgs; [
-      font-awesome
-      lmodern
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
-    ];
-
-    size.text = 12.0;
-    size.ui = 12.0;
-  };
-
-  theme.colors = rec {
-    background = mkColor "#2B2D3A";
-    foreground = mkColor "#E1E3E4";
-    normal = {
-      black = mkColor "#181A1C";
-      red = mkColor "#FB617E";
-      green = mkColor "#9ED06C";
-      yellow = mkColor "#EDC763";
-      blue = mkColor "#6DCAE8";
-      magenta = mkColor "#BB97EE";
-      cyan = mkColor "#F89860";
-      white = mkColor "#E1E3E4";
-    };
-
-    bright = {
-      black = mkColor "#181A1C";
-      red = mkColor "#FB617E";
-      green = mkColor "#9ED06C";
-      yellow = mkColor "#EDC763";
-      blue = mkColor "#6DCAE8";
-      magenta = mkColor "#BB97EE";
-      cyan = mkColor "#F89860";
-      white = mkColor "#E1E3E4";
-    };
-  };
+  theme.active = "dracula";
 
   dotfiles = {
     dir = /home/luiscm/.dotfiles;

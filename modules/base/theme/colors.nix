@@ -53,7 +53,7 @@ in {
       (map (c: cfg.normal."${c}".plain) xResColors)
       ++ (map (c: cfg.bright."${c}".plain) xResColors);
 
-    user.home.xdg.configFile = {
+    user.xdg.configFile = {
       "xtheme/00-init".text = with cfg; let
         normalColors = with normal; ''
           #define blk ${black.hex}
