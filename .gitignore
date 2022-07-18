@@ -6,3 +6,4 @@ result
 nix-access-tokens
 
 config/doom-emacs/**/*.el
+!config/doom-emacs/init.el

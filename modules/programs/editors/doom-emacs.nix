@@ -27,7 +27,6 @@
       EMACS_UNICODE_FONT_FAMILY = "Latin Modern Math";
       EMACS_TEXT_FONT_SIZE = fonts.size.text;
       EMACS_UI_FONT_SIZE = fonts.size.ui;
-      LSP_USE_PLISTS = true;
     };
   };
 
@@ -95,6 +94,9 @@ in {
       # :lang web
       html-tidy
       nodePackages.stylelint
+
+      # :lang zig
+      zls
 
       nodePackages.yaml-language-server
       nodePackages.bash-language-server
