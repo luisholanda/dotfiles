@@ -19,7 +19,7 @@ in {
     goForward = mkStrOpt "Command that goes forward";
   };
 
-  config = mkIf isLaptop {
+  config = mkIf false {
     systemd.user.services.libinput-gestures = {
       description = "Action gestures on your touchpad using libinput";
       path = with pkgs; [ libinput-gestures ];
