@@ -197,8 +197,8 @@ in {
                 pushd $project_dir
 
                 if test -f $project_dir/flake.nix
-                  nix develop
-                elif test -f $project_dir/shell.nix
+                  nix develop path:. --impure
+                elseif test -f $project_dir/shell.nix
                   nix-shell
                 end
 

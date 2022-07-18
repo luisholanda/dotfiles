@@ -34,6 +34,8 @@ in {
         PLATFORM_PROFILE_ON_AC = "balanced";
         CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
+        START_CHARGE_TRESH_BAT0 = 0;
+        STOP_CHARGE_TRESH_BAT0 = 1;
       }
       (mkIf isIntel {
         CPU_ENERGY_PERF_POLICY_ON_AC = "performance";

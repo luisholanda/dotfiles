@@ -3,7 +3,6 @@ final: prev: let
 
   privateBuildPlan = {
     family = "Iosevka Custom";
-    spacing = "quasi-proportional";
     serifs = "sans";
     no-cv-ss = true;
 
@@ -15,6 +14,8 @@ final: prev: let
       css = "normal";
     };
   };
+
+  proportionalBuildPlan = privateBuildPlan // { spacing = "quasi-proportional"; };
 
   customizedIosevka = prev.iosevka.override {
     inherit privateBuildPlan;
