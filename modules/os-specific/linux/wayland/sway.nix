@@ -71,6 +71,12 @@ in {
       output = mkAttrsOpt "Configure sway output displays";
     };
 
+    extraConfig = mkOption {
+      type = types.attrs;
+      default = {};
+      description = "Extra Sway configuration to pass to home-manager";
+    };
+
     wallpaper = mkPathOpt "Wallpaper to use in Sway";
 
     lock.settings = mkOption {
@@ -123,7 +129,7 @@ in {
 
       package = sway;
 
-      config = {
+      config = cfg.extraConfig // {
         inherit modifier;
 
         output = cfg.config.output
@@ -163,7 +169,7 @@ in {
 
         fonts = {
           names = config.fonts.fontconfig.defaultFonts.sansSerif ++ config.fonts.fontconfig.defaultFonts.emoji;
-          size = config.theme.fonts.size.ui;
+          size = 0.8 * config.theme.fonts.size.ui;
         };
 
         keybindings = let

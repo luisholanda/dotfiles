@@ -29,6 +29,6 @@ in {
       systemd.enable = cfg.systemd.enable;
     };
 
-    user.home.extraConfig.wayland.windowManager.sway.config.barrs = [{command = "waybar";}];
+    user.home.extraConfig.wayland.windowManager.sway.config.bars = [{command = "waybar";}];
   };
 }
