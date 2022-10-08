@@ -56,9 +56,3 @@ let
   };
 in
   numered
-  // {
-    mm-lru_cache_disable-use-synchronize_rcu_expedited = {
-      url = "${clearLinuxUrl}/mm-lru_cache_disable-use-synchronize_rcu_expedited.patch";
-      sha256 = "sha256-PtMS0wXIGjIXPYdtwOo4Z4luQYsTsHVPLBv22m6Tya8=";
-    };
-  }

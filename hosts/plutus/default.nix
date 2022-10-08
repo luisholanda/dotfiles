@@ -145,7 +145,7 @@ in {
   };
 
   dotfiles = {
-    dir = /home/luiscm/Sources/new-dotfiles;
+    dir = /home/luiscm/.dotfiles;
   };
 
   user = {

@@ -3,10 +3,8 @@
   isIntel,
   isAMD,
   isx86,
-  isContainer,
   isLaptop,
   mkForce,
-  mkIf,
 }:
 with (lib.kernel); let
   inherit (builtins) foldl' attrValues mapAttrs;
@@ -40,7 +38,6 @@ with (lib.kernel); let
       MICROCODE_AMD = ifAMD;
       X86_INTEL_TSX_MODE_ON = ifx86;
       X86_AMD_PSTATE = ifAMD;
-      X86_AMD_FREQ_SENSITIVITY = ifAMD;
       X86_AMD_PLATFORM_DEVICE = ifAMD;
       CPU_FREQ_DEFAULT_GOV_PERFORMANCE = ifDesktop;
       CPU_FREQ_DEFAULT_GOV_USERSPACE = ifLaptop;

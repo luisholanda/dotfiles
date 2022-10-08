@@ -64,7 +64,7 @@ in {
       gnutls
       fd
       imagemagick
-      pinentry_emacs
+      pinentry-emacs
       zstd
 
       ## Module dependencies

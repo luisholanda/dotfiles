@@ -98,6 +98,7 @@
         src = ./.;
         hooks = {
           alejandra.enable = true;
+          deadnix.enable = true;
           statix.enable = true;
 
           stylua = {
@@ -107,14 +108,6 @@
             types = ["file" "lua"];
             entry = "${pkgs.stylua}/bin/stylua";
           };
-
-          deadnix = {
-            enable = true;
-            name = "deadnix";
-            description = "A dead code analyser for Nix expressions";
-            types = ["file" "nix"];
-            entry = "${pkgs.deadnix}/bin/deadnix -e -f";
-          };
         };
       };
     in rec {
@@ -122,7 +115,7 @@
 
       checks = {inherit pre-commit-check;};
 
-      devShell = import ./shell.nix {inherit pkgs pre-commit-check;};
+      devShells.default = import ./shell.nix {inherit pkgs pre-commit-check;};
 
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
       nixosConfigurations = let

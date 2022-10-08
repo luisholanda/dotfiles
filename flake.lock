@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1662241716,
-        "narHash": "sha256-urqPvSvvGUhkwzTDxUI8N1nsdMysbAfjmBNZaTYBZRU=",
+        "lastModified": 1664140963,
+        "narHash": "sha256-pFxDtOLduRFlol0Y4ShE+soRQX4kbhaCNBtDOvx7ykw=",
         "owner": "ryantm",
         "repo": "agenix",
-        "rev": "c96da5835b76d3d8e8d99a0fec6fe32f8539ee2e",
+        "rev": "6acb1fe5f8597d5ce63fc82bc7fcac7774b1cdf0",
         "type": "github"
       },
       "original": {
@@ -46,11 +46,11 @@
     "doom-emacs": {
       "flake": false,
       "locked": {
-        "lastModified": 1663715134,
-        "narHash": "sha256-11byVLeZsC7o7hq0oPuxee/f7Tw3NqYoqxEezweC9so=",
+        "lastModified": 1665164903,
+        "narHash": "sha256-02E4VHBFf9rG9NAwKrpK7Wb9mE8WKzGB9RG2lWxFr0E=",
         "owner": "doomemacs",
         "repo": "doomemacs",
-        "rev": "e9ef904eeef28c31ca07055f0cce8c5eafeb4179",
+        "rev": "9f22a0a2a5191cf57184846281164f478df4b7ac",
         "type": "github"
       },
       "original": {
@@ -69,11 +69,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1663761340,
-        "narHash": "sha256-a4thCod5O+IDcomBUVlU/TR4qJystthnnUEong6aJKU=",
+        "lastModified": 1665256026,
+        "narHash": "sha256-tUeC6S0Mfk+84/oU9DUENZ+iFGb/LMrwsJxHjk74VJ0=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "c6938da6e6dec21d3e366adafab24a396d8b7914",
+        "rev": "053ed3777e6dfd90561a75237a2365834696fa5e",
         "type": "github"
       },
       "original": {
@@ -93,11 +93,11 @@
       },
       "locked": {
         "dir": "repos/rycee/pkgs/firefox-addons",
-        "lastModified": 1663741886,
-        "narHash": "sha256-A2IPyzZmIgyDiVVpmKmhNoEZzr4V0SWn2YpjSha9Jvo=",
+        "lastModified": 1665261187,
+        "narHash": "sha256-qLs58EZLU6JqyY7aP+wgGvXTnu3LDxnd3eScTzmJe4M=",
         "owner": "nix-community",
         "repo": "nur-combined",
-        "rev": "0076687b4a9422c09cdc62827e95f615b7c33567",
+        "rev": "76a0face51234781ee1846237b6eaf1c622c1639",
         "type": "github"
       },
       "original": {
@@ -125,11 +125,11 @@
     "git-stack": {
       "flake": false,
       "locked": {
-        "lastModified": 1662478183,
-        "narHash": "sha256-A9ALbMZX0VYKvYiOYrOs+jpwr31LQtXBFsk5EYiBC60=",
+        "lastModified": 1664998065,
+        "narHash": "sha256-UGMnWXfc5HDdTTjnb8snHv8xZRwc01AxOA9D+n2plEY=",
         "owner": "gitext-rs",
         "repo": "git-stack",
-        "rev": "5511ae1d29162ca0cf733ac469e3a54080443da5",
+        "rev": "ad5c733296df608d7c5807548707d0e2fdaac865",
         "type": "github"
       },
       "original": {
@@ -146,11 +146,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1663629861,
-        "narHash": "sha256-CjfQUyPfG/hkE4jnMcTvVJ0ubc84u8ySruZL+emXMjw=",
+        "lastModified": 1665259915,
+        "narHash": "sha256-hHfint8/thFWQWk5P1erLM1y8Gwsk2COc3aYQaF1Evs=",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "41790ba656bafc023f48ccdbbe7816d30fd52d76",
+        "rev": "bd87a34bb487a655e1282528a70d0d6b10585a37",
         "type": "github"
       },
       "original": {
@@ -162,11 +162,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1663669617,
-        "narHash": "sha256-yUrzkRDc6P3hsI5TdQ5+q8gnyjadNvaM3MMEsEVS8qk=",
+        "lastModified": 1665197809,
+        "narHash": "sha256-dRUzv/zNYV2EYtnxFG31pPBk0nErT+MBTu6ZJHm1o2A=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "41ac0bd371618db6dd67fd952cc5b3d6a9955a15",
+        "rev": "7b06206fa24198912cea58de690aa4943f238fbf",
         "type": "github"
       },
       "original": {
@@ -186,11 +186,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1663082609,
-        "narHash": "sha256-lmCCIu4dj59qbzkGKHQtolhpIEQMeAd2XUbXVPqgPYo=",
+        "lastModified": 1664708386,
+        "narHash": "sha256-aCD8UUGNYb5nYzRmtsq/0yP9gFOQQHr/Lsb5vW+mucw=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "60cad1a326df17a8c6cf2bb23436609fdd83024e",
+        "rev": "2e4a708918e14fdbd534cc94aaa9470cd19b2464",
         "type": "github"
       },
       "original": {
