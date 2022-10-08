@@ -1,10 +1,8 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }: let
-  inherit (lib.my) mkColor;
   inherit (builtins) fetchurl;
 
   webbPhoto = fetchurl {
@@ -21,19 +19,6 @@ in {
     editors = {
       neovim.enable = true;
       emacs.doom.enable = true;
-
-      # XX: should these be configured in some sort of per-language configuration?
-      extraPackages = with pkgs; [
-        nodePackages.bash-language-server
-        nodePackages.pyright
-        nodePackages.typescript-language-server
-        nodePackages.vim-language-server
-        nodePackages.vls
-        rnix-lsp
-        rust-analyzer
-        sumneko-lua-language-server
-        terraform-ls
-      ];
     };
 
     services = {
@@ -46,6 +31,9 @@ in {
 
       sway.enable = true;
       sway.wallpaper = webbPhoto;
+      sway.config.output.HDMI-A-1 = {
+        transform = "90";
+      };
 
       clight.enable = true;
     };
@@ -93,11 +81,13 @@ in {
     home.projectDirs = [ "~/Sources" ];
 
     accounts.email.accounts = {
-      personalGmail = {
+      personalGmail = rec {
         primary = true;
         flavor = "gmail.com";
         address = "luiscmholanda@gmail.com";
         realName = "Luis Holanda";
+        userName = address;
+        passwordCommand = "${pkgs.pass} show git-send-mail-gmail";
 
         gpg = {
           key = "DA2223669494475C";
@@ -137,6 +127,7 @@ in {
       libsecret
       ripgrep
       fd
+      thunderbird
     ];
   };
 
