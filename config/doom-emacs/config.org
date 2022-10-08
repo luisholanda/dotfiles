@@ -428,14 +428,25 @@ snippets or single lines."
       #'+format/buffer)))
 #+end_src
 
+#+begin_src emacs-lisp :tangle modules/editor/format/autoload/settings.el
+;;; editor/format/autoload/settings.el -*- lexical-binding: t; -*-
+
+;;;###autodef
+(cl-defun set-formatter!
+    (name formatter &key modes filter ok-statuses error-regexp)
+  "Define (or modify) a formatter named NAME."
+  (declare (indent defun))
+  (message "Not implemented yet"))
+#+end_src
+
 Not all the default formatters provided by =apheleia= are what we want to use. This
 part of the configuration replace them with what we want.
 
-#+begin_quote
+,#+begin_quote
 Note that these are not inside the module, but in our configuration.
-#+end_quote
+,#+end_quote
 
-#+begin_src emacs-lisp
+,#+begin_src emacs-lisp
 (after! apheleia
   ;; Also use `isort' for python.
   (setf (alist-get 'isort apheleia-formatters)
@@ -1425,6 +1436,14 @@ Following our borrowing strategy, let's also add a phrase to the dashboard.
 #+end_src
 
 * Languages
+** Protocol Buffers
+
+Add syntax highlighting to =.proto= files.
+
+#+begin_src emacs-lisp :tangle "packages.el"
+(package! protobuf-mode)
+#+end_src
+
 ** Rust
 *** Custom Semantic Tokens
 
