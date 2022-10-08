@@ -79,12 +79,19 @@ in {
           branch.autosetuprebase = "always";
           core.commentChar = "@";
           color.ui = true;
+          credential.helper = "store";
           diff.algorithm = "histogram";
           pull.rebase = true;
           rebase = {
             autoSquash = true;
             autoStash = true;
             abbreviateCommands = true;
+          };
+          sendemail = {
+            smtpserver = "smtp.googlemail.com";
+            smtpencryption = "tls";
+            smtpserverport = 587;
+            smtpuser = account.address;
           };
         };
       };
