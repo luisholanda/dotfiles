@@ -6,49 +6,7 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkForce;
-  inherit (lib) mapAttrsFlatten;
-  inherit (pkgs) fetchpatch;
   inherit (pkgs.stdenv) isLinux;
-  inherit (config.host.hardware) isIntel isAMD isLaptop;
-  inherit (config.boot) isContainer;
-
-  kernel = let
-    inherit (pkgs) clang13Stdenv linuxPackages_zen;
-
-    baseKernelPackages = linuxPackages_zen;
-    configuratedKernel = baseKernelPackages.kernel.override {
-      stdenv = clang13Stdenv;
-      structuredExtraConfig = import ./_kernelConfig.nix {
-        inherit lib isIntel isAMD isContainer isLaptop mkForce mkIf;
-        inherit (pkgs.stdenv.targetPlatform) isx86;
-      };
-      ignoreConfigErrors = false;
-
-      kernelPatches = clearLinuxPatches;
-    };
-  in
-    pkgs.linuxPackagesFor configuratedKernel;
-
-  buildPatchset = path: let
-    patches = import path;
-    toPatch = name: {
-      url,
-      sha256 ? null,
-    }: {
-      inherit name;
-      patch =
-        if builtins.isPath url
-        then url
-        else
-          fetchpatch {
-            inherit url sha256;
-            name = name + ".patch";
-          };
-    };
-  in
-    mapAttrsFlatten toPatch patches;
-
-  clearLinuxPatches = buildPatchset ./_kernelPatchsets/clearLinux.nix;
 in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
@@ -63,16 +21,6 @@ in {
     boot.loader.systemd-boot.consoleMode = "auto";
     boot.loader.systemd-boot.editor = false;
     boot.loader.systemd-boot.configurationLimit = 5;
-
-    boot.kernelPackages = mkDefault kernel;
-    boot.kernelParams = [
-      # Slab/slub sanity checks, redzoning, and poisoning
-      "slub_debug=FZP"
-      # Enable page allocator randomization
-      "page_alloc.shuffle=1"
-      # Reduce TTY output during boot
-      "quiet"
-    ];
 
     boot.blacklistedKernelModules = [
       # Bad Realtek driver
@@ -112,7 +60,8 @@ in {
     boot.resumeDevice = let
       inherit (builtins) length head;
       inherit (config) swapDevices;
-    in mkIf (length swapDevices > 0) ((head swapDevices).device);
+    in
+      mkIf (length swapDevices > 0) ((head swapDevices).device);
 
     # don't wait for network during boot.
     systemd.targets.network-online.wantedBy = mkForce [];
