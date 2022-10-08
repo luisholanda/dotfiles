@@ -32,10 +32,6 @@ in
       apply-config = {
         help = "apply the configuration of the current host";
         command = ''
-          if [ -d /nix/tmp ]; then
-            export TMPDIR=/nix/tmp
-          fi
-
           nixos-rebuild switch --flake path:.#$(uname -n) --impure -j $(expr 3 \* $(nproc) / 4) $@
         '';
       };
