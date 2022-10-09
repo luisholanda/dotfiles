@@ -22,7 +22,7 @@
       };
       ignoreConfigErrors = true;
 
-      kernelPatches = clearLinuxPatches;
+      kernelPatches = clearLinuxPatches ++ mglruPatches ++ miscPatches;
     };
   in
     pkgs.linuxPackagesFor configuratedKernel;
@@ -52,6 +52,21 @@
     mapAttrsFlatten buildPatch patches;
 
   clearLinuxPatches = buildPatchset ./_patchsets/clearLinux.nix {};
+
+  # Won't be needed for 6.1
+  mglruPatches = [
+    (buildPatch "multi-gen-lru" {
+      url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/6.0/0010-lru_6.0.patch";
+      sha256 = "sha256-Tt+1b0W9ERRJi9aFekmb1dJuNTcxT9doVmP2Rn6lENA=";
+    })
+  ];
+
+  miscPatches = [
+    (buildPatch "optimize-harder-03" {
+      url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/6.0/0013-optimize_harder_O3.patch";
+      sha256 = "sha256-Qa4/3Yk8KrfW42s7Itjce1J2floRcdnQ99BdIK1BT9E=";
+    })
+  ];
 in {
   config = mkIf isLinux {
     boot.kernelPackages = mkDefault kernel;
