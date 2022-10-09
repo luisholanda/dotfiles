@@ -20,6 +20,9 @@ vm: $(VM_BIN)
 	rm -f ./plutus.qcow2
 	$(VM_BIN) -vga virtio -cpu host -smp 4
 
+build:
+	nix build path:.#nixosConfigurations."$(HOSTNAME)".config.system.build.toplevel --impure
+
 $(VM_BIN): $(NIX_SRCS)
 	nixos-rebuild build-vm --flake path:.#$(HOSTNAME) --impure $(NIX_FLAGS)
 
