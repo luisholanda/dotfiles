@@ -15,8 +15,6 @@ final: prev: let
     };
   };
 
-  proportionalBuildPlan = privateBuildPlan // { spacing = "quasi-proportional"; };
-
   customizedIosevka = prev.iosevka.override {
     inherit privateBuildPlan;
 

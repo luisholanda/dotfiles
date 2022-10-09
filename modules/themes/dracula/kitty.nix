@@ -1,4 +1,8 @@
-{ config, lib, pkgs, ... }: let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib) mkIf;
 
   colors = config.theme.colors;

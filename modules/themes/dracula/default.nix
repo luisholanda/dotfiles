@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }: let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf;
   inherit (lib.my) mkBoolOpt mkColor;
 
@@ -27,7 +32,8 @@
     postFixup = "gtk-update-icon-cache $out/share/icons/Dracula";
   };
 in {
-  options.theme.dracula.active = mkBoolOpt
+  options.theme.dracula.active =
+    mkBoolOpt
     (config.theme.active == "dracula")
     "Is this theme active?";
 
@@ -78,7 +84,10 @@ in {
         serif = "Noto Serif";
       };
 
-      size = { ui = 12.0; text = 12.0; };
+      size = {
+        ui = 12.0;
+        text = 12.0;
+      };
 
       packages = with pkgs; [
         iosevka-custom

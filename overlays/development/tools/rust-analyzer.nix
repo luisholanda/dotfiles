@@ -1,4 +1,4 @@
-final: prev: let
+final: _prev: let
   inherit (final) fetchFromGitHub rustPlatform stdenv CoreServices libiconv cmake;
   inherit (final.lib) optionals;
 in {
@@ -16,14 +16,14 @@ in {
 
     buildAndTestSubdir = "crates/rust-analyzer";
 
-    nativeBuildInputs = [ cmake ];
+    nativeBuildInputs = [cmake];
 
     buildInputs = optionals stdenv.isDarwin [
       CoreServices
       libiconv
     ];
 
-    buildFeatures = [ "mimalloc" ];
+    buildFeatures = ["mimalloc"];
 
     RUST_ANALYZER_REV = version;
 

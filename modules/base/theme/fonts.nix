@@ -92,12 +92,13 @@ in {
     };
 
     user.xdg.configFile."xtheme/05-fonts".text = let
-      mono = if builtins.isList cfg.family.monospace
+      mono =
+        if builtins.isList cfg.family.monospace
         then builtins.head cfg.family.monospace
         else cfg.family.monospace;
     in ''
-      *.font: xft:${mono}:pixelsize=${toString(cfg.size.text)}
-      Emacs.font: ${mono}:pixelsize=${toString(cfg.size.text)}
+      *.font: xft:${mono}:pixelsize=${toString (cfg.size.text)}
+      Emacs.font: ${mono}:pixelsize=${toString (cfg.size.text)}
     '';
 
     user.home.extraConfig.gtk.font = {

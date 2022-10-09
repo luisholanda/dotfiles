@@ -78,7 +78,7 @@ in {
     # Run Bazel sandbox inside a tempfs.
     home.file.".bazelrc".text = "build --sandbox_base=/dev/shm/";
 
-    home.projectDirs = [ "~/Sources" ];
+    home.projectDirs = ["~/Sources"];
 
     accounts.email.accounts = {
       personalGmail = rec {

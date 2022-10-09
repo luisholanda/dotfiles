@@ -1,11 +1,9 @@
 {
-  pkgs,
   lib,
   config,
   ...
 }: let
   inherit (lib) mkIf mkEnableOption;
-  inherit (pkgs.stdenv) isLinux;
 in {
   options.modules.services.gammastep.enable = mkEnableOption "gammastep";
 

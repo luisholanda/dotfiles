@@ -1,17 +1,23 @@
-{ config, lib, pkgs, ... }: let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkOption types;
   inherit (lib.my) mkPkgOpt mkStrOpt;
   inherit (config.user.xdg) configDir;
 
-  mkNamedPackageOpt = description: mkOption {
-    inherit description;
-    type = types.submodule {
-      options = {
-        package = mkPkgOpt null "The package to use for this theme";
-        name = mkStrOpt "The name of the theme";
+  mkNamedPackageOpt = description:
+    mkOption {
+      inherit description;
+      type = types.submodule {
+        options = {
+          package = mkPkgOpt null "The package to use for this theme";
+          name = mkStrOpt "The name of the theme";
+        };
       };
     };
-  };
 
   theme = config.theme;
 in {

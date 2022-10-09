@@ -1,4 +1,4 @@
-{ lib, ... }: let
+{lib, ...}: let
   inherit (builtins) substring stringLength hasAttr;
   inherit (lib) toUpper toInt;
 
@@ -15,12 +15,14 @@
       "F" = 15;
     };
 
-    hVal = if hasAttr h hMap
+    hVal =
+      if hasAttr h hMap
       then hMap.${h}
       else toInt h;
 
-    rest = (intFromHex (substring 1 (stringLength hex - 1) hex));
-  in if hex == ""
+    rest = intFromHex (substring 1 (stringLength hex - 1) hex);
+  in
+    if hex == ""
     then 0
     else if stringLength hex > 1
     then 16 * hVal + rest

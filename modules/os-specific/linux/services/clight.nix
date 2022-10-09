@@ -1,4 +1,9 @@
-{ config, lib, pkgs, options, ... }: let
+{
+  config,
+  lib,
+  options,
+  ...
+}: let
   inherit (lib) mkEnableOption mkAliasDefinitions;
 in {
   options.modules.services.clight.enable = mkEnableOption "Enables Clight brightness control service.";

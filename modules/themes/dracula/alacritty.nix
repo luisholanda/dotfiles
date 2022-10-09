@@ -1,10 +1,17 @@
-{ config, lib, pkgs, ... }: let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib) mkIf;
   inherit (config.theme) colors;
 in {
   config = mkIf config.theme.dracula.active {
     user.home.programs.alacritty.settings.colors = with colors; rec {
-      cursor = { text = "CellBackground"; cursor = "CellForeground"; };
+      cursor = {
+        text = "CellBackground";
+        cursor = "CellForeground";
+      };
       vim_mode_cursor = cursor;
 
       primary.bright_foreground = "#FFFFFF";
@@ -35,7 +42,10 @@ in {
         };
       };
 
-      line_indicator = { foreground = "None"; background = "None"; };
+      line_indicator = {
+        foreground = "None";
+        background = "None";
+      };
       selection = {
         text = "CellForeground";
         background = selection.hex;
