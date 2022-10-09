@@ -137,7 +137,9 @@ in {
 
       users.${cfg.name} = let
         cleanExtraConfig = builtins.removeAttrs cfg.home.extraConfig ["programs" "services"];
-      in cleanExtraConfig // {
+      in
+        cleanExtraConfig
+        // {
           home.sessionVariables = cfg.sessionVariables;
           # Necessary for home-manager to work with flakes, otherwise it will
           # look for a nixpkgs channel.
@@ -152,7 +154,7 @@ in {
         };
     };
 
-    nix.trustedUsers = ["root" cfg.name];
-    nix.allowedUsers = ["root" cfg.name];
+    nix.settings.trusted-users = ["root" cfg.name];
+    nix.settings.allowed-users = ["root" cfg.name];
   };
 }

@@ -40,11 +40,9 @@ in {
       trusted-substituters = binaryCaches;
       experimental-features = "nix-command flakes";
       max-jobs = "auto";
+      sandbox = true;
     };
 
-    nix.binaryCaches = binaryCaches;
-
-    nix.useSandbox = true;
     #nix.extraOptions = ''
     #  include ${config.dotfiles.dir}/nix-access-tokens
     #'';
