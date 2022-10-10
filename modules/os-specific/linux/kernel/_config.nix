@@ -64,6 +64,7 @@ with (lib.kernel); let
       ZSWAP_COMPRESSOR_DEFAULT_LZ4 = yes;
       ZSWAP_ZPOOL_DEFAULT_Z3FOLD = yes;
       ZSWAP_DEFAULT_ON = yes;
+      LRU_GEN = yes;
     };
 
     networking = {
@@ -125,6 +126,8 @@ with (lib.kernel); let
 
       ANDROID = no;
       CHROME_PLATFORMS = no;
+
+      CC_OPTIMIZE_FOR_PERFORMANCE = yes;
     };
   };
 in
