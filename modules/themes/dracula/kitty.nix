@@ -4,8 +4,7 @@
   ...
 }: let
   inherit (lib) mkIf;
-
-  colors = config.theme.colors;
+  inherit (config.theme) colors;
 in {
   config = mkIf config.theme.dracula.active {
     modules.programs.kitty.extraSettings = with colors; {

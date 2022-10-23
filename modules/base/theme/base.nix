@@ -7,6 +7,7 @@
   inherit (lib) mkOption types;
   inherit (lib.my) mkPkgOpt mkStrOpt;
   inherit (config.user.xdg) configDir;
+  inherit (config) theme;
 
   mkNamedPackageOpt = description:
     mkOption {
@@ -18,8 +19,6 @@
         };
       };
     };
-
-  theme = config.theme;
 in {
   options.theme = {
     active = mkStrOpt "The theme to use";

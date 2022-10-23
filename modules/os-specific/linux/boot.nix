@@ -61,7 +61,7 @@ in {
       inherit (builtins) length head;
       inherit (config) swapDevices;
     in
-      mkIf (length swapDevices > 0) ((head swapDevices).device);
+      mkIf (length swapDevices > 0) (head swapDevices).device;
 
     # don't wait for network during boot.
     systemd.targets.network-online.wantedBy = mkForce [];

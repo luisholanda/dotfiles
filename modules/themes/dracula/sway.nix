@@ -17,8 +17,8 @@ in {
         workspaceNumbers = true;
         statusCommand = "${pkgs.i3status}/bin/i3status";
         fonts = {
+          inherit (config.user.home.extraConfig.wayland.windowManager.sway.config.fonts) size;
           names = [config.theme.fonts.family.monospace];
-          size = config.user.home.extraConfig.wayland.windowManager.sway.config.fonts.size;
         };
         trayOutput = "primary";
         colors = with colors; {

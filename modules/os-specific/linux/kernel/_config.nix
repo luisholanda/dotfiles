@@ -6,7 +6,7 @@
   isLaptop,
   mkForce,
 }:
-with (lib.kernel); let
+with lib.kernel; let
   inherit (builtins) foldl' attrValues mapAttrs;
 
   ifIntel =
@@ -131,4 +131,4 @@ with (lib.kernel); let
     };
   };
 in
-  mapAttrs (_: v: mkForce v) (foldl' (a: b: a // b) {} (attrValues config))
+  mapAttrs (_: mkForce) (foldl' (a: b: a // b) {} (attrValues config))

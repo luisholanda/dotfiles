@@ -97,8 +97,8 @@ in {
         then builtins.head cfg.family.monospace
         else cfg.family.monospace;
     in ''
-      *.font: xft:${mono}:pixelsize=${toString (cfg.size.text)}
-      Emacs.font: ${mono}:pixelsize=${toString (cfg.size.text)}
+      *.font: xft:${mono}:pixelsize=${toString cfg.size.text}
+      Emacs.font: ${mono}:pixelsize=${toString cfg.size.text}
     '';
 
     user.home.extraConfig.gtk.font = {
