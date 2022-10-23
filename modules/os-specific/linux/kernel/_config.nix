@@ -5,30 +5,24 @@
   isx86,
   isLaptop,
   mkForce,
+  gpu,
 }:
 with lib.kernel; let
   inherit (builtins) foldl' attrValues mapAttrs;
 
-  ifIntel =
-    if isIntel
+  enableIf = b:
+    if b
     then yes
     else no;
-  ifAMD =
-    if isAMD
-    then yes
-    else no;
-  ifx86 =
-    if isx86
-    then yes
-    else no;
-  ifLaptop =
-    if isLaptop
-    then yes
-    else no;
-  ifDesktop =
-    if isLaptop
-    then no
-    else yes;
+
+  ifIntel = enableIf isIntel;
+  ifAMD = enableIf isAMD;
+  ifx86 = enableIf isx86;
+  ifLaptop = enableIf isLaptop;
+  ifDesktop = enableIf (!isLaptop);
+  ifAMDGpu = enableIf (!gpu.isNVIDIA && isAMD);
+  ifIntelGpu = enableIf (!gpu.isNVIDIA && isIntel);
+  ifNouveauGpu = enableIf gpu.isNVIDIA;
 
   config = {
     cpu = {
@@ -93,13 +87,15 @@ with lib.kernel; let
     };
 
     video = {
-      DRM_AMDGPU_SI = ifAMD;
-      DRM_AMDGPU_CIK = ifAMD;
-      DRM_AMD_DC_DCN = ifAMD;
-      DRM_AMD_DC_HDCP = ifAMD;
-      DRM_AMD_DC_SI = ifAMD;
-      DRM_I915_GVT = ifIntel;
-      DRM_I915_GVT_KVMGT = ifIntel;
+      DRM_RADEON = no;
+      DRM_AMDGPU = ifAMDGpu;
+      DRM_AMD_DC_DCN = ifAMDGpu;
+      DRM_AMD_DC_HDCP = ifAMDGpu;
+      DRM_AMD_DC_SI = ifAMDGpu;
+      DRM_I915 = ifIntelGpu;
+      DRM_I915_GVT = ifIntelGpu;
+      DRM_I915_GVT_KVMGT = ifIntelGpu;
+      DRM_NOVEAU = ifNouveauGpu;
     };
 
     sound = {

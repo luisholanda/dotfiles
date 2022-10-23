@@ -17,7 +17,8 @@
     configuratedKernel = baseKernelPackages.kernel.override {
       stdenv = clang13Stdenv;
       structuredExtraConfig = import ./_config.nix {
-        inherit lib isIntel isAMD isLaptop mkForce;
+        inherit (config.host.hardware) isIntel isAMD isLaptop gpu;
+        inherit lib mkForce;
         inherit (pkgs.stdenv.targetPlatform) isx86;
       };
       ignoreConfigErrors = true;
