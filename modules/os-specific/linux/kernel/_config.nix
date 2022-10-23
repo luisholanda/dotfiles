@@ -6,6 +6,7 @@
   isLaptop,
   mkForce,
   gpu,
+  wantWiFi,
 }:
 with lib.kernel; let
   inherit (builtins) foldl' attrValues mapAttrs;
@@ -23,6 +24,7 @@ with lib.kernel; let
   ifAMDGpu = enableIf (!gpu.isNVIDIA && isAMD);
   ifIntelGpu = enableIf (!gpu.isNVIDIA && isIntel);
   ifNouveauGpu = enableIf gpu.isNVIDIA;
+  ifWantWifi = enableIf wantWiFi;
 
   config = {
     cpu = {
@@ -69,6 +71,7 @@ with lib.kernel; let
       NET_SCH_FQ_CODEL = yes;
       NET_SCH_DEFAULT = yes;
       DEFAULT_FQ_CODEL = yes;
+      WLAN = ifWantWifi;
     };
 
     filesystems = {

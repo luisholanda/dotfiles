@@ -10,6 +10,11 @@
   inherit (pkgs) fetchpatch;
   inherit (pkgs.stdenv) isLinux;
 
+  wantWiFi = let
+    inherit (config.networking) wireless;
+  in
+    wireless.enable || wireless.iwd.enable;
+
   kernel = let
     inherit (pkgs) clang13Stdenv;
 
@@ -18,7 +23,7 @@
       stdenv = clang13Stdenv;
       structuredExtraConfig = import ./_config.nix {
         inherit (config.host.hardware) isIntel isAMD isLaptop gpu;
-        inherit lib mkForce;
+        inherit lib mkForce wantWiFi;
         inherit (pkgs.stdenv.targetPlatform) isx86;
       };
       ignoreConfigErrors = true;
