@@ -92,6 +92,9 @@ in {
       proselint
       discount
 
+      # :lang nix
+      rnix-lsp
+
       # :lang sh
       shellcheck
 
