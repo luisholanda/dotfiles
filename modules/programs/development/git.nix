@@ -32,6 +32,7 @@ in {
         description = "SSH key to use for SSH Git connections.";
         default = {
           "github.com" = "~/.ssh/github";
+          "gitlab.com" = "~/.ssh/gitlab";
           "git.sr.ht" = "~/.ssh/sourcehut";
         };
       };
@@ -93,6 +94,7 @@ in {
             smtpserverport = 587;
             smtpuser = account.address;
           };
+          github.user = "luisholanda";
         };
       };
 

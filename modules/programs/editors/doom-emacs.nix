@@ -14,7 +14,7 @@
     buildBuildInputs = [pkgs.gtk3];
   });
 
-  doomEmacsConfigSource = config.dotfiles.configDir + "/doom-emacs";
+  doomEmacsConfigSource = (builtins.toString config.dotfiles.configDir) + "/doom-emacs";
   emacs =
     pkgs.runCommandLocal "doom-emacs" {
       buildInputs = with pkgs; [makeBinaryWrapper];
@@ -117,6 +117,7 @@ in {
       terraform-ls
       bazel-buildtools
       rust-analyzer
+      rustfmt
       pyright
     ];
 

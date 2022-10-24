@@ -2,15 +2,6 @@
 #+startup: fold
 #+property: header-args:emacs-lisp :results silent
 
-At time of writing, building a from-scratch Emacs configuration is a PITA. So I
-decided to start a Doom-based configuration instead, but ditching ~evil~ and
-focusing on ~objed~ or other [[https://kakoune.org][Kakoune]]/[[https://helix-editor.com/][Helix]]-like keymap package.
-
-* Goals
-** Unix specific
-
-The configuration should support Linux and MacOS, /only/.
-
 * Base
 
 #+begin_src emacs-lisp
@@ -80,6 +71,15 @@ Always set a EOL at the end of files.
 #+end_src
 
 * Behavior
+** Keybindings
+
+First, fix an performance issue where the default ~C-u~ keybind calls =evil-scroll-up=,
+which is stupidly slow.
+
+#+begin_src emacs-lisp
+(map! :n "C-u" #'evil-scroll-page-up
+      :n "C-d" #'evil-scroll-page-down)
+#+end_src
 ** Completion (=corfu=)
 We ditch =company= in favor of using the newer and faster [[https://github.com/minad/corfu][corfu]]. During my previous
 usage of Doom, I constantly fight with the load that =company= caused in the editor.
@@ -160,7 +160,9 @@ Then, configure the packages.
          ("TAB" . corfu-next)
          ([tab] . corfu-next)
          ("S-TAB" . corfu-previous)
-         ([backtab] . corfu-previous)))
+         ([backtab] . corfu-previous))
+  :config
+  (setq lsp-completion-provider :none))
 #+end_src
 
 **** =corfu-doc=
@@ -1698,4 +1700,15 @@ We'll ignore ~*.bzl~ files for now, as listing the entire native API will be a P
 #+begin_src emacs-lisp
 (after! lsp-mode
   (setq lsp-terraform-ls-enable-show-reference t))
+#+end_src
+
+** Auth Store
+
+Use our password store as source of authentication information.
+
+#+begin_src emacs-lisp
+(setq auth-sources '(password-store)
+      auth-source-pass-filename "~/.local/share/password-store")
+(after! magit
+  (auth-source-pass-enable))
 #+end_src

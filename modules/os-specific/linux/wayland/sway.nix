@@ -196,7 +196,7 @@ in {
             customKeybindings =
               {
                 "${modifier}+v" = "split toggle";
-                "${modifier}+Shift+s" = "bash -c \"\"";
+                "${modifier}+Shift+p" = "bash -c \"${screenshot}/bin/screenshot\"";
                 "--locked XF86MonBrightnessDown" = "exec ${bctl} set 5%- | sed -En 's/.*Current brightness: [0-9]+ \\(([0-9]+)%\\).*/\\1/p' ${toWob}";
                 "--locked XF86MonBrightnessUp" = "exec ${bctl} set 5%+ | sed -En 's/.*Current brightness: [0-9]+ \\(([0-9]+)%\\).*/\\1/p' ${toWob}";
                 "--locked XF86AudioMute" = "exec ${pamixer} -t";
