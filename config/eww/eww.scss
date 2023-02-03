@@ -1,0 +1,65 @@
+$border-radius: 8px;
+$font: "Iosevka Custom";
+$font-size: 20px;
+$outer-margin: 6px;
+$inner-margin: 6px;
+
+* {
+    font-family: $font;
+}
+
+scale trough {
+    all: unset;
+    border-radius: $border-radius;
+    min-width: 10px;
+    min-height: 80px;
+}
+
+.sidebar-tray, .sidebar-powermenu,
+.sidebar-distro {
+    border-radius: $border-radius;
+    font-size: $font-size;
+}
+
+.sidebar-tray {
+    .clock {
+        margin-top: $inner-margin;
+        margin-bottom: $outer-margin;
+        font-weight: bold;
+    }
+
+    .volume {
+        margin-top: $outer-margin;
+    }
+}
+
+.sidebar-powermenu {
+    .power {
+        margin-left: $outer-margin;
+        margin-right: $outer-margin;
+
+        .powermenu {
+            margin-left: $inner-margin;
+        }
+    }
+}
+
+.sidebar-searchapps-input {
+    border-bottom-left-radius: $border-radius;
+    border-top-left-radius: $border-radius;
+    border-bottom-right-radius: 18px;
+    border-top-right-radius: 18px;
+
+    font-size: 16px;
+
+    label {
+        padding-left: $outer-margin;
+    }
+
+    entry {
+        border-bottom-right-radius: 18px;
+        border-top-right-radius: 18px;
+
+        font-size: 16px;
+    }
+}

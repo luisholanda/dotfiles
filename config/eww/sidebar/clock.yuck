@@ -1,0 +1,28 @@
+(defwidget clock []
+    (box :tooltip "${date}, ${time-hour}:${time-min}"
+         :class "clock"
+         (time)))
+
+(defvar show-calendar false)
+
+(defwidget time []
+  (box :orientation "vertical"
+       :class "time"
+       :valign "center"
+       :space-evenly true
+       :spacing 4
+       (label :class "hour" :text time-hour)
+       (label :class "min" :text time-min)))
+
+(defpoll time-hour
+    :interval "10s"
+    :initial "0"
+    "date '+%H'")
+(defpoll time-min
+    :interval "10s"
+    :initial "0"
+    "date '+%M'")
+(defpoll date
+    :interval "10s"
+    :initial ""
+    "date '+%a %b %e'")

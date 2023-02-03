@@ -9,7 +9,7 @@
   configFile = (pkgs.formats.toml {}).generate "spotifyd.conf" {
     global = {
       username = "luiscmholanda";
-      password_cmd = "${pkgs.pass-wayland}/bin/pass spotify";
+      password_cmd = "PASSWORD_STORE_DIR=~/.local/share/password-store ${pkgs.pass-wayland}/bin/pass spotify";
       use_mpris = false;
       backend =
         if isDarwin

@@ -14,7 +14,6 @@
     buildBuildInputs = [pkgs.gtk3];
   });
 
-  doomEmacsConfigSource = (builtins.toString config.dotfiles.configDir) + "/doom-emacs";
   emacs =
     pkgs.runCommandLocal "doom-emacs" {
       buildInputs = with pkgs; [makeBinaryWrapper];
@@ -25,14 +24,15 @@
         ln -s $(realpath $bin) $out/bin/$(basename $bin)
         wrapProgram $out/bin/$(basename $bin) \
             --prefix PATH : "${makeBinPath editorPkgs}" \
-            --set DOOMDIR ${doomEmacsConfigSource} \
+            --set DOOMDIR "~/.dotfiles/config/doom-emacs" \
             --set EMACSDIR "${config.user.home.dir}/.config/emacs" \
             --set EMACS_MONO_FONT_FAMILY "${fonts.family.monospace}" \
             --set EMACS_VARIABLE_PITCH_FONT_FAMILY "${fonts.family.sansSerif}" \
             --set EMACS_SERIF_FONT_FAMILY "${fonts.family.serif}" \
             --set EMACS_UNICODE_FONT_FAMILY "Latin Modern Math" \
             --set EMACS_TEXT_FONT_SIZE ${builtins.toString fonts.size.text} \
-            --set EMACS_UI_FONT_SIZE ${builtins.toString fonts.size.ui}
+            --set EMACS_UI_FONT_SIZE ${builtins.toString fonts.size.ui} \
+            --set LSP_USE_PLISTS true
       done
 
       ln -s ${baseEmacs}/lib/emacs/*/native-lisp $out/native-lisp
@@ -97,6 +97,7 @@ in {
 
       # :lang sh
       shellcheck
+      nodePackages.bash-language-server
 
       # :lang python
       black
@@ -109,12 +110,17 @@ in {
       # :lang zig
       zls
 
+      # :tool tree-sitter
+      tree-sitter
+      nodejs
+
+      # :tool terraform
+      terraform-ls
+
       nodePackages.yaml-language-server
-      nodePackages.bash-language-server
       nodePackages.vscode-json-languageserver
       nodePackages.typescript
       nodePackages.typescript-language-server
-      terraform-ls
       bazel-buildtools
       rust-analyzer
       rustfmt

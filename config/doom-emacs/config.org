@@ -71,206 +71,6 @@ Always set a EOL at the end of files.
 #+end_src
 
 * Behavior
-** Keybindings
-
-First, fix an performance issue where the default ~C-u~ keybind calls =evil-scroll-up=,
-which is stupidly slow.
-
-#+begin_src emacs-lisp
-(map! :n "C-u" #'evil-scroll-page-up
-      :n "C-d" #'evil-scroll-page-down)
-#+end_src
-** Completion (=corfu=)
-We ditch =company= in favor of using the newer and faster [[https://github.com/minad/corfu][corfu]]. During my previous
-usage of Doom, I constantly fight with the load that =company= caused in the editor.
-Although =nativecomp= improved things considerably, I still prefer using a more light-weight
-alternative.
-
-*** Module
-
-#+begin_quote
-Even though we are defining these here, =corfu= configuration is its
-own module that needs to be explicitly enabled in =init.el=.
-#+end_quote
-
-We start installing the packages we will need.
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/packages.el
-(package! corfu)
-(when (featurep! +orderless)
-  (package! orderless))
-(package! kind-icon)
-(package! cape :recipe (:host github :repo "minad/cape" :branch "main"))
-(package! corfu-doc :recipe (:host github :repo "galeo/corfu-doc" :branch "main"))
-(package! pcmpl-args)
-#+end_src
-
-Now, we integrate corfu with LSP.
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
-;; Start by reseting the lsp-completion provider
-(add-hook 'doom-init-modules-hook
-          (lambda ()
-            (after! lsp-mode
-              (setq lsp-completion-provider :none))))
-
-;; Pad before lsp modeline error info
-;;(add-hook 'lsp-completion-mode-hook
-;;          (lambda ()
-;;            (setf (caddr
-;;                   (assq 'global-string mode-line-misc-info))
-;;                  " ")))
-
-;; Set orderless filtering for LSP-mode completions
-(add-hook 'lsp-completion-mode-hook
-          (lambda ()
-            (setf (alist-get 'lsp-capf completion-category-defaults)
-                  '((styles . (orderless))))))
-
-;; Set bindings
-(map! :i "C-@" #'completion-at-point
-      :i "C-SPC" #'completion-at-point
-      (:prefix "C-x"
-       :i "C-k" #'cape-dict
-       :i "C-f" #'cape-file
-       :i "s" #'cape-ispell
-       :i "C-n" #'cape-keyword
-       :i "C-s" #'dabbrev-completion))
-
-;; Fallback cleanly to consult in TUI
-(setq-default completion-in-region-function #'consult-completion-in-region)
-#+end_src
-
-Then, configure the packages.
-
-**** =corfu=
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
-(use-package corfu
-  :custom
-  (corfu-separator ?\s) ;; Orderless field separator
-  (corfu-auto t)        ;; Enable auto-completion
-  (corfu-cycle t)       ;; Enable cycling for `corfu-nex/previous`
-  (corfu-echo-documentation nil) ;; Disable echoing documentation, as we use corfu-doc
-  (corfu-quit-no-match 'separator)
-  (corfu-preselect-first t)
-  :hook (doom-first-buffer . global-corfu-mode)
-  :bind (:map corfu-map
-         ("SPC" . corfu-insert-separator)
-         ("TAB" . corfu-next)
-         ([tab] . corfu-next)
-         ("S-TAB" . corfu-previous)
-         ([backtab] . corfu-previous))
-  :config
-  (setq lsp-completion-provider :none))
-#+end_src
-
-**** =corfu-doc=
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
-(use-package corfu-doc
-  :hook (corfu-mode . corfu-doc-mode)
-  :bind (:map corfu-map
-         ("M-n" . corfu-doc-scroll-down)
-         ("M-p" . corfu-doc-scroll-up)
-         ("M-d" . corfu-doc-toggle)))
-#+end_src
-
-**** =orderless=
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
-(use-package orderless
-  :when (featurep! +orderless)
-  :init
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
-#+end_src
-
-**** =kind-icon=
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
-(use-package kind-icon
-  :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default)
-  :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-#+end_src
-
-**** =cape=
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
-(use-package cape
-  :init
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword))
-#+end_src
-
-**** =pcmpl-args=
-
-#+begin_src emacs-lisp :tangle modules/completion/corfu/config.el
-(add-hook! global-corfu-mode
-  (lambda (&rest _)
-    (require 'pcmpl-args)
-    ;; Silence the pcomplete capf, no errors or messages!
-    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-    ;; Ensure that pcomplete does not write to the buffer
-    ;; and behaves as a pure `completion-at-point-funcion'.
-    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)))
-#+end_src
-
-*** Enable indentation + completion with =TAB=
-
-Use a smarter behavior for =TAB=, it will indent or complete based on the current context.
-
-#+begin_src emacs-lisp
-(setq tab-always-indent 'complete)
-
-;; Dirty hack to get c completion running
-;; Discussion in https://github.com/minad/corfu/issues/34
-(when (equal tab-always-indent 'complete)
-  (map! :map c-mode-base-map
-        :i [remap c-indent-line-or-region] #'completion-at-point))
-#+end_src
-
-*** Enable completion on Shell
-
-Use completion only on request inside shell buffers .
-
-#+begin_src emacs-lisp
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (setq-local corfu-auto nil)
-            (corfu-mode)))
-#+end_src
-
-Inside a =corfu= popup, a =RET= will only call =corfu-=insert=, but will not send the input
-to Eshell, thus requiring us to press =RET= again. This is unnecessary and we can add
-a advice to automatically press it for us.
-
-#+begin_src emacs-lisp
-(defun corfu-send-shell (&rest _)
-  "Send completion candidate when inside comint/eshell."
-  (cond
-    ((and (derived-mode-p 'eshell-mode) (fboundp 'eshell-send-input))
-     (eshell-send-input))
-    ((and (derived-mode-p 'comint-mode) (fboundp ' comint-send-input))
-     (comint-send-input))))
-
-(advice-add #'corfu-insert :after #'corfu-send-shell)
-#+end_src
-
-*** Fix hangs with =lsp-mode=
-
-It seems that =lsp-mode= capf doesn't handle interrupts well, which causes issues
-when using =corfu=. See [[https://github.com/minad/corfu/issues/188][corfu#188]] for more info.
-
-#+begin_src emacs-lisp
-(advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
-#+end_src
-
 ** Formatting (=apheleia=)
 The current Doom =:editor format= module is not good and causes a lot of issues,
 they want to replace the current implementation with [[https://github.com/radian-software/apheleia][apheleia]]. This part of the config
@@ -444,11 +244,11 @@ snippets or single lines."
 Not all the default formatters provided by =apheleia= are what we want to use. This
 part of the configuration replace them with what we want.
 
-,#+begin_quote
+#+begin_quote
 Note that these are not inside the module, but in our configuration.
-,#+end_quote
+#+end_quote
 
-,#+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (after! apheleia
   ;; Also use `isort' for python.
   (setf (alist-get 'isort apheleia-formatters)
@@ -460,6 +260,153 @@ Note that these are not inside the module, but in our configuration.
         '("alejandra" "--threads" "1" "--quiet"))
   (setf (alist-get 'nix-mode apheleia-mode-alist)
         '(alejandra)))
+#+end_src
+
+** Lints (=flycheck=)
+
+*** Inline diagnostics
+Doom uses popups for =flycheck='s diagnostics. This works fine in most languages but is not
+ideal for Rust, as it provides notes in other lines that are important to understand what is going
+on. A better solution, then, is to use =flycheck-inline=.
+
+First, we install =quick-peek= and =flycheck-inline=:
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! quick-peek
+          :recipe (:host github
+                   :repo "cpitclaudel/quick-peek"
+                   :files ("quick-peek.el")))
+
+(package! flycheck-inline
+          :recipe (:host github
+                   :repo "flycheck/flycheck-inline"
+                   :files ("flycheck-inline.el")))
+#+end_src
+
+Then, we override what doom does:
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! flycheck-popup-tip :disable t)
+(package! flycheck-posframe :disable t)
+#+end_src
+
+Now, we instruct =lsp-mode= to add a group to the flycheck error, while also storing the
+diagnostics' related information, which we should also show.
+
+#+begin_src emacs-lisp
+(defvar-local +lsp-diagnostics--flycheck-error-related-information (make-hash-table))
+
+(defun lsp-diagnostics--flycheck-start (checker callback)
+  "Start an LSP syntax check with CHECKER.
+
+CALLBACK is the status callback passed by Flycheck."
+
+  (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
+  (setq +lsp-diagnostics--flycheck-error-related-errors (make-hash-table))
+
+  (->> (lsp--get-buffer-diagnostics)
+       (-map
+        (-lambda ((&Diagnostic :message :severity? :tags? :code? :source? :related-information?
+                               :range (&Range :start (&Position :line      start-line
+                                                                :character start-character)
+                                              :end   (&Position :line      end-line
+                                                                :character end-character))))
+          (let* ((group (gensym)))
+            (puthash group related-information?
+                     +lsp-diagnostics--flycheck-error-related-information)
+            (flycheck-error-new
+                   :buffer (current-buffer)
+                   :checker checker
+                   :filename buffer-file-name
+                   :message message
+                   :level (lsp-diagnostics--flycheck-calculate-level severity? tags?)
+                   :id code?
+                   :group group
+                   :line (lsp-translate-line (1+ start-line))
+                   :column (1+ (lsp-translate-column start-character))
+                   :end-line (lsp-translate-line (1+ end-line))
+                   :end-column (1+ (lsp-translate-column end-character))))))
+       (funcall callback 'finished)))
+#+end_src
+
+Finally, we configure the new interface:
+
+#+begin_src emacs-lisp
+(require 'quick-peek)
+
+(defun +flycheck-inline-display-function--should-show ()
+  (if evil-local-mode
+      (eq evil-state 'normal)
+    (not (bound-and-true-p company-backend))))
+
+(defun +flycheck-inline-display-function--overlay-offset (pos)
+  (let* ((col (1- (cdr (flycheck-line-column-at-pos pos))))
+         (beg (- pos col))
+         (overlays-offset (->> (overlays-in beg (1+ pos))
+                               (--filter (<= (overlay-end it) pos))
+                               (--map (overlay-get it 'before-string))
+                               (--filter it)
+                               (-map #'string-bytes)
+                               -sum)))
+    (+ col overlays-offset)))
+
+(defun +flycheck-inline-display-function--show-overlay (msg pos)
+  (let* ((overlay (quick-peek-overlay-ensure-at pos))
+         (contents (quick-peek-overlay-contents overlay))
+         (offset (+flycheck-inline-display-function--overlay-offset pos))
+         (indented-msg (flycheck-inline-indent-message offset msg))
+         (new-contents (concat contents (when contents "\n") indented-msg)))
+    (setf (quick-peek-overlay-contents overlay) new-contents)
+    (quick-peek-update overlay)))
+
+(defun +flycheck-inline-display-function--with-lsp (err)
+  (let ((filename (-> err flycheck-error-filename lsp--fix-path-casing))
+        (related-info (gethash (flycheck-error-group err)
+                               +lsp-diagnostics--flycheck-error-related-information
+                               'not-found)))
+    (unless (eq related-info 'not-found)
+      (map-do
+       (-lambda ((&DiagnosticRelatedInformation
+                  :message
+                  :location (&Location :range (&Range :start (&Position :line start-line
+                                                                          :character start-character)
+                                                      :end (&Position :line end-line
+                                                                      :character end-character))
+                                       :uri)))
+           (let* ((line (lsp-translate-line (1+ start-line)))
+                  (column (1+ (lsp-translate-column start-character)))
+                  (eline (lsp-translate-line (1+ end-line)))
+                  (ecolumn (1+ (lsp-translate-column end-character)))
+                  (beg (flycheck-line-column-to-position line column))
+                  (end (flycheck-line-column-to-position eline ecolumn))
+                  (pos (cond
+                        ((< beg end) beg)
+                        ((= end (point-max)) (1- end))
+                        (t (1+ end))))
+                  (msg (propertize message 'face 'flycheck-inline-info)))
+             (when (equal (-> uri lsp--uri-to-path lsp--fix-path-casing)
+                          filename)
+               (+flycheck-inline-display-function--show-overlay msg pos))))
+       related-info))))
+
+(defun +flycheck-inline-display-function--peek (msg pos err)
+  (when (+flycheck-inline-display-function--should-show)
+    (+flycheck-inline-display-function--show-overlay msg pos)
+    (+flycheck-inline-display-function--with-lsp err)))
+
+(use-package! flycheck-inline
+  :hook (flycheck-mode . flycheck-inline-mode)
+  :config
+  (setq flycheck-inline-display-function #'+flycheck-inline-display-function--peek
+        flycheck-inline-clear-function #'quick-peek-hide
+        ;; Doesn't work correctly with diplay-line-numbers
+        quick-peek-add-spacer nil)
+
+  (custom-set-faces!
+    `(quick-peek-background-face :background ,(doom-color 'base1)))
+
+  (add-hook! '(evil-insert-state-entry-hook evil-replace-state-entry-hook)
+             #'quick-peek-hide))
 #+end_src
 
 ** Language Server Protocol (LSP)
@@ -542,12 +489,6 @@ This has O(n*m) complexity, so it should be called only once by request.
   pair-faces)
 
 (defun +lsp-semantic-tokens--fontify-with-pairs (old-fontify-region beg-orig end-orig &optional loudly)
-  "Apply fonts to retrieved semantic tokens.
-OLD-FONTIFY-REGION is the underlying region fontification function,
-e.g., `font-lock-fontify-region'.
-BEG-ORIG and END-ORIG deliminate the requested fontification region and maybe
-modified by OLD-FONTIFY-REGION.
-LOUDLY will be forwarded to OLD-FONTIFY-REGION as-is."
   ;; TODO: support multiple language servers per buffer?
   (let ((faces (seq-some #'lsp--workspace-semantic-tokens-faces lsp--buffer-workspaces))
         (modifier-faces
@@ -627,25 +568,33 @@ LOUDLY will be forwarded to OLD-FONTIFY-REGION as-is."
                      text-property-end (+ text-property-beg (aref data (+ i 2))))
                (when face
                  (put-text-property text-property-beg text-property-end 'face face))
-               (cl-loop for j from 0 to (1- (length modifier-faces)) do
-                        (when (and (aref modifier-faces j)
-                                   (> (logand (aref data (+ i 4)) (lsh 1 j)) 0))
-                          (setq mod-face (alist-get (+ (* face-idx
-                                                           (length modifier-faces))
-                                                       j)
-                                                     pair-faces
-                                                     (aref modifier-faces j)))
-                          (add-face-text-property text-property-beg text-property-end
-                                                  mod-face)))
+               ;; Deal with modifiers. We cache common combinations of modifiers,
+               ;; storing the faces they resolve to.
+               (let* ((modifier-code (aref data (+ i 4)))
+                      (faces-to-apply (gethash modifier-code semantic-token-modifier-cache 'not-found)))
+                 (when (eq 'not-found faces-to-apply)
+                   (setq faces-to-apply nil)
+                   (cl-loop for j from 0 to (1- (length modifier-faces)) do
+                            (when (and (aref modifier-faces j)
+                                    (> (logand modifier-code (ash 1 j)) 0))
+                            (setq mod-face (alist-get (+ (* face-idx
+                                                            (length modifier-faces))
+                                                        j)
+                                                        pair-faces
+                                                        (aref modifier-faces j)))
+                            (push mod-face faces-to-apply)))
+                   (puthash modifier-code faces-to-apply semantic-token-modifier-cache))
+                 (dolist (face faces-to-apply)
+                   (add-face-text-property text-property-beg text-property-end face)))
                when (> current-line line-max-inclusive) return nil)))))
-            `(jit-lock-bounds ,beg . ,end)))))
+      `(jit-lock-bounds ,beg . ,end)))))
 #+end_src
 
 Now we replace =lsp-mode='s default implementation with our own.
 
 #+begin_src emacs-lisp
-(advice-add 'lsp-semantic-tokens--fontify :override
-            #'+lsp-semantic-tokens--fontify-with-pairs)
+;;(advice-add 'lsp-semantic-tokens--fontify :override
+;;            #'+lsp-semantic-tokens--fontify-with-pairs)
 #+end_src
 
 *** Code Lens
@@ -679,7 +628,7 @@ First, some sizes.
 #+begin_src emacs-lisp
 (defconst *line-spacing* 0.25)
 
-(defconst *text-font-height* (string-to-number (getenv "EMACS_TEXT_FONT_SIZE")))
+(defconst *text-font-height* (1- (string-to-number (getenv "EMACS_TEXT_FONT_SIZE"))))
 (defconst *ui-font-height* (string-to-number (getenv "EMACS_UI_FONT_SIZE")))
 #+end_src
 
@@ -707,7 +656,8 @@ Let's start changing the global Doom font faces.
 (setq doom-font (font-spec :family *fixed-pitch-font* :size *text-font-height*)
       doom-variable-pitch-font (font-spec :family *variable-pitch-font* :size *text-font-height*)
       doom-serif-font (font-spec :family *serif-font* :size *text-font-height*)
-      doom-unicode-font (font-spec :family *unicode-font* :size *text-font-height*))
+      doom-unicode-font (font-spec :family *unicode-font* :size *text-font-height*)
+      doom-font-increment 1)
 #+end_src
 
 Now, the modeline:
@@ -842,7 +792,7 @@ Doom pins =tree-sitter= packages, let's live on the edge!
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! tree-sitter :pin nil)
-(package! tree-sitter-langs :pin nil)
+(package! tree-sitter-langs :pin "1076cf2366be8ef1bd6fd7239f92f16cc0890fce")
 #+end_src
 
 Now, let's define faces that are missing from the upstream package.
@@ -1578,13 +1528,6 @@ If =corfu= is enabled, translate =company-coq= backends to it.
                         #'company-coq-dynamic-symbols-backend)))))
 #+end_src
 
-** Nix
-
-#+begin_src emacs-lisp
-(use-package! lsp-nix
-  :after lsp-mode)
-#+end_src
-
 ** Zig
 
 #+begin_src emacs-lisp
@@ -1702,13 +1645,70 @@ We'll ignore ~*.bzl~ files for now, as listing the entire native API will be a P
   (setq lsp-terraform-ls-enable-show-reference t))
 #+end_src
 
-** Auth Store
+*** Tree Sitter
 
-Use our password store as source of authentication information.
+Enable tree-sitter highlighting:
 
 #+begin_src emacs-lisp
-(setq auth-sources '(password-store)
-      auth-source-pass-filename "~/.local/share/password-store")
+(add-hook! terraform-mode :append #'tree-sitter-hl-mode)
+#+end_src
+
+Extra patterns:
+
+#+begin_src emacs-lisp
+(add-hook! terraform-mode :append
+  (tree-sitter-hl-add-patterns nil
+    [((identifier) @type (.match? @type "^(string|number|bool)$"))
+     (function_call (identifier) @type (.match? @type "^(list|map|set|object|tuple)$"))]))
+
+#+end_src
+
+** Magit
+
+*** Granular diffs
+
+#+begin_src emacs-lisp
+(after! magit
+  (setq magit-diff-refine-hunk 'all))
+#+end_src
+
+*** Use =delta= for diff highlighting
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! magit-delta)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package magit-delta
+  :hook (magit-mode . magit-delta-mode))
+#+end_src
+
+*** Enable =pass= authentication source
+
+=magit-forge= needs this to fetch data from GitHub.
+
+#+begin_src emacs-lisp
 (after! magit
   (auth-source-pass-enable))
+#+end_src
+
+** Nix
+
+*** LSP
+
+#+begin_src emacs-lisp
+(use-package! lsp-nix
+  :after lsp-mode)
+#+end_src
+
+*** Tree Sitter
+
+#+begin_src emacs-lisp
+(add-hook! nix-mode :append
+  (tree-sitter-hl-add-patterns nil
+    [((app (identifier) @function.call .))
+     ((select (identifier) @variable
+              (attrpath (attr_identifier)+ @property)))
+     ((attrpath (attr_identifier) @variable
+                (attr_identifier)* @property))]))
 #+end_src

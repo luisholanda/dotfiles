@@ -1,9 +1,11 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: let
   inherit (builtins) fetchurl;
+  inherit (inputs) hyprland;
 
   webbPhoto = fetchurl {
     url = "https://stsci-opo.org/STScI-01G7DB1FHPMJCCY59CQGZC1YJQ.png";
@@ -118,6 +120,11 @@ in {
       platformTheme = "gtk";
     };
     home.extraConfig.services.gnome-keyring.enable = true;
+    home.extraConfig.imports = [
+      hyprland.homeManagerModules.default
+    ];
+    home.extraConfig.wayland.windowManagers.hyprland.enable = true;
+    home.extraConfig.wayland.windowManagers.hyprland.package = pkgs.hyprland.override {nvidiaPatches = true;};
 
     packages = with pkgs; [
       nomacs
@@ -137,6 +144,9 @@ in {
   };
 
   programs.dconf.enable = true;
+
+  programs.hyprland.enable = true;
+  programs.hyprland.package = pkgs.hyprland.override {nvidiaPatches = true;};
 
   programs.seahorse.enable = true;
   services.gnome.at-spi2-core.enable = true;

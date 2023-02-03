@@ -29,7 +29,8 @@ in {
 
   config = {
     gtk.iconCache.enable = true;
-    qt5.platformTheme = "gtk";
+    qt5.platformTheme = "gtk2";
+    qt5.style = "gtk2";
 
     user.home.extraConfig = {
       gtk = {

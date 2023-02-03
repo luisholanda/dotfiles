@@ -1,4 +1,5 @@
 {
+  options,
   config,
   lib,
   pkgs,
@@ -24,6 +25,25 @@
     "swaylock"
     "--daemonize"
   ];
+
+  # TODO: use native wrapper
+  swayWrapped = pkgs.writeScriptBin "sway" ''
+    export SDL_VIDEODRIVER=wayland
+    export QT_QPA_PLATFORM=wayland
+    export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+    export QT_WAYLAND_FORCE_DPI=physical
+    export _JAVA_AWT_WM_NOREPARENTING=1
+    export MOZ_ENABLE_WAYLAND=1
+    export XDG_CURRENT_DESKTOP=sway
+    export XDG_SESSION_TYPE=wayland
+    #export WLR_RENDERER=vulkan
+    export WLR_NO_HARDWARE_CURSORS=1
+
+    # Environment variable required to make sway work on qemu
+    export WLR_RENDERER_ALLOW_SOFTWARE=1
+
+    ${sway}/bin/sway --unsupported-gpu -D noscanout
+  '';
 in {
   options.modules.services.sway = {
     enable = mkEnableOpt "Enable Sway WM";
@@ -101,12 +121,23 @@ in {
         goBack = "${do} key -d 5 159:0 159:1";
       };
 
-    user.sessionCmd = "${sway}/bin/sway";
+    user.sessionCmd = "${swayWrapped}/bin/sway";
     user.packages = [screenshot] ++ (with pkgs; [wl-clipboard]);
 
     security.pam.services.swaylock = {};
 
-    user.home.programs.swaylock.settings = lib.mkAliasDefinitions cfg.lock.settings;
+    services.xserver.displayManager.session = [
+      {
+        manage = "desktop";
+        name = "Sway";
+        start = ''
+          ${swayWrapped}/bin/sway &
+          waitPID=$!
+        '';
+      }
+    ];
+
+    #user.home.programs.swaylock.settings = lib.mkAliasDefinitions opts.lock.settings;
     user.home.services.kanshi.enable = cfg.enable;
     user.home.services.swayidle = {
       inherit (cfg) enable;
@@ -237,18 +268,6 @@ in {
           window.hideEdgeBorders = "smart";
           workspaceAutoBackAndForth = true;
         };
-
-      extraSessionCommands = ''
-        export SDL_VIDEODRIVER=wayland
-        export QT_QPA_PLATFORM=wayland-egl
-        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-        export QT_WAYLAND_FORCE_DPI=physical
-        export _JAVA_AWT_WM_NOREPARENTING=1
-        export MOZ_ENABLE_WAYLAND=1
-        export XDG_CURRENT_DESKTOP=sway
-        # Environment variable required to make sway work on qemu
-        export WLR_RENDERER_ALLOW_SOFTWARE=1
-      '';
 
       wrapperFeatures.gtk = true;
     };

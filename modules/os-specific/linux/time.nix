@@ -6,7 +6,7 @@
       enable = true;
       enableNTS = true;
     };
-    services.localtimed.enable = true;
+    services.localtime.enable = true;
     networking.timeServers = [
       # Start with Brazil-hosted NTP servers
       "a.st1.ntp.br"

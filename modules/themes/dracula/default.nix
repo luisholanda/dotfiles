@@ -13,8 +13,10 @@
 
     src = builtins.fetchurl {
       url = "https://github.com/dracula/gtk/files/5214870/Dracula.zip";
-      sha256 = lib.fakeSha256;
+      sha256 = "sha256:1dnc1g1qw9r7glilw1gg11b4f6icfxckkjrj5rhmzzmlxwcjib9k";
     };
+
+    nativeBuildInputs = with pkgs; [unzip gtk3];
 
     propagatedBuildInputs = with pkgs; [
       gnome.adwaita-icon-theme
@@ -25,8 +27,13 @@
     dontDropIconThemeCahce = true;
 
     installPhase = ''
-      install -d "$out/share/icons";
-      cp -R $src/Dracula $out/Dracula;
+      runHook preInstall
+
+      mkdir -p "$out/share/icons/Dracula"
+
+      mv * "$out/share/icons/Dracula/"
+
+      runHook postInstall
     '';
 
     postFixup = "gtk-update-icon-cache $out/share/icons/Dracula";

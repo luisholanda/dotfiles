@@ -7,12 +7,15 @@
   inherit (config.theme) colors;
 in {
   config = mkIf config.theme.dracula.active {
-    user.home.programs.alacritty.settings.colors = with colors; rec {
+    user.home.programs.alacritty.settings.colors = with colors; {
       cursor = {
         text = "CellBackground";
         cursor = "CellForeground";
       };
-      vim_mode_cursor = cursor;
+      vim_mode_cursor = {
+        text = "CellBackground";
+        cursor = "CellForeground";
+      };
 
       primary.bright_foreground = "#FFFFFF";
 

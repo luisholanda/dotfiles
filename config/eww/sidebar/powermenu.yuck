@@ -1,0 +1,33 @@
+(defwidget powermenu []
+  (set-on-hover :name "show-power-menu"
+                :class "power"
+                :orientation "horizontal"
+                (power-poweroff)
+                (revealer :transition "slideright"
+                          :reveal show-power-menu
+                          :duration "350ms"
+                          (power-the-menu))))
+
+
+
+(defvar show-power-menu false)
+
+(defwidget power-the-menu []
+  (box :orientation "horizontal"
+       :space-evenly false
+       :class "powermenu"
+       :spacing 6
+       (flatbtn :class "power-reboot"
+                :tooltip "Reboot"
+                :onclick "reboot"
+                :text "累 ")
+       (flatbtn :class "power-lock"
+                :tooltip "Lock Screen"
+                :onclick ""
+                :text " ")))
+
+(defwidget power-poweroff []
+  (flatbtn :class "poweroff"
+           :tooltip "Shutdown"
+           :onclick "shutdown"
+           :text "⏼"))

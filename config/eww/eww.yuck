@@ -1,0 +1,63 @@
+(include "./base/base.yuck")
+(include "./sidebar/clock.yuck")
+(include "./sidebar/volume.yuck")
+(include "./sidebar/powermenu.yuck")
+(include "./sidebar/appsearch.yuck")
+
+(defwindow sidebar-tray
+    :monitor 0
+    :geometry (geometry
+               :anchor "bottom left"
+               :x "20px"
+               :y "64px"
+               :width "36px")
+    :vexpand true
+    (box :orientation "vertical"
+         :space-evenly false
+         (volume)
+         (clock)))
+
+(defwindow sidebar-powermenu
+    :monitor 0
+    :geometry (geometry
+               :anchor "bottom left"
+               :x "20px"
+               :y "20px"
+               :width "36px"
+               :height "36px")
+    :hexpand true
+    (box :orientation "horizontal"
+         :space-evenly false
+         (powermenu)))
+
+
+(defwindow sidebar-distro
+    :monitor 0
+    :geometry (geometry
+               :anchor "top left"
+               :x "20px"
+               :y "20px"
+               :width "36px"
+               :height "36px")
+    (distro-icon))
+
+
+(defwindow sidebar-searchapps-input
+    :monitor 0
+    :geometry (geometry
+               :anchor "top left"
+               :x "20px"
+               :y "20px"
+               :height "36px")
+    :focusable true
+    :hexpand true
+    (searchapps-input))
+
+(defwindow sidebar-searchapps-programs
+    :monitor 0
+    :geometry (geometry
+               :anchor "top left"
+               :x "51px"
+               :y "51px")
+    :vexpand true
+    (searchapps-programs))

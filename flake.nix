@@ -2,9 +2,9 @@
   description = "My Nix configurations.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?rev=34b87d365e6b90d8cede58a2ec5c559a765e8ec4";
+    nixpkgs.url = "github:luisholanda/nixpkgs";
 
-    home-manager.url = "github:rycee/home-manager/master";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     agenix.url = "github:ryantm/agenix";
@@ -30,8 +30,28 @@
 
     doom-emacs.url = "github:doomemacs/doomemacs";
     doom-emacs.flake = false;
+
     git-stack.url = "github:gitext-rs/git-stack";
     git-stack.flake = false;
+
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      # build with your own instance of nixpkgs
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # ZLS version doesn't build.
+    zig-overlay = {
+      url = "github:mitchellh/zig-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    zls = {
+      url = "github:zigtools/zls";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.zig-overlay.follows = "zig-overlay";
+    };
   };
 
   outputs = inputs @ {
@@ -43,6 +63,7 @@
     emacs-overlay,
     doom-emacs,
     git-stack,
+    hyprland,
     ...
   }: let
     dotfiles = import ./.;
@@ -71,10 +92,28 @@
             emacs-overlay.overlay
             (_final: _prev: {
               firefox.extensions = firefox-addons.packages.${system};
+              hyprland = hyprland.packages.${system}.default;
+              zls = inputs.zls.packages.${system}.default;
+              steam = _prev.steam.override {
+                extraPkgs = pkgs:
+                  with pkgs; [
+                    xorg.libXcursor
+                    xorg.libXi
+                    xorg.libXinerama
+                    xorg.libXScrnSaver
+                    libpng
+                    libpulseaudio
+                    libvorbis
+                    stdenv.cc.cc.lib
+                    libkrb5
+                    keyutils
+                  ];
+              };
             })
-            (_final: _prev: {
+            (final: _prev: {
               inherit doom-emacs;
               srcs = {inherit git-stack;};
+              unstable = final;
             })
           ];
       };
@@ -122,6 +161,7 @@
         extraModules = [
           dotfiles
           inputs.home-manager.nixosModule
+          hyprland.nixosModules.default
           {
             nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
           }
@@ -133,6 +173,7 @@
             modules = (mapModulesRec' ./modules import) ++ extraModules;
           };
       in {
+        ares = mkHost' ./hosts/ares;
         plutus = mkHost' ./hosts/plutus;
         hermes = mkHost' ./hosts/hermes;
       };

@@ -70,7 +70,6 @@ in {
           inherit (cfg.addons.delta) enable;
           options =
             {
-              line-numbers = true;
               syntax-theme = "OneHalfDark";
             }
             // cfg.addons.delta.options;

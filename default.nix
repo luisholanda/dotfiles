@@ -26,5 +26,6 @@ in {
     jq
     wget
     unzip
+    fzf
   ];
 }
