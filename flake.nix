@@ -39,19 +39,6 @@
       # build with your own instance of nixpkgs
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # ZLS version doesn't build.
-    zig-overlay = {
-      url = "github:mitchellh/zig-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zls = {
-      url = "github:zigtools/zls";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.zig-overlay.follows = "zig-overlay";
-    };
   };
 
   outputs = inputs @ {
@@ -93,7 +80,6 @@
             (_final: _prev: {
               firefox.extensions = firefox-addons.packages.${system};
               hyprland = hyprland.packages.${system}.default;
-              zls = inputs.zls.packages.${system}.default;
               steam = _prev.steam.override {
                 extraPkgs = pkgs:
                   with pkgs; [

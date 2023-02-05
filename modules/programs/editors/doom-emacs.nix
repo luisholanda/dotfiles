@@ -107,9 +107,6 @@ in {
       html-tidy
       nodePackages.stylelint
 
-      # :lang zig
-      zls
-
       # :tool tree-sitter
       tree-sitter
       nodejs
