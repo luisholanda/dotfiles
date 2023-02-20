@@ -7,9 +7,6 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    agenix.url = "github:ryantm/agenix";
-    agenix.inputs.nixpkgs.follows = "nixpkgs";
-
     flake-utils.url = "github:numtide/flake-utils";
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
@@ -28,9 +25,6 @@
     emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    doom-emacs.url = "github:doomemacs/doomemacs";
-    doom-emacs.flake = false;
-
     git-stack.url = "github:gitext-rs/git-stack";
     git-stack.flake = false;
 
@@ -48,7 +42,6 @@
     pre-commit-hooks,
     devshell,
     emacs-overlay,
-    doom-emacs,
     git-stack,
     hyprland,
     ...
@@ -66,58 +59,40 @@
 
       overlays = mapModulesRec' ./overlays import;
 
-      # Base nixpkgs without our custom packages.
-      #
-      # Should only be used to build our packages.
-      basePkgs = import nixpkgs {
+      lib = nixpkgs.lib.extend (self: _super: {
+        my = import ./lib {
+          inherit inputs;
+          pkgs = nixpkgs.legacyPackages.${system};
+          lib = self;
+        };
+      });
+
+      pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays =
+        overlays = let
+          addVendoredPackages = final: _prev:
+            import ./packages {
+              inherit system lib;
+              pkgs = final;
+            };
+          addCustomLibFunctions = _final: _prev: {inherit lib;};
+          addFirefoxExtensions = _final: _prev: {firefox.extensions = firefox-addons.packages.${system};};
+        in
           overlays
           ++ [
             devshell.overlay
             emacs-overlay.overlay
-            (_final: _prev: {
-              firefox.extensions = firefox-addons.packages.${system};
-              hyprland = hyprland.packages.${system}.default;
-              steam = _prev.steam.override {
-                extraPkgs = pkgs:
-                  with pkgs; [
-                    xorg.libXcursor
-                    xorg.libXi
-                    xorg.libXinerama
-                    xorg.libXScrnSaver
-                    libpng
-                    libpulseaudio
-                    libvorbis
-                    stdenv.cc.cc.lib
-                    libkrb5
-                    keyutils
-                  ];
-              };
-            })
+            hyprland.overlays.default
+            addVendoredPackages
+            addCustomLibFunctions
+            addFirefoxExtensions
             (final: _prev: {
-              inherit doom-emacs;
               srcs = {inherit git-stack;};
               unstable = final;
             })
           ];
       };
-
-      packages = import ./packages {pkgs = basePkgs;};
-
-      lib =
-        nixpkgs.lib.extend
-        (self: _super: {
-          my = import ./lib {
-            inherit inputs;
-            pkgs = basePkgs;
-            lib = self;
-          };
-        });
-
-      # Nixpkgs with our extra packages.
-      pkgs = basePkgs // packages // {inherit lib;};
 
       pre-commit-check = pre-commit-hooks.lib.${system}.run {
         src = ./.;
@@ -136,8 +111,6 @@
         };
       };
     in rec {
-      inherit packages;
-
       checks = {inherit pre-commit-check;};
 
       devShells.default = import ./shell.nix {inherit pkgs pre-commit-check;};

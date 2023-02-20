@@ -123,8 +123,6 @@ in {
     home.extraConfig.imports = [
       hyprland.homeManagerModules.default
     ];
-    home.extraConfig.wayland.windowManagers.hyprland.enable = true;
-    home.extraConfig.wayland.windowManagers.hyprland.package = pkgs.hyprland.override {nvidiaPatches = true;};
 
     packages = with pkgs; [
       nomacs
@@ -146,7 +144,6 @@ in {
   programs.dconf.enable = true;
 
   programs.hyprland.enable = true;
-  programs.hyprland.package = pkgs.hyprland.override {nvidiaPatches = true;};
 
   programs.seahorse.enable = true;
   services.gnome.at-spi2-core.enable = true;

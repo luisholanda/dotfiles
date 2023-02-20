@@ -107,7 +107,7 @@
 
   programs.dconf.enable = true;
   programs.hyprland.enable = true;
-  programs.hyprland.package = pkgs.hyprland.override {nvidiaPatches = true;};
+  programs.hyprland.nvidiaPatches = true;
 
   services.xserver.enable = true;
   services.xserver.displayManager.defaultSession = "hyprland";

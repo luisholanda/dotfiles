@@ -1,6 +1,12 @@
-{pkgs, ...}: let
-  inherit (pkgs.stdenv) isLinux;
-  inherit (pkgs.lib) optionalAttrs;
+{
+  pkgs,
+  system,
+  lib,
+  ...
+}: let
+  # Can't use pkgs.stdenv due to infinite recursion.
+  inherit (lib) hasSuffix optionalAttrs;
+  isLinux = hasSuffix "-linux" system;
 
   linuxPackages = {
     rtl8188eu = pkgs.callPackage ./os-specific/linux/firmware/rtl8188eu.nix {};
