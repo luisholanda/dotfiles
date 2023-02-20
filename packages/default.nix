@@ -7,5 +7,6 @@
   };
 in
   {
+    iosevka = pkgs.callPackage ./data/fonts/iosevka.nix {};
   }
   // (optionalAttrs isLinux linuxPackages)
