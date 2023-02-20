@@ -86,7 +86,7 @@ in {
     theme.fonts = {
       family = {
         emoji = "Noto Color Emoji";
-        monospace = "Iosevka Custom";
+        monospace = "Pragmasevka";
         sansSerif = "Noto Sans";
         serif = "Noto Serif";
       };
@@ -97,7 +97,8 @@ in {
       };
 
       packages = with pkgs; [
-        iosevka-custom
+        pragmasevka
+        iosevka-comfy.comfy-motion-duo
         font-awesome
         lmodern
         noto-fonts

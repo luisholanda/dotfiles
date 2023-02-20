@@ -14,5 +14,6 @@
 in
   {
     iosevka = pkgs.callPackage ./data/fonts/iosevka.nix {};
+    pragmasevka = pkgs.callPackage ./data/fonts/pragmasevka.nix {};
   }
   // (optionalAttrs isLinux linuxPackages)
