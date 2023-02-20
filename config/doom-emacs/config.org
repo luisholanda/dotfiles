@@ -1683,14 +1683,6 @@ Extra patterns:
   :hook (magit-mode . magit-delta-mode))
 #+end_src
 
-*** Enable =pass= authentication source
-
-=magit-forge= needs this to fetch data from GitHub.
-
-#+begin_src emacs-lisp
-(after! magit
-  (auth-source-pass-enable))
-#+end_src
 
 ** Nix
 

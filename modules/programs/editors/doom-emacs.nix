@@ -10,7 +10,7 @@
   emacsCfg = config.modules.editors.emacs;
   editorPkgs = config.modules.editors.extraPackages;
 
-  baseEmacs = pkgs.emacsPgtkNativeComp.overrideAttrs (_old: {
+  baseEmacs = pkgs.emacsPgtk.overrideAttrs (_old: {
     buildBuildInputs = [pkgs.gtk3];
   });
 
@@ -79,6 +79,10 @@ in {
 
       # :checkers grammar
       languagetool
+
+      # :lang beancount
+      beancount-language-server
+      beancount
 
       # :lang cc
       rtags
