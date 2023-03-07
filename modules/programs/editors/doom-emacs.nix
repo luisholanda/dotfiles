@@ -97,7 +97,7 @@ in {
       discount
 
       # :lang nix
-      rnix-lsp
+      nil
 
       # :lang sh
       shellcheck

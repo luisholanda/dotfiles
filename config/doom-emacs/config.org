@@ -262,7 +262,6 @@ Note that these are not inside the module, but in our configuration.
         '(alejandra)))
 #+end_src
 
-
 ** Language Server Protocol (LSP)
 
 Although Doom already handles a bunch of stuff for us, we need to change some
@@ -284,47 +283,79 @@ Now, we improve the performance of =lsp-mode=.
 
 #+begin_src emacs-lisp
 (setq lsp-use-plists t
-      lsp-idle-delay 0.500
+      lsp-idle-delay 1
+      lsp-log-io nil
       read-process-output-max (* 10 1024 1024))
 #+end_src
 
 *** Hover
+
 #+begin_src emacs-lisp
-(setq lsp-ui-doc-position 'at-point
+(setq lsp-ui-doc-position 'top
+      lsp-ui-doc-max-height 20
       lsp-ui-doc-delay 0.5
-      lsp-ui-doc-show-with-cursor t
-      lsp-ui-doc-show-with-mouse t)
+      lsp-ui-doc-show-with-cursor nil
+      lsp-ui-doc-show-with-mouse t
+      lsp-ui-doc-header t
+      lsp-ui-doc-use-childframe nil
+      lsp-ui-doc-use-webkit t)
 #+end_src
 
 *** Semantic Highlighting
 
-First, enable the feature.
 #+begin_src emacs-lisp
 (setq lsp-semantic-tokens-enable t
       lsp-semantic-tokens-honor-refresh-requests nil)
 #+end_src
 
-
 *** Code Lens
+
 #+begin_src emacs-lisp
 (setq lsp-lens-place-position 'above-line)
 #+end_src
 
 *** UI
-
-Prefer thing at-point than in the sideline (conflicts with Inlay Hints).
+**** Sideline
 
 #+begin_src emacs-lisp
-(setq lsp-ui-sideline-enable nil
-      lsp-ui-peek-enable t
-      lsp-ui-imenu-kind-position 'left
-      lsp-ui-doc-max-height 30)
+(setq lsp-ui-sideline-enable t
+      lsp-ui-sideline-diagnostics t
+      lsp-ui-sideline-hover nil
+      lsp-ui-sideline-update-mode #'line)
+#+end_src
+
+**** Peek
+
+#+begin_src emacs-lisp
+(setq lsp-ui-peek-enable t)
+#+end_src
+
+**** Imenu
+
+#+begin_src emacs-lisp
+(setq lsp-ui-imenu-kind-position 'left)
+#+end_src
+
+**** Breadcrumbs
+
+#+begin_src emacs-lisp
+(setq lsp-headerline-breadcrumb-enable t
+      lsp-headerline-breadcrumb-segments '(file symbols))
 #+end_src
 
 *** Disable Servers
 
 #+begin_src emacs-lisp
 (setq lsp-disabled-clients '((typescript-mode . deno)))
+#+end_src
+
+** Autocompletion
+
+*** Auto starting
+
+#+begin_src emacs-lisp
+(setq company-idle-delay
+      (lambda () (if (company-in-string-or-comment) nil 0)))
 #+end_src
 
 * Appearance
@@ -358,6 +389,7 @@ via our Nix module.
 #+end_src
 
 *** Font faces
+
 Let's start changing the global Doom font faces.
 
 #+begin_src emacs-lisp
@@ -392,6 +424,7 @@ Now, the modeline:
 ;; Make quotes and verses italic
 (setq org-fontify-quote-and-verse-blocks t)
 #+end_src
+
 *** Line length/spacing
 
 #+begin_src emacs-lisp
@@ -410,6 +443,10 @@ Underline at a descent position, not baseline position.
 *** Mixed Pitch
 In some modes (like ~org-mode~), we would like to use mixed pitch. To do this, we
 need to add a hook that runs /after/ the UI is initialized.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! mixed-pitch)
+#+end_src
 
 #+begin_src emacs-lisp
 (defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
@@ -545,134 +582,118 @@ Now, let's define faces that are missing from the upstream package.
   "Face used for decorators.")
 
 (defface tree-sitter-hl-face:operator
-  '((default :inherit default))
+  '((default :inherit font-lock-operator-face))
   "Face used for operators.")
 
 (defface tree-sitter-hl-face:static
-  '((default :weight semi-bold))
+  '((default
+     :inherit font-lock-constant-face
+     :weight semi-bold))
   "Face used for static members.")
 
 (defface tree-sitter-hl-face:deprecated
   '((default :strike-through t))
   "Face used for deprecated elements.")
+
+(defface tree-sitter-hl-face:mutable
+  '((default
+     :inherit tree-sitter-hl-face:variable.special
+     :slant italic))
+  "Face used for mutable elements.")
+
+(defface tree-sitter-hl-face:rust.unsafe
+  '((default :foreground ,(doom-color 'red)))
+  "Face used for Rust unsafe elements.")
+
+(defface tree-sitter-hl-face:rust.lifetime
+  '((default :inherit tree-sitter-hl-face:variable.special))
+  "Face used for Rust lifetimes elements.")
+
+(defface tree-sitter-hl-face:unresolved
+  '((default :foreground ,(doom-color 'grey)))
+  "Face used for Rust unsafe elements.")
 #+end_src
 
-
 *** =lsp-semantic= faces customization
+
 Being honest, the default ~lsp-face-semhl-*~ faces /suck/, period. With almost all
 themes that I tested, everything is only two colors! This part of the configuration
 tries to fix this issue.
 
 =lsp-mode= requires all legends to be defined in ~lsp-semantic-token-faces~ and
-in ~lsp-semantic-token-modifier-faces~ to be recognized. As our hack to implement
-composite matching uses face equality, we need to define placeholders for all legends that
-we only use in these matches.
-
-#+begin_src emacs-lisp
-(defface placeholder-face:declaration '() "")
-(defface placeholder-face:definition '() "")
-(defface placeholder-face:readonly '() "")
-(defface placeholder-face:static '() "")
-(defface placeholder-face:abstract '() "")
-(defface placeholder-face:async '() "")
-(defface placeholder-face:modification '() "")
-(defface placeholder-face:default-library '() "")
-
-(defface placeholder-face:ra-attribute '() "")
-(defface placeholder-face:ra-callable '() "")
-(defface placeholder-face:ra-constant '() "")
-(defface placeholder-face:ra-consuming '() "")
-(defface placeholder-face:ra-control-flow '() "")
-(defface placeholder-face:ra-crate-root '() "")
-(defface placeholder-face:ra-intra-doc-link '() "")
-(defface placeholder-face:ra-library '() "")
-(defface placeholder-face:ra-mutable '() "")
-(defface placeholder-face:ra-public '() "")
-(defface placeholder-face:ra-reference '() "")
-(defface placeholder-face:ra-trait '() "")
-#+end_src
+in ~lsp-semantic-token-modifier-faces~ to be recognized.
 
 Now, let's make =lsp-mode= use new faces for tokens.
 
 #+begin_src emacs-lisp
 (setq-default lsp-semantic-token-faces
-        '( ;; Built-in LSP tokens
-        ("namespace" . tree-sitter-hl-face:namespace)
-        ("type" . tree-sitter-hl-face:type)
-        ("class" . tree-sitter-hl-face:class)
-        ("enum" . tree-sitter-hl-face:enum)
-        ("interface" . tree-sitter-hl-face:interface)
-        ("struct" . tree-sitter-hl-face:struct)
-        ("typeParameter" . tree-sitter-hl-face:type.parameter)
-        ("paramenter" . tree-sitter-hl-face:variable.parameter)
-        ("variable" . tree-sitter-hl-face:variable)
-        ("property" . tree-sitter-hl-face:property)
-        ("enumMember" . tree-sitter-hl-face:enum.member)
-        ("function" . tree-sitter-hl-face:function.call)
-        ("method" . tree-sitter-hl-face:method.call)
-        ("macro" . tree-sitter-hl-face:function.macro)
-        ("keyword" . tree-sitter-hl-face:keyword)
-        ("modifier" . tree-sitter-hl-face:modifier)
-        ("comment" . tree-sitter-hl-face:comment)
-        ("string" . tree-sitter-hl-face:string)
-        ("number" . tree-sitter-hl-face:number)
-        ("regexp" . tree-sitter-hl-face:string.special)
-        ("operator" . tree-sitter-hl-face:operator)
-        ("decorator" . tree-sitter-hl-face:decorator)
-        ("label" . tree-sitter-hl-face:label)
+   ;; Built-in LSP tokens
+  '(("namespace" . tree-sitter-hl-face:namespace)
+    ("type" . tree-sitter-hl-face:type)
+    ("class" . tree-sitter-hl-face:class)
+    ("enum" . tree-sitter-hl-face:enum)
+    ("interface" . tree-sitter-hl-face:interface)
+    ("struct" . tree-sitter-hl-face:struct)
+    ("typeParameter" . tree-sitter-hl-face:type.parameter)
+    ("paramenter" . tree-sitter-hl-face:variable.parameter)
+    ("variable" . tree-sitter-hl-face:variable)
+    ("property" . tree-sitter-hl-face:property)
+    ("enumMember" . tree-sitter-hl-face:enum.member)
+    ("function" . tree-sitter-hl-face:function.call)
+    ("method" . tree-sitter-hl-face:method.call)
+    ("macro" . tree-sitter-hl-face:function.macro)
+    ("keyword" . tree-sitter-hl-face:keyword)
+    ("modifier" . tree-sitter-hl-face:modifier)
+    ("comment" . tree-sitter-hl-face:comment)
+    ("string" . tree-sitter-hl-face:string)
+    ("number" . tree-sitter-hl-face:number)
+    ("regexp" . tree-sitter-hl-face:string.special)
+    ("operator" . tree-sitter-hl-face:operator)
+    ("decorator" . tree-sitter-hl-face:decorator)
+    ("label" . tree-sitter-hl-face:label)
 
-        ;; Rust-Analyzer extras
-        ("derive" . tree-sitter-hl-face:function.macro)
-        ("typeAlias" . tree-sitter-hl-face:type.alias)
-        ("union" . tree-sitter-hl-face:union)
-        ("boolean" . tree-sitter-hl-face:boolean)
-        ("character" . tree-sitter-hl-face:string)
-        ("escapeSequence" . tree-sitter-hl-face:escape)
-        ;; TODO create a new face for this?
-        ("formatSpecifier" . tree-sitter-hl-face:string.special)
-        ("logical" . tree-sitter-hl-face:operator.logical)
-        ("macroBang" . tree-sitter-hl-face:function.macro)
-        ("builtinAttribute" . tree-sitter-hl-face:function.builtin)
-        ("builtinType" . tree-sitter-hl-face:type.builtin)
-        ("constParameter" . tree-sitter-hl-face:constant)
-        ("lifetime" . tree-sitter-hl-face:type.lifetime)
-        ("selfKeyword" . tree-sitter-hl-face:keyword)
-        ("selfTypeKeyword" . tree-sitter-hl-face:keyword)
-        ("unresolvedReference" . tree-sitter-hl-face:unresolved)))
+    ;; Rust-Analyzer extras
+    ("derive" . tree-sitter-hl-face:function.macro)
+    ("typeAlias" . tree-sitter-hl-face:type.alias)
+    ("union" . tree-sitter-hl-face:union)
+    ("boolean" . tree-sitter-hl-face:boolean)
+    ("character" . tree-sitter-hl-face:string)
+    ("escapeSequence" . tree-sitter-hl-face:escape)
+    ("formatSpecifier" . tree-sitter-hl-face:string.special)
+    ("logical" . tree-sitter-hl-face:operator.logical)
+    ("macroBang" . tree-sitter-hl-face:function.macro)
+    ("builtinAttribute" . tree-sitter-hl-face:function.builtin)
+    ("builtinType" . tree-sitter-hl-face:type.builtin)
+    ("constParameter" . tree-sitter-hl-face:constant)
+    ("lifetime" . tree-sitter-hl-face:rust.lifetime)
+    ("selfKeyword" . tree-sitter-hl-face:keyword)
+    ("selfTypeKeyword" . tree-sitter-hl-face:keyword)
+    ("unresolvedReference" . tree-sitter-hl-face:unresolved)))
 #+end_src
 
-Followed by setting new faces for modifiers. Note that we use our ~placeholder-face:*~
-to define new modifiers that doesn't have specific styles.
+Followed by setting new faces for modifiers. Note that we comment out any
+modifiers that doesn't have specific styles.
 
 #+begin_src emacs-lisp
 (setq-default lsp-semantic-token-modifier-faces
-        '( ;; Built-in LSP modifiers (most omitted).
-        ("declaration" . placeholder-face:declaration)
-        ("definition" . placeholder-face:definition)
-        ("readonly" . placeholder-face:readonly)
-        ("static" . placeholder-face:static)
-        ("deprecated" . tree-sitter-hl-face:deprecated)
-        ("abstract" . placeholder-face:abstract)
-        ("async" . placeholder-face:async)
-        ("modification" . placeholder-face:modification)
-        ("documentation" . tree-sitter-hl-face:doc)
-        ("defaultLibrary" . placeholder-face:default-library)
+  ;; Built-in modifiers
+  '(("static" . tree-sitter-hl-face:static)
+    ("deprecated" . tree-sitter-hl-face:deprecated)
+    ;;("declaration" . nil)
+    ;;("definition" . nil)
+    ;;("readonly" . nil)
+    ;;("abstract" . nil)
+    ;;("async" . nil)
+    ("modification" . tree-sitter-hl-face:operator)
+    ("documentation" . tree-sitter-hl-face:doc)
+    ;;("defaultLibrary" . nil)
 
-        ;; Rust-Analyzer extras
-        ("crateRoot" . tree-sitter-hl-face:namespace.root)
-        ("unsafe" . tree-sitter-hl-face:rust.unsafe)
-        ("injected" . tree-sitter-hl-face:embedded)
-        ("attribute". placeholder-face:ra-attribute)
-        ("callable" . placeholder-face:ra-callable)
-        ("constant" . placeholder-face:ra-constant)
-        ("consuming" . placeholder-face:ra-consuming)
-        ("controlFlow" . placeholder-face:ra-control-flow)
-        ("intraDocLink" . placeholder-face:ra-intra-doc-link)
-        ("library" . placeholder-face:ra-library)
-        ("mutable" . placeholder-face:ra-mutable)
-        ("public" . placeholder-face:ra-public)
-        ("reference" . placeholder-face:ra-reference)
-        ("trait" . placeholder-face:ra-trait)))
+    ;; Rust-Analyzer extras
+    ("injected" . tree-sitter-hl-face:embedded)
+    ("attribute". tree-sitter-hl-face:attribute)
+    ("callable" . tree-sitter-hl-face:function)
+    ("constant" . tree-sitter-hl-face:constant)
+    ("mutable" . tree-sitter-hl-face:mutable)))
 #+end_src
 
 *** Enable theme
@@ -1024,6 +1045,7 @@ Following our borrowing strategy, let's also add a phrase to the dashboard.
      :vslot -2 :select t :quit t :ttl 0)))
 #+end_src
 
+
 * Languages
 ** Protocol Buffers
 
@@ -1034,19 +1056,20 @@ Add syntax highlighting to =.proto= files.
 #+end_src
 
 ** Rust
-
 *** Rust-Analyzer config
+
+**** Disable inlay hints
+
+They conflict with =lsp-ui= sideline.
 
 #+begin_src emacs-lisp
 (after! lsp-mode
-  (setq lsp-rust-analyzer-server-display-inlay-hints t
-        lsp-rust-analyzer-display-chaining-hints t
-        lsp-rust-analyzer-display-closure-return-type-hints t
-        lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial"
-        lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t
-        lsp-rust-analyzer-display-parameter-hints t
-        lsp-rust-analyzer-display-reborrow-hins t
-        lsp-rust-analyzer-hide-clsoure-initialization t
+  (setq lsp-rust-analyzer-server-display-inlay-hints nil)
+#+end_src
+
+#+begin_src emacs-lisp
+(after! lsp-mode
+  (setq lsp-rust-analyzer-hide-clsoure-initialization t
         lsp-rust-analyzer-cargo-watch-command "clippy"))
 #+end_src
 
@@ -1094,6 +1117,7 @@ If =corfu= is enabled, translate =company-coq= backends to it.
   (add-hook 'zig-mode-hook #'tree-sitter!)
   (add-hook 'zig-mode-hook #'lsp! 'append))
 #+end_src
+
 
 * Tools
 ** Bazel
@@ -1200,7 +1224,17 @@ We'll ignore ~*.bzl~ files for now, as listing the entire native API will be a P
 
 #+begin_src emacs-lisp
 (after! lsp-mode
-  (setq lsp-terraform-ls-enable-show-reference t))
+  (setq lsp-terraform-ls-enable-show-reference t
+        lsp-terraform-ls-prefill-required-fields t
+        lsp-terraform-ls-validate-on-save t))
+#+end_src
+
+Consider extra directories to ignore:
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.terraform\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.terragrunt\\'"))
 #+end_src
 
 *** Tree Sitter
@@ -1222,7 +1256,6 @@ Extra patterns:
 #+end_src
 
 ** Magit
-
 *** Granular diffs
 
 #+begin_src emacs-lisp
@@ -1241,9 +1274,7 @@ Extra patterns:
   :hook (magit-mode . magit-delta-mode))
 #+end_src
 
-
 ** Nix
-
 *** LSP
 
 #+begin_src emacs-lisp
@@ -1251,14 +1282,3 @@ Extra patterns:
   :after lsp-mode)
 #+end_src
 
-*** Tree Sitter
-
-#+begin_src emacs-lisp
-(add-hook! nix-mode :append
-  (tree-sitter-hl-add-patterns nil
-    [((app (identifier) @function.call .))
-     ((select (identifier) @variable
-              (attrpath (attr_identifier)+ @property)))
-     ((attrpath (attr_identifier) @variable
-                (attr_identifier)* @property))]))
-#+end_src
