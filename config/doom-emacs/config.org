@@ -358,6 +358,24 @@ Now, we improve the performance of =lsp-mode=.
       (lambda () (if (company-in-string-or-comment) nil 0)))
 #+end_src
 
+*** Track completion statistics
+
+Track what completions we use the most, thus improving the ordering
+of candidates.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! company-statistics
+  :recipe (:host github
+           :repo "company-mode/company-statistics"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! company-statistics
+  :hook (company-mode . company-statistics-mode)
+  :init
+  (setq company-statistics-size 2000))
+#+end_src
+
 * Appearance
 ** Text
 *** Constants
