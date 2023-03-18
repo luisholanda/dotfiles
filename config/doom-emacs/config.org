@@ -620,7 +620,7 @@ Now, let's define faces that are missing from the upstream package.
   "Face used for mutable elements.")
 
 (defface tree-sitter-hl-face:rust.unsafe
-  '((default :foreground ,(doom-color 'red)))
+  `((default :foreground ,(doom-color 'red)))
   "Face used for Rust unsafe elements.")
 
 (defface tree-sitter-hl-face:rust.lifetime
@@ -628,7 +628,7 @@ Now, let's define faces that are missing from the upstream package.
   "Face used for Rust lifetimes elements.")
 
 (defface tree-sitter-hl-face:unresolved
-  '((default :foreground ,(doom-color 'grey)))
+  `((default :foreground ,(doom-color 'grey)))
   "Face used for Rust unsafe elements.")
 #+end_src
 
@@ -1082,7 +1082,7 @@ They conflict with =lsp-ui= sideline.
 
 #+begin_src emacs-lisp
 (after! lsp-mode
-  (setq lsp-rust-analyzer-server-display-inlay-hints nil)
+  (setq lsp-rust-analyzer-server-display-inlay-hints nil))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1164,19 +1164,21 @@ Starklark doesn't have a tree-sitter grammar yet, but it doesn't need to, as we
 can use the Python grammar instead.
 
 #+begin_src emacs-lisp
-(defadvice! bazel-tree-sitter (&rest _)
-  :after 'tree-sitter--setup
+(after! tree-sitter
   (dolist (entry '((bazel-build-mode . python)
-                               (bazel-workspace-mode . python)))
-                (cl-pushnew entry tree-sitter-major-mode-language-alist
-                            :key #'car)))
+                   (bazel-workspace-mode . python)))
+    (cl-pushnew entry tree-sitter-major-mode-language-alist
+                :key #'car)))
+
+
 #+end_src
 
 Now, we need to let Tree-Sitter know of Starlark native API and also native Bazel
 targets for =BUILD= files.
 
 #+begin_src emacs-lisp
-(add-hook! bazel-build-mode
+(add-hook! bazel-build-mode :append
+           (tree-sitter-hl-mode)
            (tree-sitter-hl-add-patterns nil
              [;; Android rules
               ((call function: (identifier) @function.builtin
@@ -1209,30 +1211,27 @@ targets for =BUILD= files.
               ;; Language agnostic rules
               ((call function: (identifier) @function.builtin
                 (.match? @function.builtin
-                 "^action_listener|extra_action|alias|config_setting|filegroup|gen(query|rule)|test_suite$")))
+                 "^(action_listener|extra_action|alias|config_setting|filegroup|gen(query|rule)|test_suite)$")))
               ((call function: (identifier) @function.builtin
                 (.match? @function.builtin
-                 "^constraint_(setting|value)|platform|toolchain(_type)?$")))
+                 "^(constraint_(setting|value)|platform|toolchain(_type)?)$")))
 
               ;; Native API
               ;; native names
               ((call function: (identifier) @function.builtin
                 (.match? @function.builtin
-                 "^existing_rules?|exports_files|glob|package_(group|name)|repository_name|subpackages$")))
-              ((call function: [
-                attribute
-                  object: (identifier) @variable.builtin
-                  (.match? @variable.builtin "^native|json$")]))
+                 "^(existing_rules?|exports_files|glob|package|load|package_group|select|repository_name|subpackages)$")))
               ]))
 #+end_src
 
 Now we deal with =WORKSPACE= files.
 
 #+begin_src emacs-lisp
-(add-hook! bazel-workspace-mode
+(add-hook! bazel-workspace-mode :append
+           (tree-sitter-hl-mode)
            (tree-sitter-hl-add-patterns nil
              [((call function: (identifier) @function.builtin
-                (.match? @function.builtin "^bind|(new_)?local_repository$")))]))
+                (.match? @function.builtin "^(workspace|bind|(new_)?local_repository)$")))]))
 #+end_src
 
 We'll ignore ~*.bzl~ files for now, as listing the entire native API will be a PITA.
