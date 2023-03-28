@@ -6,12 +6,14 @@
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.inputs.utils.follows = "flake-utils";
 
     flake-utils.url = "github:numtide/flake-utils";
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
 
     devshell.url = "github:numtide/devshell";
     devshell.inputs.flake-utils.follows = "flake-utils";
@@ -36,6 +38,7 @@
   };
 
   outputs = inputs @ {
+    self,
     nixpkgs,
     firefox-addons,
     flake-utils,
@@ -46,7 +49,7 @@
     hyprland,
     ...
   }: let
-    dotfiles = import ./.;
+    dotfiles = import self.outPath;
 
     systems = with flake-utils.lib.system; [
       x86_64-linux
@@ -95,7 +98,7 @@
       };
 
       pre-commit-check = pre-commit-hooks.lib.${system}.run {
-        src = ./.;
+        src = self.outPath;
         hooks = {
           alejandra.enable = true;
           deadnix.enable = true;
@@ -110,7 +113,7 @@
           };
         };
       };
-    in rec {
+    in {
       checks = {inherit pre-commit-check;};
 
       devShells.default = import ./shell.nix {inherit pkgs pre-commit-check;};
@@ -147,7 +150,7 @@
 
       templates = {
         full = {
-          path = ./.;
+          path = self.outPath;
           description = "A completely non-minimal NixOS configuration";
         };
       };
