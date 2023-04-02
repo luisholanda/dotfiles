@@ -27,9 +27,6 @@
     emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    git-stack.url = "github:gitext-rs/git-stack";
-    git-stack.flake = false;
-
     hyprland = {
       url = "github:hyprwm/Hyprland";
       # build with your own instance of nixpkgs
@@ -45,7 +42,6 @@
     pre-commit-hooks,
     devshell,
     emacs-overlay,
-    git-stack,
     hyprland,
     ...
   }: let
@@ -91,7 +87,6 @@
             addCustomLibFunctions
             addFirefoxExtensions
             (final: _prev: {
-              srcs = {inherit git-stack;};
               unstable = final;
             })
           ];

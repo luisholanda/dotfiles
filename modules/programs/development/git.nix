@@ -51,7 +51,6 @@ in {
         };
       };
       stgit.enable = mkEnableOpt "Enable the stacked-git wrapper.";
-      stack.enable = mkEnableOpt "Enable git-stack support.";
     };
   };
 
@@ -140,15 +139,6 @@ in {
       };
 
       user.home.programs.git.aliases.stg-submit = "!f() { local patch=$\{1:?Must pass patch name}; shift; git push origin $@ $(stg id $patch):refs/heads/$(echo $patch | sed 's/\\(\\w\\)-/\\1\\//'); }; f";
-    })
-    (mkIf cfg.addons.stack.enable {
-      user.packages = [pkgs.gitAndTools.git-stack];
-
-      user.home.programs.git.extraConfig.stack = {
-        show-stacked = "yes";
-        auto-fixup = "squash";
-        auto-repair = "yes";
-      };
     })
     # MacOS-specific configurations.
     (mkIf isDarwin {
