@@ -3,21 +3,16 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.inputs.utils.follows = "flake-utils";
 
-    flake-utils.url = "github:numtide/flake-utils";
-
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
     pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
-
-    devshell.url = "github:numtide/devshell";
-    devshell.inputs.flake-utils.follows = "flake-utils";
-    devshell.inputs.nixpkgs.follows = "nixpkgs";
 
     firefox-addons.url = "github:nix-community/nur-combined?dir=repos/rycee/pkgs/firefox-addons";
     firefox-addons.inputs.flake-utils.follows = "flake-utils";
@@ -40,7 +35,6 @@
     firefox-addons,
     flake-utils,
     pre-commit-hooks,
-    devshell,
     emacs-overlay,
     hyprland,
     ...
@@ -80,7 +74,6 @@
         in
           overlays
           ++ [
-            devshell.overlay
             emacs-overlay.overlay
             hyprland.overlays.default
             addVendoredPackages
@@ -111,7 +104,12 @@
     in {
       checks = {inherit pre-commit-check;};
 
-      devShells.default = import ./shell.nix {inherit pkgs pre-commit-check;};
+      devShells.default = pkgs.mkShell {
+        inherit (pre-commit-check) shellHook;
+        name = "dotfiles";
+
+        buildInputs = with pkgs; [gnumake];
+      };
 
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
       nixosConfigurations = let
