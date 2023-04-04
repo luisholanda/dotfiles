@@ -136,6 +136,7 @@ in {
     };
   };
 
+  config.programs.fish.enable = cfg.enable;
   config.user.shell = pkgs.fish;
   config.user.home.programs.fish = {
     inherit (cfg) enable;

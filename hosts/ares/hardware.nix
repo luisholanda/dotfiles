@@ -57,7 +57,6 @@ in {
     brillo.enable = true;
     ksm.enable = true;
     opengl.enable = true;
-    video.hidpi.enable = true;
   };
   host.hardware.isIntel = true;
 
