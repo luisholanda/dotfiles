@@ -18,7 +18,8 @@
     firefox-addons.inputs.flake-utils.follows = "flake-utils";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
-    emacs-overlay.url = "github:nix-community/emacs-overlay";
+    # Current HEAD causes problems.
+    emacs-overlay.url = "github:nix-community/emacs-overlay?rev=a3abd804a0f05d3d388a6efced4f7bf50792deb6";
     emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 

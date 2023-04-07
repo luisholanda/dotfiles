@@ -273,12 +273,6 @@ First, we install everything via Nix, so =lsp-mode= don't need to asks us anythi
 (setq lsp-enable-suggest-server-download nil)
 #+end_src
 
-Then, we unpin the package version.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! lsp-mode :pin nil)
-#+end_src
-
 Now, we improve the performance of =lsp-mode=.
 
 #+begin_src emacs-lisp
