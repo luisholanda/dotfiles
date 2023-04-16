@@ -73,5 +73,18 @@ in {
       ];
     in
       defaultParams ++ (optionals (!isLaptop) desktopParams);
+
+    boot.kernel.sysctl = {
+      "vm.swappiness" = 30;
+      "vm.vfs_cache_pressure" = 50;
+      "vm.dirty_ratio" = 10;
+      "vm.page-cluster" = 1;
+      "vm.dirty_background_ratio" = 5;
+      "kernel.nmi_watchdog" = 0;
+      "vm.ipv4.tcp_fastopen" = 3;
+      "net.core.default_qdisc" = "cake";
+      "net.ipv4.tcp_congestion_control" = "bbr2";
+      "kernel.split_lock_mitigate" = 0;
+    };
   };
 }
