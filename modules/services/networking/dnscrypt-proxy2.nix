@@ -6,8 +6,8 @@
   inherit (lib.my) mkAttrsOpt mkEnableOpt;
 
   domainsBlacklist = builtins.fetchurl {
-    url = "https://raw.githubusercontent.com/notracking/hosts-blocklists/b5083b66309399c47a2414885285cdb754256898/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt";
-    sha256 = "1n9bfij0fg17rpa0d8b4nk285m54x773pm7zfpz2mixlc5k09jcd";
+    url = "https://raw.githubusercontent.com/notracking/hosts-blocklists/4089c2ba5dfa3d4e22b9c97e646f6f5a507f42bb/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt";
+    sha256 = "1hr7wc24fdqbbap7bcylnkcp5lrvn9nwafirg0faf37jih6lavcw";
   };
 
   cfg = config.modules.services.dnscrypt-proxy2;
@@ -26,7 +26,7 @@ in {
         // {
           server_names = ["cloudflare-security" "cloudflare-security-ipv6"];
           listen_addresses = ["127.0.0.1:53"];
-          max_clients = 128;
+          max_clients = 512;
 
           ipv4_servers = true;
           dnscrypt_servers = true;
