@@ -31,6 +31,9 @@
 
     nvchad.url = "github:nvchad/nvchad/v2.0";
     nvchad.flake = false;
+
+    cachyos-ananicy-rules.url = "github:cachyos/ananicy-rules";
+    cachyos-ananicy-rules.flake = false;
   };
 
   outputs = inputs @ {
@@ -112,7 +115,7 @@
         inherit (pre-commit-check) shellHook;
         name = "dotfiles";
 
-        buildInputs = with pkgs; [gnumake];
+        buildInputs = with pkgs; [gnumake python3];
       };
 
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;

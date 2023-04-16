@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "cachyos-ananicy-rules": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1681486727,
+        "narHash": "sha256-wimScnA0jLnpcBzXsQjg9Wg5fIA8x76NjD72SooJAys=",
+        "owner": "cachyos",
+        "repo": "ananicy-rules",
+        "rev": "8ac5d97ce34075eaceb9e6ca6dc2b2bc072fce04",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachyos",
+        "repo": "ananicy-rules",
+        "type": "github"
+      }
+    },
     "emacs-overlay": {
       "inputs": {
         "flake-utils": [
@@ -234,6 +250,7 @@
     },
     "root": {
       "inputs": {
+        "cachyos-ananicy-rules": "cachyos-ananicy-rules",
         "emacs-overlay": "emacs-overlay",
         "firefox-addons": "firefox-addons",
         "flake-utils": "flake-utils",

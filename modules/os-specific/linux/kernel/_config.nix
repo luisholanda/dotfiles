@@ -4,11 +4,10 @@
   isAMD,
   isx86,
   isLaptop,
-  mkForce,
   gpu,
-  wantWiFi,
 }:
 with lib.kernel; let
+  inherit (lib) mkForce;
   inherit (builtins) foldl' attrValues mapAttrs;
 
   enableIf = b:
@@ -24,7 +23,6 @@ with lib.kernel; let
   ifAMDGpu = enableIf (!gpu.isNVIDIA && isAMD);
   ifIntelGpu = enableIf (!gpu.isNVIDIA && isIntel);
   ifNouveauGpu = enableIf gpu.isNVIDIA;
-  ifWantWifi = enableIf wantWiFi;
 
   config = {
     cpu = {
@@ -35,9 +33,14 @@ with lib.kernel; let
       MICROCODE_AMD = ifAMD;
 
       X86_INTEL_TSX_MODE_ON = ifx86;
+      X86_IOSF_MBI = ifx86;
+
+      X86_INTEL_LPSS = ifIntel;
 
       X86_AMD_PSTATE = ifAMD;
       X86_AMD_PLATFORM_DEVICE = ifAMD;
+
+      x86_KERNEL_IBT = yes;
 
       CPU_FREQ_DEFAULT_GOV_PERFORMANCE = ifDesktop;
       CPU_FREQ_DEFAULT_GOV_USERSPACE = ifLaptop;
@@ -54,16 +57,23 @@ with lib.kernel; let
       PERF_EVENTS_AMD_BRS = ifAMD;
 
       PREEMPT = yes;
-      PREEMPT_DYNAMIC = no;
-      PREEMPT_VOLUNTARY = no;
+      PREEMPT_DYNAMIC = yes;
 
       RCU_EXPERT = yes;
+      RCU_FANOUT = freeform "64";
+      RCU_FANOUT_LEAF = freeform "16";
       RCU_BOOST = yes;
+      RCU_BOOST_DELAY = freeform "500";
+      RCU_NOCB_CPU = yes;
+      RCU_NOCB_CPU_DEFAULT_ALL = yes;
+      RCU_LAZY = yes;
+      RCU_STALL_COMMON = yes;
+      RCU_NEED_SEGCBLIST = yes;
     };
 
     disk = {
       IOSCHED_BFQ = yes;
-      MQ_IOSCHED_DEADLINE = no;
+      MQ_IOSCHED_DEADLINE = yes;
       MQ_IOSCHED_KYBER = no;
       NVME_MULTIPATH = yes;
       BLK_DEV_NVME = yes;
@@ -99,7 +109,6 @@ with lib.kernel; let
       NET_SCH_FQ_CODEL = yes;
       NET_SCH_DEFAULT = yes;
       DEFAULT_FQ_CODEL = yes;
-      WLAN = ifWantWifi;
 
       NETFILTER = no;
 
@@ -144,13 +153,14 @@ with lib.kernel; let
     };
 
     video = {
+      DRM_ACCEL = yes;
       DRM_RADEON = no;
       DRM_AMDGPU = ifAMDGpu;
       DRM_AMD_DC_DCN = ifAMDGpu;
       DRM_AMD_DC_HDCP = ifAMDGpu;
       DRM_AMD_DC_SI = ifAMDGpu;
       DRM_I915 = ifIntelGpu;
-      DRM_I915_GVT = ifIntelGpu;
+      DRM_I915_GVT = yes;
       DRM_I915_GVT_KVMGT = ifIntelGpu;
       DRM_NOVEAU = ifNouveauGpu;
       DRM_GMA500 = no;
@@ -226,6 +236,9 @@ with lib.kernel; let
 
       MEDIA_TUNER = no;
       REGULATOR = no;
+
+      KERNEL_ZSD = yes;
+      ZSTD_COMPRESSION_LEVEL = freeform "2";
     };
   };
 in

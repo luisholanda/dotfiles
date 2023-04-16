@@ -4,79 +4,74 @@
   pkgs,
   ...
 }: let
-  #inherit (config.host.hardware) isIntel isAMD isLaptop;
-  inherit (lib) mkIf mkDefault;
-  #inherit (lib) mapAttrsFlatten;
-  #inherit (pkgs) fetchpatch;
+  inherit (config.host.hardware) isLaptop;
+  inherit (lib) mkIf mkDefault optionals;
+  inherit (lib) mapAttrsFlatten;
+  inherit (pkgs) fetchpatch;
   inherit (pkgs.stdenv) isLinux;
 
-  #wantWiFi = let
-  #  inherit (config.networking) wireless;
-  #in
-  #  wireless.enable || wireless.iwd.enable;
-
-  kernel = let
-    #inherit (pkgs) clang13Stdenv;
-    baseKernelPackages = pkgs.unstable.linuxPackages;
-    #configuratedKernel = baseKernelPackages.kernel.override {
-    #  stdenv = clang13Stdenv;
-    #  structuredExtraConfig = import ./_config.nix {
-    #    inherit (config.host.hardware) isIntel isAMD isLaptop gpu;
-    #    inherit lib mkForce wantWiFi;
-    #    inherit (pkgs.stdenv.targetPlatform) isx86;
-    #  };
-    #  ignoreConfigErrors = true;
-    #  kernelPatches = clearLinuxPatches ++ mglruPatches ++ miscPatches;
-    #};
+  buildPatch = name: {
+    url,
+    sha256,
+  }: {
+    inherit name;
+    patch =
+      if builtins.isPath url
+      then url
+      else
+        fetchpatch {
+          inherit url sha256;
+          name = name + ".patch";
+        };
+  };
+  buildPatchset = path: args: let
+    patches = let
+      mod = import path;
+    in
+      if builtins.isFunction mod
+      then mod args
+      else mod;
   in
-    #pkgs.linuxPackagesFor configuratedKernel;
-    baseKernelPackages;
-  #buildPatch = name: {
-  #  url,
-  #  sha256,
-  #}: {
-  #  inherit name;
-  #  patch =
-  #    if builtins.isPath url
-  #    then url
-  #    else
-  #      fetchpatch {
-  #        inherit url sha256;
-  #        name = name + ".patch";
-  #      };
-  #};
-  #buildPatchset = path: args: let
-  #  patches = let
-  #    mod = import path;
-  #  in
-  #    if builtins.isFunction mod
-  #    then mod args
-  #    else mod;
-  #in
-  #  mapAttrsFlatten buildPatch patches;
-  #clearLinuxPatches = buildPatchset ./_patchsets/clearLinux.nix {};
-  ## Won't be needed for 6.1
-  #mglruPatches = [
-  #  (buildPatch "multi-gen-lru" {
-  #    url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/6.0/0010-lru_6.0.patch";
-  #    sha256 = "sha256-Tt+1b0W9ERRJi9aFekmb1dJuNTcxT9doVmP2Rn6lENA=";
-  #  })
-  #];
-  #miscPatches = [
-  #  (buildPatch "optimize-harder-03" {
-  #    url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/6.0/0013-optimize_harder_O3.patch";
-  #    sha256 = "sha256-Qa4/3Yk8KrfW42s7Itjce1J2floRcdnQ99BdIK1BT9E=";
-  #  })
-  #];
+    mapAttrsFlatten buildPatch patches;
+
+  cachyOsPatches = buildPatchset ./_patchsets/cachyos.nix;
+
+  defaultKernel = pkgs.linuxPackages_6_2.kernel;
+  kernelPackages = pkgs.linuxPackagesFor (defaultKernel.override {
+    argsOverride = rec {
+      src = pkgs.fetchurl {
+        url = "mirror://kernel/linux/kernel/v6.x/linux-${version}.tar.xz";
+        sha256 = "sha256-DSNnhOYLh8eVNTWusUjdnnc7Jkld+pxtaWFfVP4A3Uc=";
+      };
+      version = "6.2.11";
+      modDirVersion = "6.2.11";
+    };
+
+    stdenv = pkgs.clang13Stdenv;
+    structuredExtraConfig = import ./_config.nix {
+      inherit lib isLaptop;
+      inherit (config.host.hardware) isIntel isAMD gpu;
+      inherit (pkgs.stdenv.targetPlatform) isx86;
+    };
+    ignoreConfigErrors = true;
+    kernelPatches = cachyOsPatches (lib.versions.majorMinor defaultKernel.version);
+  });
 in {
   config = mkIf isLinux {
-    boot.kernelPackages = mkDefault kernel;
+    boot.kernelPackages = mkDefault kernelPackages;
 
-    boot.kernelParams = [
-      # Enable page allocator randomization
-      "page_alloc.shuffle=1"
-      # Reduce TTY output during boot
-      "quiet"
-    ];
+    boot.kernelParams = let
+      defaultParams = [
+        # Enable page allocator randomization
+        "page_alloc.shuffle=1"
+        # Reduce TTY output during boot
+        "quiet"
+      ];
+      desktopParams = [
+        # There is no reason to enable mitigations for most desktops.
+        "mitigations=off"
+      ];
+    in
+      defaultParams ++ (optionals (!isLaptop) desktopParams);
   };
 }
