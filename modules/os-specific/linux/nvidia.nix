@@ -14,11 +14,11 @@ in {
     hardware.opengl.extraPackages = with pkgs; [vaapiVdpau nvidia-vaapi-driver];
     hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
 
-    boot.kernelParams = [
-      "nvidia_drm.modeset=1"
-      # FIXME: This should be added based on blacklistedKernelModules
-      "module_blacklist=i915"
-    ];
+    boot.extraModprobeConfig = ''
+      options nvidia NVreg_UsePageAttributeTable=1 NVreg_InitializeSystemMemoryAllocations=0 NVreg_DynamicPowerManagement=0x02
+      options nvidia_drm modeset=1
+    '';
+
     boot.initrd.kernelModules = ["nvidia" "nvidia_modeset" "nvidia-uvm" "nvidia_drm"];
 
     boot.blacklistedKernelModules = ["i915"];
