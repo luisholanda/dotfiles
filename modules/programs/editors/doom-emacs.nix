@@ -46,21 +46,12 @@ in {
   options.modules.editors.emacs.doom.enable = mkEnableOption "doom-emacs";
 
   config = mkIf emacsCfg.doom.enable {
-    assertions = [
-      {
-        assertion = !emacsCfg.enable;
-        message = "Doom Emacs cannot be enable together with base emacs! Choose only one.";
-      }
-    ];
-
     modules.editors.extraPackages = with pkgs; [
       ## Emacs dependencies
       binutils # native-comp needs 'as'
       emacs-all-the-icons-fonts
 
       ## Doom dependencies
-      git
-      (ripgrep.override {withPCRE2 = true;})
       gnutls
       fd
       imagemagick
@@ -86,46 +77,19 @@ in {
 
       # :lang cc
       rtags
-      clang-tools_14
 
       # :lang coq
       lmmath
 
       # :lang markdown
-      nodePackages.markdownlint-cli2
-      proselint
       discount
-
-      # :lang nix
-      nil
-
-      # :lang sh
-      shellcheck
-      nodePackages.bash-language-server
-
-      # :lang python
-      black
-      python39Packages.isort
 
       # :lang web
       html-tidy
       nodePackages.stylelint
 
       # :tool tree-sitter
-      tree-sitter
       nodejs
-
-      # :tool terraform
-      terraform-ls
-
-      nodePackages.yaml-language-server
-      nodePackages.vscode-json-languageserver
-      nodePackages.typescript
-      nodePackages.typescript-language-server
-      bazel-buildtools
-      rust-analyzer
-      rustfmt
-      pyright
     ];
 
     user.packages = [doom emacs];

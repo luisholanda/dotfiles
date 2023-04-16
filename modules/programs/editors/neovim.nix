@@ -2,24 +2,18 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   inherit (lib) mkIf makeBinPath;
-  inherit (lib.my) mkEnableOpt;
+  inherit (lib.my) mkEnableOpt wrapProgram;
 
-  neovimConfigSource = config.dotfiles.configDir + "/nvim";
-  neovimConfigSourceContent = [
-    "/init.lua"
-    "/ftplugin"
-    "/lua"
-    "/spell"
-  ];
+  neovimConfigSource = config.dotfiles.configDir + "/neovim";
 
-  wrappedNeovim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
-    wrapperArgs = ["--suffix" "PATH" ":" (makeBinPath config.modules.editors.extraPackages)];
-    vimAlias = true;
-    viAlias = true;
-    wrapRc = false;
+  extraPackages = config.modules.editors.extraPackages ++ [pkgs.zig];
+
+  wrappedNeovim = wrapProgram pkgs.neovim-unwrapped {
+    prefix.PATH = makeBinPath extraPackages;
   };
 
   nvimPath = "${makeBinPath [wrappedNeovim]}/nvim";
@@ -34,17 +28,15 @@ in {
     user.packages = [wrappedNeovim];
 
     user.shellAliases.vimdiff = "${nvimPath} -d";
+    user.shellAliases.vi = nvimPath;
+    user.shellAliases.vim = nvimPath;
 
     user.sessionVariables.EDITOR = nvimPath;
 
-    user.xdg.configFile =
-      builtins.listToAttrs
-      (builtins.map (p: {
-          name = "nvim" + p;
-          value.source = neovimConfigSource + p;
-        })
-        neovimConfigSourceContent);
-
-    user.xdg.dataFile."nvim/site/pack/packer/start/packer.nvim".source = pkgs.vimPlugins.packer-nvim;
+    user.xdg.configFile.nvim = {
+      recursive = true;
+      source = inputs.nvchad;
+    };
+    user.xdg.configFile."nvim/lua/custom".source = neovimConfigSource;
   };
 }

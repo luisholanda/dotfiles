@@ -28,6 +28,9 @@
       # build with your own instance of nixpkgs
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nvchad.url = "github:nvchad/nvchad/v2.0";
+    nvchad.flake = false;
   };
 
   outputs = inputs @ {
