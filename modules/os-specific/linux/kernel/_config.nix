@@ -110,14 +110,14 @@ with lib.kernel; let
       NET_SCH_DEFAULT = yes;
       DEFAULT_FQ_CODEL = yes;
 
-      NETFILTER = no;
+      # For docker.
+      BRIDGE = yes;
 
       ARCNET = no;
       CAN_DEV = no;
       "6LOWPAN" = no;
       NET_9P = no;
       ATM = no;
-      BRIDGE = no;
       CAIF = no;
       CAN = no;
       CEPH = no;
@@ -138,7 +138,6 @@ with lib.kernel; let
       XFS_FS = yes;
       NILFS2_FS = no;
       NLS_FS = no;
-      NFS_FS = no;
       NFSD_FS = no;
       EXT2_FS = no;
       EXT3_FS = no;
