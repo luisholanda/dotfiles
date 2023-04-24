@@ -15,7 +15,9 @@ end
 
 local servers = {
 	bufls = {},
-	clangd = {},
+	clangd = {
+		filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+	},
 	dockerls = {},
 	nil_ls = {},
 	pyright = {},
