@@ -20,7 +20,8 @@
       audio.spotify.enable = true;
       dnscrypt-proxy2.enable = true;
       docker.enable = true;
-      mako.enable = false;
+
+      hyprland.enable = true;
 
       pipewire.enable = true;
 
@@ -105,11 +106,6 @@
     generateCaches = true;
   };
 
-  programs.dconf.enable = true;
-  programs.hyprland.enable = true;
-  programs.hyprland.nvidiaPatches = true;
-
   services.xserver.enable = true;
-  services.xserver.displayManager.defaultSession = "hyprland";
   services.xserver.displayManager.gdm.enable = true;
 }
