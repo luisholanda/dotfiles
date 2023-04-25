@@ -24,8 +24,6 @@
       hyprland.enable = true;
 
       pipewire.enable = true;
-
-      waybar.enable = true;
     };
 
     programs = {
@@ -48,8 +46,6 @@
   };
 
   services.resolved.enable = true;
-
-  theme.active = "dracula";
 
   dotfiles = {
     dir = /home/luiscm/.dotfiles;
@@ -99,6 +95,27 @@
       jetbrains.clion
       logseq
     ];
+  };
+
+  theme.wallpaper = config.dotfiles.dir + "/wallpapers/girl-smile-face.png";
+  theme.polarity = "dark";
+  theme.fonts = {
+    serif = {
+      package = pkgs.noto-fonts;
+      name = "Noto Serif";
+    };
+    sansSerif = {
+      package = pkgs.noto-fonts;
+      name = "Noto Sans";
+    };
+    emoji = {
+      package = pkgs.noto-fonts-emoji;
+      name = "Noto Color Emoji";
+    };
+    monospace = {
+      package = pkgs.pragmasevka;
+      name = "Pragmasevka";
+    };
   };
 
   documentation.man = {

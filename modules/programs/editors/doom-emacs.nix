@@ -26,12 +26,12 @@
             --prefix PATH : "${makeBinPath editorPkgs}" \
             --set DOOMDIR "~/.dotfiles/config/doom-emacs" \
             --set EMACSDIR "${config.user.home.dir}/.config/emacs" \
-            --set EMACS_MONO_FONT_FAMILY "${fonts.family.monospace}" \
-            --set EMACS_VARIABLE_PITCH_FONT_FAMILY "${fonts.family.sansSerif}" \
-            --set EMACS_SERIF_FONT_FAMILY "${fonts.family.serif}" \
+            --set EMACS_MONO_FONT_FAMILY "${fonts.monospace.name}" \
+            --set EMACS_VARIABLE_PITCH_FONT_FAMILY "${fonts.sansSerif.name}" \
+            --set EMACS_SERIF_FONT_FAMILY "${fonts.serif.name}" \
             --set EMACS_UNICODE_FONT_FAMILY "Latin Modern Math" \
-            --set EMACS_TEXT_FONT_SIZE ${builtins.toString fonts.size.text} \
-            --set EMACS_UI_FONT_SIZE ${builtins.toString fonts.size.ui} \
+            --set EMACS_TEXT_FONT_SIZE ${builtins.toString fonts.sizes.terminal} \
+            --set EMACS_UI_FONT_SIZE ${builtins.toString fonts.sizes.applications} \
             --set LSP_USE_PLISTS true
       done
 
