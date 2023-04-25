@@ -10,7 +10,8 @@
     global = {
       username = "luiscmholanda";
       password_cmd = "PASSWORD_STORE_DIR=~/.local/share/password-store ${pkgs.pass-wayland}/bin/pass spotify";
-      use_mpris = false;
+      use_mpris = true;
+      dbus_type = "session";
       backend =
         if isDarwin
         then "portaudio"
