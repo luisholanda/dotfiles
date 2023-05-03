@@ -90,8 +90,15 @@
             addVendoredPackages
             addCustomLibFunctions
             addFirefoxExtensions
-            (final: _prev: {
+            (final: prev: {
               unstable = final;
+              waybar =
+                (prev.waybar.override {
+                  withMediaPlayer = true;
+                })
+                .overrideAttrs (o: {
+                  mesonFlags = o.mesonFlags ++ ["-Dexperimental=true"];
+                });
             })
           ];
       };

@@ -5,6 +5,9 @@
 }: let
   inherit (pkgs.lib) mkEnableOption mkIf;
   inherit (pkgs.stdenv) isDarwin;
+  inherit (config.modules.services.audio) spotify;
+
+  spotifyd = pkgs.spotifyd.override {withMpris = true;};
 
   configFile = (pkgs.formats.toml {}).generate "spotifyd.conf" {
     global = {
@@ -31,7 +34,7 @@
     };
   };
 
-  mkIfEnabled = mkIf config.modules.services.audio.spotify.enable;
+  mkIfEnabled = mkIf spotify.enable;
 in {
   options.modules.services.audio.spotify.enable = mkEnableOption "spotifyd";
 
@@ -45,11 +48,13 @@ in {
       Install.WantedBy = ["default.target"];
 
       Service = {
-        ExecStart = "${pkgs.spotifyd}/bin/spotifyd --no-daemon --config-path ${configFile}";
+        ExecStart = "${spotifyd}/bin/spotifyd --no-daemon --config-path ${configFile}";
         Restart = "always";
         RestartSec = 12;
       };
     };
+
+    user.home.services.playerctld.enable = spotify.enable;
 
     user.packages = mkIfEnabled [pkgs.spotify-tui];
   };

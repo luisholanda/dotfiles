@@ -64,9 +64,6 @@
     home.projectDirs = [
       "~/Projects"
     ];
-    home.programs.eww.enable = true;
-    home.programs.eww.package = pkgs.eww-wayland;
-    home.programs.eww.configDir = config.dotfiles.configDir + "/eww";
 
     accounts.email.accounts = {
       personalGmail = rec {
@@ -116,6 +113,7 @@
       package = pkgs.pragmasevka;
       name = "Pragmasevka";
     };
+    sizes.desktop = 14;
   };
 
   documentation.man = {

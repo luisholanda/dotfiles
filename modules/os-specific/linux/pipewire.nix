@@ -9,11 +9,13 @@
 in {
   options.modules.services.pipewire.enable = mkEnableOption "pipewire";
 
-  config.services.pipewire = mkIf isLinux {
-    inherit (config.modules.services.pipewire) enable;
+  config = mkIf isLinux {
+    services.pipewire = {
+      inherit (config.modules.services.pipewire) enable;
 
-    pulse.enable = true;
-    jack.enable = false;
-    alsa.enable = true;
+      pulse.enable = true;
+      jack.enable = false;
+      alsa.enable = true;
+    };
   };
 }
