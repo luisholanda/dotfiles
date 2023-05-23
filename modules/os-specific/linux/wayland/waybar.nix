@@ -72,7 +72,7 @@ in {
         wireplumber = {
           format = "{volume}% {icon}";
           format-muted = "";
-          on-click = "${pkgs.helvum}/bin/helvum";
+          on-click = "${pkgs.easyeffects}/bin/easyeffects";
           format-icons = ["" "" ""];
         };
       };
