@@ -11,7 +11,7 @@
   modules = {
     editors = {
       neovim.enable = true;
-      emacs.doom.enable = true;
+      emacs.doom.enable = false;
     };
 
     games.steam.enable = true;
@@ -53,7 +53,7 @@
 
   user = {
     name = "luiscm";
-    description = "Luis C. M. de Holanda";
+    description = "Luis Holanda";
     # TODO: move these groups to their respective modules.
     groups = ["wheel" "networking" "wideo" "adbusers" "docker"];
     passwordFile = "${config.dotfiles.dir}/hosts/plutus/passfile";
@@ -89,8 +89,8 @@
       zathura
       slack
       swaybg
-      jetbrains.clion
       logseq
+      lutris
     ];
   };
 
