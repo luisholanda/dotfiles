@@ -4,8 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
-  inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkEnableOption;
 
   json = pkgs.formats.json {};
 
@@ -14,7 +13,7 @@
 in {
   options.modules.services.pipewire.enable = mkEnableOption "pipewire";
 
-  config = mkIf isLinux {
+  config = {
     services.pipewire = {
       inherit (config.modules.services.pipewire) enable;
 

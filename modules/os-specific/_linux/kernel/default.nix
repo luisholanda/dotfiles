@@ -5,10 +5,9 @@
   ...
 }: let
   inherit (config.host.hardware) isLaptop;
-  inherit (lib) mkIf mkDefault optionals;
+  inherit (lib) mkDefault optionals;
   inherit (lib) mapAttrsFlatten;
   inherit (pkgs) fetchpatch;
-  inherit (pkgs.stdenv) isLinux;
 
   buildPatch = name: {
     url,
@@ -48,7 +47,7 @@
     kernelPatches = cachyOsPatches (lib.versions.majorMinor defaultKernel.version);
   });
 in {
-  config = mkIf isLinux {
+  config = {
     boot.kernelPackages = mkDefault kernelPackages;
 
     boot.kernelParams = let

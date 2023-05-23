@@ -5,7 +5,6 @@
   ...
 }: let
   inherit (lib) mkIf mkEnableOption;
-  inherit (pkgs.stdenv) isLinux;
   inherit (builtins) fetchTarball;
 
   # TODO: move this to a overlay.
@@ -36,7 +35,7 @@ in {
 
     environment.sessionVariables.STEAM_EXTRA_COMPAT_TOOLS_PATHS = proton-ge;
 
-    user.home.extraConfig.systemd.user.services.steam = mkIf isLinux rec {
+    user.home.extraConfig.systemd.user.services.steam = rec {
       Unit = {
         Description = "A digital distribution platform";
         After = ["graphical-session.target"];

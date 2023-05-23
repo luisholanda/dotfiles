@@ -1,12 +1,5 @@
-{
-  lib,
-  pkgs,
-  ...
-}: let
-  inherit (lib) mkIf;
-  inherit (pkgs.stdenv) isLinux;
-in {
-  config.services.udev.extraRules = mkIf isLinux ''
+_: {
+  config.services.udev.extraRules = ''
     # SATA Active Link Power Management
     ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="max_performance"
 

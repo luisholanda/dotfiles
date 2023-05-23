@@ -1,16 +1,14 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }: let
   inherit (lib) mkIf mkDefault mkForce;
-  inherit (pkgs.stdenv) isLinux;
 in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
-  config = mkIf isLinux {
+  config = {
     boot.cleanTmpDir = mkDefault true;
 
     boot.loader.grub.enable = false;
