@@ -38,15 +38,6 @@
 
   defaultKernel = pkgs.linuxPackages_6_2.kernel;
   kernelPackages = pkgs.linuxPackagesFor (defaultKernel.override {
-    argsOverride = rec {
-      src = pkgs.fetchurl {
-        url = "mirror://kernel/linux/kernel/v6.x/linux-${version}.tar.xz";
-        sha256 = "sha256-DSNnhOYLh8eVNTWusUjdnnc7Jkld+pxtaWFfVP4A3Uc=";
-      };
-      version = "6.2.11";
-      modDirVersion = "6.2.11";
-    };
-
     stdenv = pkgs.clang13Stdenv;
     structuredExtraConfig = import ./_config.nix {
       inherit lib isLaptop;
