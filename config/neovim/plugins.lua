@@ -9,6 +9,11 @@ local plugins = {
 					require("custom.configs.null-ls")
 				end,
 			},
+			"simrat39/rust-tools.nvim",
+			{
+				"Saecki/crates.nvim",
+				event = "BufRead Cargo.toml",
+			},
 		},
 		config = function()
 			require("plugins.configs.lspconfig")
@@ -53,8 +58,11 @@ local plugins = {
 			},
 		},
 		opts = {
-			disable_signs = true,
+			disable_commit_confirmation = true,
 			use_magit_keybindings = true,
+			integrations = {
+				diffview = true,
+			},
 		},
 		config = function(_, opts)
 			require("neogit").setup(opts)

@@ -24,6 +24,7 @@ in {
     nodePackages.dockerfile-language-server-nodejs
 
     # Lua
+    luajitPackages.luacheck
     sumneko-lua-language-server
     stylua
 
@@ -33,6 +34,7 @@ in {
 
     # Nix
     nil
+    alejandra
 
     # Protobuffer
     buf
@@ -56,7 +58,6 @@ in {
 
     # Rust
     rust-analyzer
-    rustfmt
 
     # YAML/JSON
     nodePackages.yaml-language-server

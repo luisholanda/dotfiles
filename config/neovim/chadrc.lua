@@ -23,13 +23,6 @@ M.ui = {
 
 M.plugins = "custom.plugins"
 
-M.mappings = {
-	general = {
-		n = {
-			["<leader>sh"] = { "<cmd>split<CR>", "new horizontal split" },
-			["<leader>sv"] = { "<cmd>vsplit<CR>", "new vertical split" },
-		},
-	},
-}
+M.mappings = require("custom.mappings")
 
 return M
