@@ -2,8 +2,7 @@
   description = "My Nix configurations.";
 
   inputs = {
-    # NixOS/nixpkgs#221707 causes a cycle in the kernel build.
-    nixpkgs.url = "github:NixOS/nixpkgs?rev=fb243f0f35ebd29ad542ed9bd9400e6291ac3f8b";
+    nixpkgs.url = "github:NixOS/nixpkgs?rev=3e313808bd2e0a0669430787fb22e43b2f4bf8bf";
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager.url = "github:nix-community/home-manager";
