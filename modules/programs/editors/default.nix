@@ -62,5 +62,8 @@ in {
     # YAML/JSON
     nodePackages.yaml-language-server
     nodePackages.vscode-json-languageserver
+
+    # ShitHub Actions
+    actionlint
   ];
 }
