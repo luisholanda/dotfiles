@@ -35,7 +35,7 @@
 
   cachyOsPatches = buildPatchset ./_patchsets/cachyos.nix;
 
-  defaultKernel = pkgs.linuxPackages_6_2.kernel;
+  defaultKernel = pkgs.linuxPackages_6_3.kernel;
   kernelPackages = pkgs.linuxPackagesFor (defaultKernel.override {
     stdenv = pkgs.clang13Stdenv;
     structuredExtraConfig = import ./_config.nix {
