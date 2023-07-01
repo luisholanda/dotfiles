@@ -18,7 +18,6 @@ M.lsp = {
 		},
 	},
 	v = {
-
 		["<leader>ca"] = {
 			function()
 				vim.lsp.buf.code_action({ apply = true })

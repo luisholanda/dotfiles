@@ -52,7 +52,13 @@ local servers = {
 	pyright = {},
 	terraformls = {},
 	tsserver = {},
-	yamlls = {},
+	yamlls = {
+		settings = {
+			yaml = {
+				keyOrdering = false,
+			},
+		},
+	},
 	zls = {},
 }
 
@@ -74,7 +80,7 @@ rust_tools.setup({
 			local path = client.workspace_folders[1].name
 
 			if path == vim.fn.expand("~/Projects/pl") then
-				client.config.settings["rust-analyzer"].checkOnSave.overrideCommand = { "rust-analyzer-check" }
+				client.config.settings["rust-analyzer"].check.overrideCommand = { "rust-analyzer-check" }
 				client.config.settings["rust-analyzer"].linkedProjects = { string.format("%s/rust-project.json", path) }
 			end
 
@@ -98,9 +104,7 @@ rust_tools.setup({
 				check = {
 					command = "clippy",
 				},
-				checkOnSave = {
-					overrideCommand = {},
-				},
+				checkOnSave = true,
 				imports = {
 					prefix = "crate",
 				},
