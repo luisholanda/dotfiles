@@ -30,11 +30,10 @@ in {
 
       ${startUserService "waybar"}
       ${startUserService "easyeffects"}
+      ${optionalString steam.enable (startUserService "steam")}
 
       exec-once = ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
       exec = ${pkgs.swaybg}/bin/swaybg -m fill -i ${config.theme.wallpaper}
-
-      ${optionalString steam.enable "exec-once = systemctl start --user steam"}
 
       general {
         col.active_border = rgb(${active})

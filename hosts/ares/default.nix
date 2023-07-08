@@ -83,12 +83,12 @@
     };
 
     packages = with pkgs; [
+      bemenu
       calibre
       nomacs
       pcmanfm
       zathura
       slack
-      swaybg
       logseq
       lutris
     ];
