@@ -51,7 +51,6 @@ local servers = {
 	nil_ls = {},
 	pyright = {},
 	terraformls = {},
-	tsserver = {},
 	yamlls = {
 		settings = {
 			yaml = {

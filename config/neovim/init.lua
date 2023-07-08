@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 local hl_overrides = {
 	["@lsp.mod.mutable"] = {
 		underline = true,

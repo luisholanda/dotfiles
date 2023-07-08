@@ -54,7 +54,6 @@ in {
 
     # Typescript
     nodePackages.typescript
-    nodePackages.typescript-language-server
 
     # Rust
     rust-analyzer

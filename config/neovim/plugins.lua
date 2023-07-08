@@ -14,6 +14,26 @@ local plugins = {
 				"Saecki/crates.nvim",
 				event = "BufRead Cargo.toml",
 			},
+			{
+				"pmizio/typescript-tools.nvim",
+				dependencies = { "nvim-lua/plenary.nvim" },
+				opts = {
+					settings = {
+						tsserver_file_preferences = {
+							quotePreference = "double",
+							includeCompletionsForModuleExports = true,
+							includeCompletionsForImportStatements = true,
+							importModuleSpecifierEnding = "minimal",
+							includeInlayParameterNameHints = "all",
+							includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+							includeInlayFunctionParameterTypeHints = true,
+							includeInlayVariableTypeHints = true,
+							includeInlayPropertyDeclarationTypeHints = true,
+							includeInlayFunctionLikeReturnTypeHints = true,
+						},
+					},
+				},
+			},
 		},
 		config = function()
 			require("plugins.configs.lspconfig")
@@ -67,6 +87,47 @@ local plugins = {
 		config = function(_, opts)
 			require("neogit").setup(opts)
 		end,
+	},
+
+	-- UI stuff
+	{
+		"yorickpeterse/nvim-pqf",
+		opts = {
+			signs = {
+				error = "",
+				warning = "",
+				info = "",
+				hint = "",
+			},
+			show_multiple_lines = true,
+		},
+	},
+	{
+		"akinsho/git-conflict.nvim",
+		config = true,
+	},
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		enabled = false,
+	},
+	{
+		"shellRaining/hlchunk.nvim",
+		event = { "UIEnter" },
+		opts = {
+			blank = {
+				enable = false,
+			},
+			chunk = {
+				enable = false,
+			},
+			indent = {
+				chars = { "│", "¦", "┆", "┊" },
+				use_treesitter = true,
+			},
+			line_num = {
+				use_treesitter = true,
+			},
+		},
 	},
 }
 
