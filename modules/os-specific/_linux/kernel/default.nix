@@ -5,8 +5,8 @@
   ...
 }: let
   inherit (config.host.hardware) isLaptop;
-  inherit (lib) mkDefault optionals;
-  inherit (lib) mapAttrsFlatten;
+  inherit (lib) mkDefault optionals mapAttrsFlatten;
+  inherit (lib.my) flattenAttrs;
   inherit (pkgs) fetchpatch;
 
   buildPatch = name: {
@@ -37,7 +37,6 @@
 
   defaultKernel = pkgs.linuxPackages_6_3.kernel;
   kernelPackages = pkgs.linuxPackagesFor (defaultKernel.override {
-    stdenv = pkgs.clang13Stdenv;
     structuredExtraConfig = import ./_config.nix {
       inherit lib isLaptop;
       inherit (config.host.hardware) isIntel isAMD gpu;
@@ -64,17 +63,23 @@ in {
     in
       defaultParams ++ (optionals (!isLaptop) desktopParams);
 
-    boot.kernel.sysctl = {
-      "vm.swappiness" = 30;
-      "vm.vfs_cache_pressure" = 50;
-      "vm.dirty_ratio" = 10;
-      "vm.page-cluster" = 1;
-      "vm.dirty_background_ratio" = 5;
-      "kernel.nmi_watchdog" = 0;
-      "vm.ipv4.tcp_fastopen" = 3;
-      "net.core.default_qdisc" = "cake";
-      "net.ipv4.tcp_congestion_control" = "bbr2";
-      "kernel.split_lock_mitigate" = 0;
+    boot.kernel.sysctl = flattenAttrs {
+      kernel = {
+        nmi_watchdog = 0;
+        split_lock_mitigate = 0;
+      };
+      net = {
+        core.default_qdisc = "cake";
+        ipv4.tcp_congestion_control = "bbr2";
+      };
+      vm = {
+        dirty_background_ratio = 5;
+        dirty_ratio = 10;
+        ipv4.tcp_fastopen = 3;
+        page-cluster = 1;
+        swappiness = 30;
+        vfs_cache_pressure = 50;
+      };
     };
   };
 }

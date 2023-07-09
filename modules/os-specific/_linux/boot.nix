@@ -9,7 +9,7 @@ in {
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
   config = {
-    boot.cleanTmpDir = mkDefault true;
+    boot.tmp.cleanOnBoot = mkDefault true;
 
     boot.loader.grub.enable = false;
     boot.loader.systemd-boot.enable = mkDefault true;
