@@ -81,7 +81,10 @@ in rec {
   mkPkgOpt = default: name:
     mkOption {
       inherit default;
-      type = types.package;
+      type =
+        if default == null
+        then types.nullOr types.package
+        else types.package;
       description = "Package to use for ${name}.";
     };
   mkPkgsOpt = name:
