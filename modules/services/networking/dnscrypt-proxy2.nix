@@ -3,11 +3,12 @@
   lib,
   ...
 }: let
+  inherit (lib) optionals;
   inherit (lib.my) mkAttrsOpt mkEnableOpt;
 
   domainsBlacklist = builtins.fetchurl {
-    url = "https://raw.githubusercontent.com/notracking/hosts-blocklists/4089c2ba5dfa3d4e22b9c97e646f6f5a507f42bb/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt";
-    sha256 = "1hr7wc24fdqbbap7bcylnkcp5lrvn9nwafirg0faf37jih6lavcw";
+    url = "https://raw.githubusercontent.com/notracking/hosts-blocklists/2183517106ed70cbe50098817ebacd9469221d18/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt";
+    sha256 = "09sdyxpr4d0zakfqvsavgbay4l27si6b0bxyyzgimal6spb2byhh";
   };
 
   cfg = config.modules.services.dnscrypt-proxy2;
@@ -18,7 +19,8 @@ in {
   };
 
   config = {
-    networking.resolvconf.useLocalResolver = true;
+    networking.resolvconf.useLocalResolver = cfg.enable;
+    networking.nameservers = optionals (!cfg.enable) ["8.8.8.8" "8.8.4.4"];
     services.dnscrypt-proxy2 = {
       inherit (cfg) enable;
       settings =
@@ -26,7 +28,7 @@ in {
         // {
           server_names = ["cloudflare-security" "cloudflare-security-ipv6"];
           listen_addresses = ["127.0.0.1:53"];
-          max_clients = 512;
+          max_clients = 2048;
 
           ipv4_servers = true;
           dnscrypt_servers = true;
@@ -47,9 +49,8 @@ in {
 
           sources.public-resolvers = {
             urls = [
-              "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v2/public-resolvers.
-  md"
-              "https://download.dnscrypt.info/resolvers-list/v2/public-resolvers.md"
+              "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md"
+              "https://download.dnscrypt.info/dnscrypt-resolvers/v3/public-resolvers.md"
             ];
             cache_file = "public-resolvers.md";
             minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
