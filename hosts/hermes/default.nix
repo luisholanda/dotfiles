@@ -1,27 +1,21 @@
 {
   config,
   pkgs,
-  inputs,
   ...
-}: let
-  inherit (builtins) fetchurl;
-  inherit (inputs) hyprland;
-
-  webbPhoto = fetchurl {
-    url = "https://stsci-opo.org/STScI-01G7DB1FHPMJCCY59CQGZC1YJQ.png";
-    sha256 = "sha256:02514givrdssjkhj8m8kj8ndlz455968x14g3ghxvdwp29vmw16x";
-  };
-in {
+}: {
   imports = [./hardware.nix];
 
   host.hardware.isAMD = true;
   host.hardware.isLaptop = true;
 
+  theme.wallpaper = ../../wallpapers/oshinoko-eyes.jpg;
+
   modules = {
     editors = {
       neovim.enable = true;
-      emacs.doom.enable = true;
     };
+
+    hardware.bluetooth.enable = true;
 
     services = {
       audio.spotify.enable = true;
@@ -31,11 +25,7 @@ in {
 
       pipewire.enable = true;
 
-      sway.enable = true;
-      sway.wallpaper = webbPhoto;
-      sway.config.output.HDMI-A-1 = {
-        transform = "90";
-      };
+      hyprland.enable = true;
 
       clight.enable = true;
     };
@@ -51,7 +41,6 @@ in {
         ssh.always = false;
         addons = {
           delta.enable = true;
-          stack.enable = false;
         };
       };
 
@@ -64,11 +53,7 @@ in {
 
   services.resolved.enable = true;
 
-  theme.active = "dracula";
-
-  dotfiles = {
-    dir = /home/luiscm/.dotfiles;
-  };
+  dotfiles.dir = /home/luiscm/.dotfiles;
 
   user = {
     name = "luiscm";
@@ -99,31 +84,7 @@ in {
       };
     };
 
-    home.extraConfig.gtk = {
-      enable = true;
-      font.name = config.theme.fonts.family.sansSerif;
-      font.size = builtins.floor config.theme.fonts.size.ui;
-      cursorTheme = {
-        package = pkgs.quintom-cursor-theme;
-        name = "Quintom_Ink";
-        size = 16;
-      };
-      iconTheme.package = pkgs.gnome.adwaita-icon-theme;
-      iconTheme.name = "Adwaita";
-      theme = {
-        name = "Yaru";
-        package = pkgs.yaru-theme;
-      };
-    };
-    home.extraConfig.qt = {
-      enable = true;
-      platformTheme = "gtk";
-    };
     home.extraConfig.services.gnome-keyring.enable = true;
-    home.extraConfig.imports = [
-      hyprland.homeManagerModules.default
-    ];
-
     packages = with pkgs; [
       nomacs
       pcmanfm
@@ -137,13 +98,11 @@ in {
   };
 
   documentation = {
-    doc.enable = true;
-    man.generateCaches = true;
+    nixos.includeAllModules = false;
+    doc.enable = false;
+    man.generateCaches = false;
+    man.enable = false;
   };
-
-  programs.dconf.enable = true;
-
-  programs.hyprland.enable = true;
 
   programs.seahorse.enable = true;
   services.gnome.at-spi2-core.enable = true;
@@ -174,13 +133,8 @@ in {
     };
   };
 
-  services.greetd = {
-    enable = true;
-    settings.default_session = {
-      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd fish";
-      user = "greeter";
-    };
-  };
+  services.xserver.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
 
   # / is too small to build things in /tmp
   nix.envVars.TMPDIR = "/nix/tmp";
