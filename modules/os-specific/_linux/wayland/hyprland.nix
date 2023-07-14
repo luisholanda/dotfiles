@@ -17,6 +17,8 @@ in {
   options.modules.services.hyprland.enable = mkEnableOption "hyprland";
 
   config = mkIf config.modules.services.hyprland.enable {
+    environment.systemPackages = with pkgs; [bemenu];
+
     programs.hyprland = {
       enable = true;
       nvidiaPatches = isNVIDIA;
