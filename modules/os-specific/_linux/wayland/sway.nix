@@ -97,14 +97,6 @@ in {
 
     wallpaper = mkPathOpt "Wallpaper to use in Sway";
 
-    lock.settings = mkOption {
-      type = with types; attrsOf (oneOf [bool float int str]);
-      default = {
-        font = config.theme.fonts.family.sansSerif;
-        font-size = config.theme.fonts.size.ui;
-      };
-    };
-
     extraPackages = mkPkgsOpt "sway";
   };
 
