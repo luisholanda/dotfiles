@@ -88,6 +88,9 @@ in {
       html-tidy
       nodePackages.stylelint
 
+      # :tool docker
+      nodePackages.dockerfile-language-server-nodejs
+
       # :tool tree-sitter
       nodejs
     ];

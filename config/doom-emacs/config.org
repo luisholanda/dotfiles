@@ -1267,6 +1267,12 @@ Extra patterns:
 #+end_src
 
 ** Magit
+*** Fix =emacsql= recipe
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! emacsql :recipe (:host github :repo "magit/emacsql" :branch "main"))
+#+end_src
+
 *** Granular diffs
 
 #+begin_src emacs-lisp
@@ -1282,7 +1288,9 @@ Extra patterns:
 
 #+begin_src emacs-lisp
 (use-package magit-delta
-  :hook (magit-mode . magit-delta-mode))
+  :hook (magit-mode . magit-delta-mode)
+  :config
+  (setq magit-delta-delta-args (append magit-delta-delta-args '("--no-gitconfig"))))
 #+end_src
 
 ** Nix
@@ -1292,4 +1300,3 @@ Extra patterns:
 (use-package! lsp-nix
   :after lsp-mode)
 #+end_src
-
