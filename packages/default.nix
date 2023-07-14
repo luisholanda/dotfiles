@@ -7,13 +7,13 @@
   # Can't use pkgs.stdenv due to infinite recursion.
   inherit (lib) hasSuffix optionalAttrs;
   isLinux = hasSuffix "-linux" system;
+  callPackage = path: pkgs.callPackage path {};
 
   linuxPackages = {
-    rtl8188eu = pkgs.callPackage ./os-specific/linux/firmware/rtl8188eu.nix {};
+    rtl8188eu = callPackage ./os-specific/linux/firmware/rtl8188eu.nix;
   };
 in
   {
-    iosevka = pkgs.callPackage ./data/fonts/iosevka.nix {};
-    pragmasevka = pkgs.callPackage ./data/fonts/pragmasevka.nix {};
+    pragmasevka = callPackage ./data/fonts/pragmasevka.nix;
   }
   // (optionalAttrs isLinux linuxPackages)

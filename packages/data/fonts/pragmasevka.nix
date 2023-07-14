@@ -44,7 +44,7 @@
         number-sign = "slanted";
         capital-z = "curly-serifless";
         z = "curly-serifless";
-        zero = "reverse-slashed-split-oval";
+        zero = "reverse-slashed-split";
         underscore = "high";
         lig-ltgteq = "flat";
         lig-neq = "slightly-slanted";
@@ -95,9 +95,7 @@ in
     name = "pragmasevka-nerdfont";
     inherit (pragmasevka) version;
 
-    nativeBuildInputs = [
-      nerd-font-patcher
-    ];
+    nativeBuildInputs = [nerd-font-patcher];
 
     src = pragmasevka;
 
