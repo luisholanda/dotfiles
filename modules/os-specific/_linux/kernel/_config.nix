@@ -154,7 +154,6 @@ with lib.kernel; let
     video = {
       DRM_ACCEL = yes;
       DRM_RADEON = no;
-      DRM_AMDGPU = ifAMDGpu;
       DRM_AMD_DC_DCN = ifAMDGpu;
       DRM_AMD_DC_HDCP = ifAMDGpu;
       DRM_AMD_DC_SI = ifAMDGpu;
@@ -190,16 +189,6 @@ with lib.kernel; let
     sound = {
       SND_SOC_SOF_TOPLEVEL = no;
       SND_SOC_INTEL_SST_TOPLEVEL = ifIntel;
-
-      SND_SOC_AMD_ACP = ifAMD;
-      SND_SOC_AMD_ACP_COMMON = ifAMD;
-      SND_AMD_ACP_CONFIG = ifAMD;
-      SND_SOC_AMD_ACP3x = ifAMD;
-      SND_SOC_AMD_RENOIR = ifAMD;
-      SND_SOC_AMD_ACP5x = ifAMD;
-      SND_SOC_AMD_ACP6x = ifAMD;
-      SND_SOC_AMD_RPL_ACP6x = ifAMD;
-      SND_SOC_AMD_PS = ifAMD;
     };
 
     power = {
