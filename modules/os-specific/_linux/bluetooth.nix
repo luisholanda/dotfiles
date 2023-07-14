@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkOption mkDefault types;
+  inherit (lib) mkIf mkOption mkDefault types optional;
   inherit (lib.my) mkEnableOpt mkPkgOpt;
 
   cfg = config.modules.hardware.bluetooth;
@@ -14,14 +14,15 @@ in {
 
     firmware = mkPkgOpt null "bluetooth firmware";
     kernelModule = mkOption {
-      type = types.str;
+      type = types.nullOr types.str;
       description = "Kernel module representing the bluetooth firmware";
+      default = null;
     };
   };
 
   config = mkIf cfg.enable {
-    boot.extraModulePackages = [cfg.firmware];
-    boot.kernelModules = [cfg.kernelModule];
+    boot.extraModulePackages = optional (cfg.firmware != null) cfg.firmware;
+    boot.kernelModules = optional (cfg.kernelModule != null) cfg.kernelModule;
 
     hardware.bluetooth.enable = true;
     hardware.bluetooth.settings.General = mkDefault {
