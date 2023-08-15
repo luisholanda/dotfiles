@@ -35,7 +35,7 @@
 
   cachyOsPatches = buildPatchset ./_patchsets/cachyos.nix;
 
-  defaultKernel = pkgs.linuxPackages_6_3.kernel;
+  defaultKernel = pkgs.linuxPackages_6_4.kernel;
   kernelPackages = pkgs.linuxPackagesFor (defaultKernel.override {
     structuredExtraConfig = import ./_config.nix {
       inherit lib isLaptop;

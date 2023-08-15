@@ -22,7 +22,6 @@ with lib.kernel; let
   ifDesktop = enableIf (!isLaptop);
   ifAMDGpu = enableIf (!gpu.isNVIDIA && isAMD);
   ifIntelGpu = enableIf (!gpu.isNVIDIA && isIntel);
-  ifNouveauGpu = enableIf gpu.isNVIDIA;
 
   config = {
     cpu = {
@@ -79,6 +78,13 @@ with lib.kernel; let
       BLK_DEV_NVME = yes;
     };
 
+    inputs = {
+      INPUT_JOYSTICK = ifDesktop;
+      INPUT_TABLET = no;
+      INPUT_TOUCHSCREEN = no;
+      INPUT_MISC = no;
+    };
+
     ram = {
       ZSWAP = yes;
       ZBUD = no;
@@ -90,7 +96,7 @@ with lib.kernel; let
 
     networking = {
       TCP_CONG_BIC = no;
-      TCP_CONG_BBR = yes;
+      TCP_CONG_BBR2 = yes;
       TCP_CONG_CDG = no;
       TCP_CONG_CUBIC = no;
       TCP_CONG_DCTCP = no;
@@ -104,7 +110,7 @@ with lib.kernel; let
       TCP_CONG_VEGAS = no;
       TCP_CONG_YEAH = no;
       TCP_CONG_WESTWOOD = no;
-      DEFAULT_BBR = yes;
+      DEFAULT_BBR2 = yes;
       INFINIBAND = no;
       NET_SCH_FQ_CODEL = yes;
       NET_SCH_DEFAULT = yes;
@@ -125,30 +131,43 @@ with lib.kernel; let
     };
 
     filesystems = {
+      "9P_FS" = no;
+      AFFS_FS = no;
       AFS_FS = no;
+      BFS_FS = no;
       CEPH_FS = no;
       CIFS_FS = no;
+      EROFS_FS = no;
+      EXT2_FS = no;
+      EXT3_FS = no;
       F2FS_FS = yes;
       GFS2_FS = no;
+      HFS_FS = no;
+      HFSPLUS_FS = no;
       ISO9660_FS = no;
       JBD2_FS = no;
       JFS_FS = no;
-      OCFS2_FS = no;
+      MINIX_FS = no;
+      NFSD_FS = no;
+      NFS_FS = no;
       NFTS3_FS = no;
-      XFS_FS = yes;
       NILFS2_FS = no;
       NLS_FS = no;
-      NFSD_FS = no;
-      EXT2_FS = no;
-      EXT3_FS = no;
-      "9P_FS" = no;
+      OCFS2_FS = no;
+      OMFS_FS = no;
+      ORANGE_FS = no;
       REISERFS_FS = no;
+      SMGFS = no;
+      XFS_FS = yes;
       MISC_FILESYSTEMS = no;
     };
 
     thermals = {
       THERMAL_NETLINK = yes;
       INTEL_TCC_COOLING = ifIntel;
+      INT340X_THERMAL = ifIntel;
+      INTEL_SOC_DTS_THERMAL = ifIntel;
+      INTEL_SOC_DTS_IOSF_CORE = ifIntel;
     };
 
     video = {
@@ -160,7 +179,7 @@ with lib.kernel; let
       DRM_I915 = ifIntelGpu;
       DRM_I915_GVT = yes;
       DRM_I915_GVT_KVMGT = ifIntelGpu;
-      DRM_NOVEAU = ifNouveauGpu;
+      DRM_NOVEAU = no;
       DRM_GMA500 = no;
 
       DRM_SSD130X = no;
@@ -184,11 +203,20 @@ with lib.kernel; let
       FB_SAVAGE = no;
 
       LCP_CLASS_DEVICE = ifLaptop;
+
+      DRM_KUNIT_TEST = no;
     };
 
     sound = {
       SND_SOC_SOF_TOPLEVEL = no;
       SND_SOC_INTEL_SST_TOPLEVEL = ifIntel;
+    };
+
+    serial = {
+      N_GSM = no;
+      N_HDLC = no;
+      IPWIRELESS = no;
+      NOZOMI = no;
     };
 
     power = {
@@ -206,9 +234,42 @@ with lib.kernel; let
       MEDIA_TEST_SUPPORT = no;
     };
 
+    pinctrl = {
+      PINCTRL_BAYTRAIL = no;
+      PINCTRL_CHERRYVIEW = no;
+      PINCTRL_LYNXPOINT = ifIntel;
+      PINCTRL_MERRIFIELD = ifIntel;
+      PINCTRL_MOOREFIELD = ifIntel;
+      PINCTRL_ALDERLAKE = ifIntel;
+      PINCTRL_BROXTON = no;
+      PINCTRL_CANNONLAKE = ifIntel;
+      PINCTRL_CEDARFORK = ifIntel;
+      PINCTRL_DENVERTON = no;
+      PINCTRL_ELKHARTLAKE = no;
+      PINCTRL_EMMITSBURG = ifIntel;
+      PINCTRL_GEMINILAKE = ifIntel;
+      PINCTRL_ICELAKE = ifIntel;
+      PINCTRL_JASPERLAKE = ifIntel;
+      PINCTRL_LAKEFIELD = ifIntel;
+      PINCTRL_LEWISBURG = ifIntel;
+      PINCTRL_METEORLAKE = ifIntel;
+      PINCTRL_SUNRISEPOINT = ifIntel;
+      PINCTRL_TIGERLAKE = ifIntel;
+    };
+
     extras = {
       NUMA = no;
       BT_HS = yes;
+
+      CXL_BUS = no;
+      MFD_CORE = no;
+      NFC = no;
+      SPI = no;
+      FIREWIRE = no;
+      AUXDISPLAY = no;
+      RTC_CLASS = no;
+
+      DEBUG_INFO_BTF = mkForce no;
 
       KVM = no;
       XEN = no;

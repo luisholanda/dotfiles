@@ -11,9 +11,7 @@
   theme.wallpaper = ../../wallpapers/oshinoko-eyes.jpg;
 
   modules = {
-    editors = {
-      neovim.enable = true;
-    };
+    editors.neovim.enable = true;
 
     hardware.bluetooth.enable = true;
 
@@ -31,7 +29,6 @@
     };
 
     programs = {
-      alacritty.enable = false;
       brave.enable = true;
       fish.enable = true;
 
@@ -134,8 +131,9 @@
   };
 
   services.xserver.enable = true;
-  #services.xserver.displayManager.gdm.enable = true;
 
   # / is too small to build things in /tmp
   nix.envVars.TMPDIR = "/nix/tmp";
+
+  boot.kernelPackages = pkgs.linuxPackages_6_4;
 }

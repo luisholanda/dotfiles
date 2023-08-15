@@ -9,6 +9,9 @@
   haveRDWDeps = config.networking.networkmanager.enable;
 in {
   config = mkIf isLaptop {
+    boot.kernelModules = ["acpi_call"];
+    boot.extraModulePackages = with config.boot.kernelPackages; [acpi_call];
+
     services.logind = rec {
       lidSwitch = "suspend-then-hibernate";
       lidSwitchDocked = lidSwitch;
