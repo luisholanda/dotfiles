@@ -22,7 +22,6 @@ null_ls.setup({
 		b.formatting.black,
 		b.formatting.buf,
 		b.formatting.buildifier,
-		b.formatting.clang_format,
 		b.formatting.deno_fmt,
 		b.formatting.hclfmt,
 		b.formatting.prettier.with({ filetypes = { "html", "markdown", "css" } }),
