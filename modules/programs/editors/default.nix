@@ -18,7 +18,8 @@ in {
     bazel-buildtools
 
     # C/C++
-    clang-tools_15
+    ccls
+    clang-tools_16
 
     # Docker
     nodePackages.dockerfile-language-server-nodejs
