@@ -267,7 +267,6 @@ with lib.kernel; let
       SPI = no;
       FIREWIRE = no;
       AUXDISPLAY = no;
-      RTC_CLASS = no;
 
       DEBUG_INFO_BTF = mkForce no;
 

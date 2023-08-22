@@ -7,15 +7,12 @@ version: let
   });
 
   basePatches = {
-    "0001-bbr2" = "sha256-6VkPhCE+0xeT0GvbETgNxox/biaW45aCXeRDGG3sxm0=";
-    "0002-cachy" = "sha256-sI84iolAFdGwHa+n7SuNgEql4FNh6f7XkLzx5l5qwOI=";
-    "0006-sched" = "sha256-m/Dkt3gbgA4tV1yd1MEQo3c3/1zRuVHd8Q2CJQQxMMA=";
+    "0001-bbr2" = "sha256-KNNPcB+Yo9nxuJHbiHh0ayr6Wn9K34a+QFboAWyIMTQ=";
+    "0002-cachy" = "sha256-KqsgTfBlJv8AY0NBobfM6VcvzqU57LQ8q3Vtx5gtq/E=";
+    "0006-sched" = "sha256-1gJnGQ4qxLP+x2H/HQYl0bmEPAvZ1ytdQf9/El5gI5Y=";
     "0007-zstd-1.5.5" = "sha256-V8r3wjGumTVDe6ManBcb8ER5xM34Mlu9eWc36ByXDIo=";
   };
 
-  schedPatches = {
-    "sched/0001-EEVDF" = "sha256-kaUzCAP6Yrn+6T1Z3jrkirNDwapQpXIVJRhGkEpO+NI=";
-    "sched/0001-bore-eevdf" = "sha256-IFIzs9Vx2L1i18mbsj65q+18kr1c/UsJ8pLGP6IqVVU=";
-  };
+  schedPatches = {};
 in
   buildCachyOsPatches (basePatches // schedPatches)
