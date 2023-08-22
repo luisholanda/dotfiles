@@ -11,7 +11,6 @@
   modules = {
     editors = {
       neovim.enable = true;
-      emacs.doom.enable = false;
     };
 
     games.steam.enable = true;
@@ -47,15 +46,13 @@
 
   services.resolved.enable = true;
 
-  dotfiles = {
-    dir = /home/luiscm/.dotfiles;
-  };
+  dotfiles.dir = /home/luiscm/.dotfiles;
 
   user = {
     name = "luiscm";
     description = "Luis Holanda";
     # TODO: move these groups to their respective modules.
-    groups = ["wheel" "networking" "wideo" "adbusers" "docker"];
+    groups = ["wheel" "networking" "video" "adbusers" "docker"];
     passwordFile = "${config.dotfiles.dir}/hosts/plutus/passfile";
 
     # Run Bazel sandbox inside a tempfs.
@@ -84,17 +81,16 @@
 
     packages = with pkgs; [
       bemenu
-      calibre
       nomacs
       pcmanfm
       zathura
       slack
       logseq
-      lutris
+      #lutris
     ];
   };
 
-  theme.wallpaper = config.dotfiles.dir + "/wallpapers/girl-smile-face.png";
+  theme.wallpaper = config.dotfiles.dir + "/wallpapers/astral-express.jpg";
   theme.polarity = "dark";
   theme.fonts = {
     serif = {
@@ -113,7 +109,7 @@
       package = pkgs.pragmasevka;
       name = "Pragmasevka";
     };
-    sizes.desktop = 14;
+    sizes.desktop = 12;
   };
 
   documentation.man = {
@@ -121,6 +117,5 @@
     generateCaches = true;
   };
 
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_6_4;
 }

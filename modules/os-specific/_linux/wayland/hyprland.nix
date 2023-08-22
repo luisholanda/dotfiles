@@ -4,9 +4,8 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkDefault mkEnableOption optionalString;
+  inherit (lib) mkIf mkDefault mkEnableOption;
   inherit (config.host.hardware.gpu) isNVIDIA;
-  inherit (config.modules.games) steam;
   inherit (config.lib.stylix) colors;
 
   active = colors.base0A;
@@ -21,7 +20,7 @@ in {
 
     programs.hyprland = {
       enable = true;
-      nvidiaPatches = isNVIDIA;
+      enableNvidiaPatches = isNVIDIA;
       xwayland.enable = true;
     };
 
@@ -31,8 +30,6 @@ in {
       source = ${config.dotfiles.configDir}/hyprland.conf
 
       ${startUserService "waybar"}
-      ${startUserService "easyeffects"}
-      ${optionalString steam.enable (startUserService "steam")}
 
       exec-once = ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
       exec = ${pkgs.swaybg}/bin/swaybg -m fill -i ${config.theme.wallpaper}

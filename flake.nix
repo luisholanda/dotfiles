@@ -2,7 +2,7 @@
   description = "My Nix configurations.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs?rev=ce5e4a6ef2e59d89a971bc434ca8ca222b9c7f5e";
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager.url = "github:nix-community/home-manager";
@@ -27,7 +27,7 @@
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
     hyprland = {
-      url = "github:hyprwm/Hyprland";
+      url = "github:hyprwm/Hyprland?rev=41d9b6f0d72947de1b0871795f8d8af32d0e9f98";
       # build with your own instance of nixpkgs
       inputs.nixpkgs.follows = "nixpkgs";
     };

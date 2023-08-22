@@ -18,7 +18,7 @@ in {
 
   config = {
     fonts = {
-      enableDefaultFonts = true;
+      enableDefaultPackages = true;
       fontDir.enable = true;
 
       fontconfig.useEmbeddedBitmaps = true;
