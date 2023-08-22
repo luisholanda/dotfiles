@@ -14,7 +14,7 @@
     hintParams = ["-a" "qqq"];
 
     ligations = {
-      inherits = "default-calt";
+      inherits = "dlig";
       enables = [
         "eqslasheq"
         "kern-dotty"
@@ -41,6 +41,7 @@
     variants = {
       inherits = "ss08";
       design = {
+        apl-form = "enable";
         number-sign = "slanted";
         capital-z = "curly-serifless";
         z = "curly-serifless";
