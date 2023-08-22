@@ -100,7 +100,7 @@ in {
     extraPackages = mkPkgsOpt "sway";
   };
 
-  config = {
+  config = mkIf cfg.enable {
     host.laptop.gestures = let
       do = "${pkgs.ydotool}/bin/ydotool";
       swaymsg = "${pkgs.sway}/bin/swaymsg";
