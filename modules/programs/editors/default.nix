@@ -65,5 +65,9 @@ in {
 
     # ShitHub Actions
     actionlint
+
+    # DAP
+    lldb_16
+    llvmPackages_16.llvm
   ];
 }

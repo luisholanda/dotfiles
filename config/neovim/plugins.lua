@@ -1,5 +1,10 @@
+local function get_hl_color(hl)
+	return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl)), "fg", "gui")
+end
+
 ---@type NvPluginSpec[]
 local plugins = {
+	-- LSP stuff.
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -58,6 +63,18 @@ local plugins = {
 		},
 	},
 
+	-- DAP stuff.
+	{
+		"mfussenegger/nvim-dap",
+		config = function()
+			require("custom.configs.nvim-dap")
+		end,
+		dependencies = {
+			{ "LiadOz/nvim-dap-repl-highlights", config = true },
+			"rcarriga/nvim-dap-ui",
+		},
+	},
+
 	-- We install everything via Nix.
 	{
 		"williamboman/mason.nvim",
@@ -107,10 +124,6 @@ local plugins = {
 		config = true,
 	},
 	{
-		"lukas-reineke/indent-blankline.nvim",
-		enabled = false,
-	},
-	{
 		"shellRaining/hlchunk.nvim",
 		event = { "UIEnter" },
 		opts = {
@@ -119,15 +132,40 @@ local plugins = {
 			},
 			chunk = {
 				enable = false,
+				chars = {
+					horizontal_line = "─",
+					vertical_line = "│",
+					left_top = "╭",
+					left_bottom = "╰",
+					right_arrow = "─",
+				},
 			},
 			indent = {
+				enable = false,
 				chars = { "│", "¦", "┆", "┊" },
-				use_treesitter = true,
+				style = { get_hl_color("Whitespace") },
 			},
 			line_num = {
-				use_treesitter = true,
+				enable = false,
+				style = { get_hl_color("String") },
 			},
 		},
+	},
+	{
+		"smjonas/inc-rename.nvim",
+		cmd = "IncRename",
+		config = true,
+	},
+	{
+		"folke/noice.nvim",
+		event = "VeryLazy",
+		dependencies = {
+			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
+		},
+		config = function()
+			require("custom.configs.noice")
+		end,
 	},
 }
 

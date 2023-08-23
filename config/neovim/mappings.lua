@@ -16,6 +16,22 @@ M.lsp = {
 			end,
 			"LSP Code Actions",
 		},
+		["<leader>ra"] = {
+			":IncRename ",
+			"LSP Renaming",
+		},
+		["<leader>dd"] = {
+			function()
+				require("dapui").float_element()
+			end,
+			"Check element",
+		},
+		["<leader>dE"] = {
+			function()
+				require("dapui").eval(vim.fn.input("Expression: "))
+			end,
+			"Evaluate expression",
+		},
 	},
 	v = {
 		["<leader>ca"] = {
@@ -23,6 +39,12 @@ M.lsp = {
 				vim.lsp.buf.code_action({ apply = true })
 			end,
 			"LSP Code Actions",
+		},
+		["<leader>de"] = {
+			function()
+				require("dapui").eval()
+			end,
+			"Evaluate selection",
 		},
 	},
 }

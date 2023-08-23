@@ -69,11 +69,15 @@ for server, config in pairs(servers) do
 end
 
 rust_tools.setup({
-	inlay_hints = {
-		parameter_hints_prefix = "🠈",
-		other_hints_prefix = "🡆",
+	tools = {
+		inlay_hints = {
+			parameter_hints_prefix = "🠈",
+			other_hints_prefix = "🡆",
+		},
 	},
+	dap = { adapter = nil },
 	server = {
+		standalone = false,
 		on_attach = on_attach,
 		on_init = function(client)
 			local path = client.workspace_folders[1].name
