@@ -11,12 +11,12 @@
   proton-ge = let
     baseUrl = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download";
     name = "GE-Proton";
-    version = "8-3";
+    version = "8-13";
     releaseName = "${name}${version}";
   in
     fetchTarball {
       url = "${baseUrl}/${releaseName}/${releaseName}.tar.gz";
-      sha256 = "sha256:0qzx52gz5y18mcvlxb26scr7x4jk4zshrziykhy069099w61ldjx";
+      sha256 = "sha256:0nj7m55hag0cvjs40lfsj3627gqlrknps5xdg8f2m1rmdhfgky65";
     };
 in {
   options.modules.games.steam.enable = mkEnableOption "Steam";
@@ -32,8 +32,9 @@ in {
     };
     programs.gamescope.enable = true;
     programs.steam.enable = true;
-
-    environment.sessionVariables.STEAM_EXTRA_COMPAT_TOOLS_PATHS = proton-ge;
+    programs.steam.package = pkgs.steam.override {
+      extraEnv.STEAM_EXTRA_COMPAT_TOOLS_PATHS = proton-ge;
+    };
 
     user.home.extraConfig.systemd.user.services.steam = rec {
       Unit = {
