@@ -11,6 +11,7 @@
     stylix.url = "github:danth/stylix";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     stylix.inputs.home-manager.follows = "home-manager";
+    stylix.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
@@ -32,6 +33,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zls.url = "github:zigtools/zls";
+    zls.inputs.nixpkgs.follows = "nixpkgs";
+    zls.inputs.flake-utils.follows = "flake-utils";
+    zls.inputs.gitignore.follows = "pre-commit-hooks/gitignore";
+
     nvchad.url = "github:nvchad/nvchad/v2.0";
     nvchad.flake = false;
 
@@ -47,6 +53,7 @@
     pre-commit-hooks,
     emacs-overlay,
     hyprland,
+    zls,
     ...
   }: let
     dotfiles = import self.outPath;
@@ -90,6 +97,7 @@
             addCustomLibFunctions
             addFirefoxExtensions
             (final: prev: {
+              inherit (zls.packages.${system}) zls;
               unstable = final;
               waybar =
                 (prev.waybar.override {

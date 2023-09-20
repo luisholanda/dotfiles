@@ -63,6 +63,9 @@ in {
     nodePackages.yaml-language-server
     nodePackages.vscode-json-languageserver
 
+    # Zig
+    zls
+
     # ShitHub Actions
     actionlint
 
@@ -70,4 +73,11 @@ in {
     lldb_16
     llvmPackages_16.llvm
   ];
+
+  config.user.xdg.configFile."zls.json".text = builtins.toJSON {
+    warn_style = true;
+    inlay_hints_hide_redundant_param_names = true;
+    inlay_hints_hide_redundant_param_names_last_token = true;
+    highlight_global_var_declarations = true;
+  };
 }
