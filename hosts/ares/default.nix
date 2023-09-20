@@ -8,8 +8,10 @@
 in {
   imports = [./hardware.nix];
 
-  host.hardware.isIntel = true;
-  host.hardware.gpu.isNVIDIA = true;
+  host.hardware.isIntel =
+    true;
+  host.hardware.gpu.isNVIDIA =
+    true;
 
   modules = {
     editors = {
@@ -47,9 +49,11 @@ in {
     };
   };
 
-  services.resolved.enable = true;
+  services.resolved.enable =
+    true;
 
-  dotfiles.dir = /home/luiscm/.dotfiles;
+  dotfiles.dir =
+    /home/luiscm/.dotfiles;
 
   user = {
     name = "luiscm";
@@ -100,7 +104,8 @@ in {
     ];
   };
 
-  theme.wallpaper = config.dotfiles.dir + "/wallpapers/astral-express.jpg";
+  theme.wallpaper =
+    config.dotfiles.dir + "/wallpapers/bottle-miku.png";
   theme.polarity = "dark";
   theme.fonts = {
     serif = {
@@ -127,5 +132,6 @@ in {
     generateCaches = true;
   };
 
-  boot.kernelPackages = pkgs.linuxPackages_6_4;
+  boot.kernelPackages =
+    pkgs.linuxPackages_6_4;
 }
