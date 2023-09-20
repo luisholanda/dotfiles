@@ -22,6 +22,11 @@ in {
       fontDir.enable = true;
 
       fontconfig.useEmbeddedBitmaps = true;
+
+      fonts = with pkgs; [
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
+      ];
     };
 
     gtk.iconCache.enable = true;
@@ -45,15 +50,15 @@ in {
 
     theme.fonts = {
       serif = mkDefault {
-        package = pkgs.noto-fonts;
+        package = pkgs.noto-fonts-lgc-plus;
         name = "Noto Serif";
       };
       sansSerif = mkDefault {
-        package = pkgs.noto-fonts;
+        package = pkgs.noto-fonts-lgc-plus;
         name = "Noto Sans";
       };
       emoji = mkDefault {
-        package = pkgs.noto-fonts-emoji;
+        package = pkgs.noto-fonts-emoji-blob-bin;
         name = "Noto Color Emoji";
       };
       monospace = mkDefault {

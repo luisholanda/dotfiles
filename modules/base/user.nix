@@ -129,6 +129,8 @@ in {
 
     environment.shells = [cfg.shell];
 
+    user.packages = with pkgs; [xdg_utils httpie jq];
+
     home-manager = {
       # Install user packages in /etc/profiles instead. Necessary for
       # nixos-rebuild build-vm to work.
