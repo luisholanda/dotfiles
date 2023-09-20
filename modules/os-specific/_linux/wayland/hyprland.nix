@@ -11,12 +11,18 @@
   active = colors.base0A;
   inactive = colors.base03;
 
+  screenshot = pkgs.writeScriptBin "screenshot" ''
+    #!${pkgs.bash}/bin/bash
+    filename="screenshot-$(date +%F-%T)"
+    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Screenshots/$filename.png
+  '';
+
   startUserService = service: "exec-once = systemctl start --user ${service}";
 in {
   options.modules.services.hyprland.enable = mkEnableOption "hyprland";
 
   config = mkIf config.modules.services.hyprland.enable {
-    environment.systemPackages = with pkgs; [bemenu];
+    environment.systemPackages = with pkgs; [bemenu screenshot];
 
     programs.hyprland = {
       enable = true;
