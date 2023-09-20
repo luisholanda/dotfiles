@@ -27,7 +27,12 @@
       (n: v: "--set ${n} ${translateWrapArg v}")
       (wrapArgs.set or {});
 
-    wrapProgramArgs = builtins.concatStringsSep " " (flatten [set suffix prefix]);
+    appendFlags =
+      builtins.map
+      (n: "--append-flags ${n}")
+      (wrapArgs.appendFlags or []);
+
+    wrapProgramArgs = builtins.concatStringsSep " " (flatten [set suffix prefix appendFlags]);
   in
     runCommandLocal ((getName pkg) + "-wrapped") {
       src = [pkg];

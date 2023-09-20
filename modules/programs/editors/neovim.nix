@@ -10,10 +10,12 @@
 
   neovimConfigSource = config.dotfiles.configDir + "/neovim";
 
-  extraPackages = config.modules.editors.extraPackages ++ [pkgs.zig];
+  extraPackages =
+    config.modules.editors.extraPackages
+    ++ (with pkgs; [zig nodejs_20]);
 
   wrappedNeovim = wrapProgram pkgs.neovim-unwrapped {
-    prefix.PATH = makeBinPath extraPackages;
+    suffix.PATH = makeBinPath extraPackages;
   };
 
   nvimPath = "${makeBinPath [wrappedNeovim]}/nvim";
