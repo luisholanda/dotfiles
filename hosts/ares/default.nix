@@ -1,8 +1,11 @@
 {
   config,
   pkgs,
+  lib,
   ...
-}: {
+}: let
+  inherit (lib.my) wrapProgram;
+in {
   imports = [./hardware.nix];
 
   host.hardware.isIntel = true;
@@ -84,7 +87,14 @@
       nomacs
       pcmanfm
       zathura
-      slack
+      (wrapProgram slack {
+        appendFlags = [
+          "--enable-zero-copy"
+          "--use-angle=opengl"
+          "--ignore-gpu-blocklist"
+          "--ozone-platform=wayland"
+        ];
+      })
       logseq
       #lutris
     ];
