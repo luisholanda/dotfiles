@@ -33,11 +33,11 @@
     "cachyos-ananicy-rules": {
       "flake": false,
       "locked": {
-        "lastModified": 1694794058,
-        "narHash": "sha256-vns0jJe2hApl9sDyIEcaa8VXwG+XaCKnGsVy+WrF4C0=",
+        "lastModified": 1695394104,
+        "narHash": "sha256-OcBJ7ZaxL/O/UvdMIZ4VMf2/2QzFQC8Qvqp7HdRW4Hs=",
         "owner": "cachyos",
         "repo": "ananicy-rules",
-        "rev": "60d143184d9ccb58984e7dda93d1568fc4291fe7",
+        "rev": "9c71634650cbd886522ddcee4d07405b1acf5edd",
         "type": "github"
       },
       "original": {
@@ -93,11 +93,11 @@
       },
       "locked": {
         "dir": "repos/rycee/pkgs/firefox-addons",
-        "lastModified": 1695173588,
-        "narHash": "sha256-KpzbEnY3pzAgkRYUiE/ysIhZSH7WWwHj6FubKn0XjE4=",
+        "lastModified": 1695601480,
+        "narHash": "sha256-0GrIG3BtDTXw5J0PXEnglx5imnLN2kRKKYRennlA9PE=",
         "owner": "nix-community",
         "repo": "nur-combined",
-        "rev": "ae8e936fb204290774bdb97a7c3db238913fec48",
+        "rev": "07c9637b43fa0b60b7fd7ee3e3c311d430309292",
         "type": "github"
       },
       "original": {
@@ -216,11 +216,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1695158069,
-        "narHash": "sha256-bLenMfnHKs0O7kQyLqnLGfrywFMa9BGcJ5Uk9+d0tkU=",
+        "lastModified": 1695550077,
+        "narHash": "sha256-xoxR/iY69/3lTnnZDP6gf3J46DUKPcf+Y1jH03tfZXE=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6f88243322c315360c1f31a8fc6c43006db51465",
+        "rev": "a88df2fb101778bfd98a17556b3a2618c6c66091",
         "type": "github"
       },
       "original": {
@@ -282,13 +282,13 @@
     "known_folders": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-U/h4bVarq8CFKbFyNXKl3vBRPubYooLxA1xUz3qMGPE=",
+        "narHash": "sha256-bZfn+jgCzrtm8vKPDDMNWLkJYoo7vKxZu+e2tGvSGHY=",
         "type": "tarball",
-        "url": "https://github.com/ziglibs/known-folders/archive/fa75e1bc672952efa0cf06160bbd942b47f6d59b.tar.gz"
+        "url": "https://github.com/ziglibs/known-folders/archive/a564f582122326328dad6b59209d070d57c4e6ae.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://github.com/ziglibs/known-folders/archive/fa75e1bc672952efa0cf06160bbd942b47f6d59b.tar.gz"
+        "url": "https://github.com/ziglibs/known-folders/archive/a564f582122326328dad6b59209d070d57c4e6ae.tar.gz"
       }
     },
     "langref": {
@@ -351,11 +351,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694364351,
-        "narHash": "sha256-oadhSCqopYXxURwIA6/Anpe5IAG11q2LhvTJNP5zE6o=",
+        "lastModified": 1695576016,
+        "narHash": "sha256-71KxwRhTfVuh7kNrg3/edNjYVg9DCyKZl2QIKbhRggg=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "4f883a76282bc28eb952570afc3d8a1bf6f481d7",
+        "rev": "cb770e93516a1609652fa8e945a0f310e98f10c0",
         "type": "github"
       },
       "original": {
@@ -495,11 +495,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694952442,
-        "narHash": "sha256-9CblLz91gHuz5NTrZcW/Q53wT0i1N3Px5xKjpJGmm/k=",
+        "lastModified": 1695125316,
+        "narHash": "sha256-9Ewco7m4zgajBhppCM1mEmQE/K6ObkbwUhtJ3lJlfto=",
         "owner": "mitchellh",
         "repo": "zig-overlay",
-        "rev": "2689ccaadb1737efa23398844efef1fc73ad7fa4",
+        "rev": "078666381440c3303566a8a0f34628703202b54e",
         "type": "github"
       },
       "original": {
@@ -527,11 +527,11 @@
         "zig-overlay": "zig-overlay"
       },
       "locked": {
-        "lastModified": 1694982281,
-        "narHash": "sha256-lWH0K8eVgoZfN9ZBDWUVF9XtZ6VJSPRGhW/NQy4XSok=",
+        "lastModified": 1695563712,
+        "narHash": "sha256-S0UB8QNu552llIvu5MorrQ4dbzwv1G4KhSk6gU26pwY=",
         "owner": "zigtools",
         "repo": "zls",
-        "rev": "14f03d9c679b988d078d9b25e8fbf0596fc05bff",
+        "rev": "09e0753d379ff8ed595fc28bb324e692b981cedf",
         "type": "github"
       },
       "original": {

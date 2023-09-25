@@ -155,7 +155,6 @@
           };
       in {
         ares = mkHost' ./hosts/ares;
-        plutus = mkHost' ./hosts/plutus;
         hermes = mkHost' ./hosts/hermes;
       };
     });
