@@ -11,12 +11,12 @@
   proton-ge = let
     baseUrl = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download";
     name = "GE-Proton";
-    version = "8-13";
+    version = "8-24";
     releaseName = "${name}${version}";
   in
     fetchTarball {
       url = "${baseUrl}/${releaseName}/${releaseName}.tar.gz";
-      sha256 = "sha256:0nj7m55hag0cvjs40lfsj3627gqlrknps5xdg8f2m1rmdhfgky65";
+      sha256 = "sha256:1ygliy3d2yy0662jkij2g185gsxwq9c0dki8vkyjv0f0lkis3jjb";
     };
 in {
   options.modules.games.steam.enable = mkEnableOption "Steam";
