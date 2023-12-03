@@ -22,7 +22,7 @@ in {
   options.modules.services.hyprland.enable = mkEnableOption "hyprland";
 
   config = mkIf config.modules.services.hyprland.enable {
-    environment.systemPackages = with pkgs; [bemenu screenshot];
+    environment.systemPackages = with pkgs; [bemenu screenshot wl-clipboard];
 
     programs.hyprland = {
       enable = true;
@@ -32,6 +32,7 @@ in {
 
     services.xserver.displayManager.defaultSession = mkDefault "hyprland";
 
+    user.sessionVariables.NIXOS_OZONE_WL = 1;
     user.xdg.configFile."hypr/hyprland.conf".text = ''
       source = ${config.dotfiles.configDir}/hyprland.conf
 
