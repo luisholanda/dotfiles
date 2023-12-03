@@ -88,6 +88,7 @@ in {
 
     packages = with pkgs; [
       bemenu
+      discord
       nomacs
       pcmanfm
       zathura
