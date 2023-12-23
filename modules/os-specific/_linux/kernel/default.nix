@@ -35,7 +35,7 @@
 
   cachyOsPatches = buildPatchset ./_patchsets/cachyos.nix;
 
-  defaultKernel = pkgs.linuxPackages_6_4.kernel;
+  defaultKernel = pkgs.linuxPackages_6_6.kernel;
   kernelPackages = pkgs.linuxPackagesFor (defaultKernel.override {
     structuredExtraConfig = import ./_config.nix {
       inherit lib isLaptop;
@@ -47,7 +47,7 @@
   });
 in {
   config = {
-    boot.kernelPackages = mkDefault kernelPackages;
+    boot.kernelPackages = pkgs.linuxPackages_6_6;
 
     boot.kernelParams = let
       defaultParams = [

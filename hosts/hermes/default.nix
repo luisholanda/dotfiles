@@ -50,7 +50,7 @@
 
   services.resolved.enable = true;
 
-  dotfiles.dir = /home/luiscm/.dotfiles;
+  dotfiles.dir = /home/luiscm/dotfiles;
 
   user = {
     name = "luiscm";

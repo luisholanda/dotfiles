@@ -9,7 +9,7 @@ in {
 
   config = {
     programs.gnupg.agent.enable = true;
-    programs.gnupg.agent.pinentryFlavor = "gtk2";
+    programs.gnupg.agent.pinentryFlavor = "qt";
     user.home.programs.gpg = {
       inherit (config.modules.programs.gpg) enable;
 

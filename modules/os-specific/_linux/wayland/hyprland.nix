@@ -5,7 +5,6 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkEnableOption;
-  inherit (config.host.hardware.gpu) isNVIDIA;
   inherit (config.lib.stylix) colors;
 
   active = colors.base0A;
@@ -26,7 +25,6 @@ in {
 
     programs.hyprland = {
       enable = true;
-      enableNvidiaPatches = isNVIDIA;
       xwayland.enable = true;
     };
 
@@ -44,8 +42,6 @@ in {
       general {
         col.active_border = rgb(${active})
         col.inactive_border = rgb(${inactive})
-        col.group_border = rgb(${inactive})
-        col.group_border_active = rgb(${active})
       }
     '';
   };
