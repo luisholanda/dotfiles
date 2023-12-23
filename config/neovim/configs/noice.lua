@@ -1,8 +1,6 @@
 --- @type NoiceConfig
 local opts = {
-	cmdline = {
-		view = "cmdline",
-	},
+	cmdline = { enabled = false },
 	messages = { enabled = false },
 	presets = {
 		bottom_search = true,

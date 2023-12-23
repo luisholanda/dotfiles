@@ -14,6 +14,29 @@ local plugins = {
 					require("custom.configs.null-ls")
 				end,
 			},
+			{
+				"mrcjkb/haskell-tools.nvim",
+				version = "^3", -- Recommended
+				ft = { "haskell", "lhaskell", "cabal", "cabalproject" },
+        config = function (_, _)
+          vim.g.haskell_tools = {
+            hls = {
+              default_settings = {
+                haskell = {
+                  cabalFormattingProvider = "cabal-fmt",
+                  formattingProvider = "ormolu",
+                  plugin = {
+                    cabalFmt = { globalOn = true },
+                    explicitFixity = { globalOn = true },
+                    hlint = { globalOn = true },
+                    ormolu = { globalOn = true },
+                  }
+                }
+              }
+            }
+          }
+        end,
+			},
 			"simrat39/rust-tools.nvim",
 			{
 				"Saecki/crates.nvim",
