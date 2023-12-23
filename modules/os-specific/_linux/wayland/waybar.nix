@@ -20,7 +20,7 @@ in {
       mainBar = {
         layer = "top";
         position = "top";
-        output = ["DP-1"];
+        output = ["HDMI-A-1"];
         ipc = sway.enable;
         modules-left = [
           "temperature"

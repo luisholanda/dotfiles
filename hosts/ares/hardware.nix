@@ -49,10 +49,6 @@ in {
     ];
   };
 
-  swapDevices = [
-    {device = "/dev/disk/by-uuid/e6fea5d7-b218-4902-a0bd-9b5bd1bf2c59";}
-  ];
-
   hardware = {
     brillo.enable = true;
     ksm.enable = true;

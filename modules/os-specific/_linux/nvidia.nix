@@ -6,6 +6,7 @@
 }: let
   inherit (lib.my) mkBoolOpt;
   inherit (lib) mkIf;
+  inherit (config.boot.kernelPackages) nvidiaPackages;
 
   modprobe = "${pkgs.kmod}/bin/kmod";
 in {
@@ -14,7 +15,8 @@ in {
   config = mkIf config.host.hardware.gpu.isNVIDIA {
     services.xserver.videoDrivers = ["nvidia"];
     hardware.opengl.extraPackages = with pkgs; [vaapiVdpau nvidia-vaapi-driver];
-    hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+    hardware.nvidia.package = nvidiaPackages.vulkan_beta;
+    hardware.nvidia.nvidiaPersistenced = true;
 
     boot.extraModprobeConfig = ''
       options nvidia NVreg_UsePageAttributeTable=1 NVreg_InitializeSystemMemoryAllocations=0 NVreg_DynamicPowerManagement=0x02
@@ -24,6 +26,13 @@ in {
     boot.initrd.kernelModules = ["nvidia" "nvidia_modeset" "nvidia-uvm" "nvidia_drm"];
 
     boot.blacklistedKernelModules = ["i915"];
+
+    boot.kernelParams = [
+      "rcutree.rcu_idle_gp_delay=1"
+      "acpi_osi=!"
+      "acpi_osi='Linux'"
+      "pcie_aspm=off"
+    ];
 
     # Force Vulkan to use the nvidia card, otherwise, it will use LLVMpipe by default.
     #environment.variables.VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";

@@ -8,10 +8,8 @@
 in {
   imports = [./hardware.nix];
 
-  host.hardware.isIntel =
-    true;
-  host.hardware.gpu.isNVIDIA =
-    true;
+  host.hardware.isIntel = true;
+  host.hardware.gpu.isAMD = true;
 
   modules = {
     editors = {
@@ -21,7 +19,6 @@ in {
     games.steam.enable = true;
 
     services = {
-      audio.spotify.enable = true;
       dnscrypt-proxy2.enable = true;
       docker.enable = true;
 
@@ -53,7 +50,7 @@ in {
     true;
 
   dotfiles.dir =
-    /home/luiscm/.dotfiles;
+    /home/luiscm/dotfiles;
 
   user = {
     name = "luiscm";
@@ -92,6 +89,7 @@ in {
       nomacs
       pcmanfm
       zathura
+      jetbrains.rust-rover
       (wrapProgram slack {
         appendFlags = [
           "--enable-zero-copy"
@@ -100,7 +98,9 @@ in {
           "--ozone-platform=wayland"
         ];
       })
-      logseq
+      (wrapProgram logseq {
+        prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
+      })
       #lutris
     ];
   };
@@ -132,7 +132,4 @@ in {
     enable = true;
     generateCaches = true;
   };
-
-  boot.kernelPackages =
-    pkgs.linuxPackages_6_4;
 }
