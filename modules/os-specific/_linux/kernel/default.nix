@@ -5,49 +5,11 @@
   ...
 }: let
   inherit (config.host.hardware) isLaptop;
-  inherit (lib) mkDefault optionals mapAttrsFlatten;
+  inherit (lib) optionals;
   inherit (lib.my) flattenAttrs;
-  inherit (pkgs) fetchpatch;
-
-  buildPatch = name: {
-    url,
-    sha256,
-  }: {
-    inherit name;
-    patch =
-      if builtins.isPath url
-      then url
-      else
-        fetchpatch {
-          inherit url sha256;
-          name = name + ".patch";
-        };
-  };
-  buildPatchset = path: args: let
-    patches = let
-      mod = import path;
-    in
-      if builtins.isFunction mod
-      then mod args
-      else mod;
-  in
-    mapAttrsFlatten buildPatch patches;
-
-  cachyOsPatches = buildPatchset ./_patchsets/cachyos.nix;
-
-  defaultKernel = pkgs.linuxPackages_6_6.kernel;
-  kernelPackages = pkgs.linuxPackagesFor (defaultKernel.override {
-    structuredExtraConfig = import ./_config.nix {
-      inherit lib isLaptop;
-      inherit (config.host.hardware) isIntel isAMD gpu;
-      inherit (pkgs.stdenv.targetPlatform) isx86;
-    };
-    ignoreConfigErrors = true;
-    kernelPatches = cachyOsPatches (lib.versions.majorMinor defaultKernel.version);
-  });
 in {
   config = {
-    boot.kernelPackages = pkgs.linuxPackages_6_6;
+    boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
 
     boot.kernelParams = let
       defaultParams = [

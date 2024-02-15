@@ -5,19 +5,6 @@
   ...
 }: let
   inherit (lib) mkIf mkEnableOption;
-  inherit (builtins) fetchTarball;
-
-  # TODO: move this to a overlay.
-  proton-ge = let
-    baseUrl = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download";
-    name = "GE-Proton";
-    version = "8-24";
-    releaseName = "${name}${version}";
-  in
-    fetchTarball {
-      url = "${baseUrl}/${releaseName}/${releaseName}.tar.gz";
-      sha256 = "sha256:1ygliy3d2yy0662jkij2g185gsxwq9c0dki8vkyjv0f0lkis3jjb";
-    };
 in {
   options.modules.games.steam.enable = mkEnableOption "Steam";
 
@@ -28,13 +15,15 @@ in {
         softrealtime = "auto";
         renice = 18;
       };
-      gpu.apply_gpu_optimisations = "accept-responsibility";
+      gpu = {
+        apply_gpu_optimisations = "accept-responsibility";
+        amd_performance_level = "high";
+      };
     };
     programs.gamescope.enable = true;
+    programs.gamescope.package = pkgs.gamescope_git;
     programs.steam.enable = true;
-    programs.steam.package = pkgs.steam.override {
-      extraEnv.STEAM_EXTRA_COMPAT_TOOLS_PATHS = proton-ge;
-    };
+    chaotic.steam.extraCompatPackages = with pkgs; [proton-ge-custom];
 
     user.home.extraConfig.systemd.user.services.steam = rec {
       Unit = {

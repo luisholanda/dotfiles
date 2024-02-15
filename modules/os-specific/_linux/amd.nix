@@ -18,6 +18,7 @@ in {
       hardware.opengl.driSupport = true;
       hardware.opengl.driSupport32Bit = true;
       environment.variables.AMD_VULKAN_ICD = "RADV";
+      chaotic.mesa-git.enable = true;
     })
     (mkIf isAMD {
       hardware.cpu.amd.updateMicrocode = true;

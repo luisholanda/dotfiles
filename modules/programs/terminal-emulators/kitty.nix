@@ -25,8 +25,6 @@ in {
         focus_follows_mouse = true;
         repaint_delay = 3;
         enable_audio_bell = false;
-        window_border_width = 2;
-        window_padding_width = 2;
         hide_window_decorations = true;
         resize_draw_strategy = "scale";
         tab_bar_style = "separator";

@@ -14,6 +14,7 @@ in {
   modules = {
     editors = {
       neovim.enable = true;
+      helix.enable = true;
     };
 
     games.steam.enable = true;
@@ -123,9 +124,10 @@ in {
     };
     monospace = {
       package = pkgs.pragmasevka;
-      name = "Pragmasevka";
+      name = "Pragmasevka Nerd Font";
     };
     sizes.desktop = 12;
+    sizes.terminal = 11;
   };
 
   documentation.man = {

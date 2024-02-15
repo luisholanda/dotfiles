@@ -33,16 +33,22 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zig-overlay.url = "github:mitchellh/zig-overlay";
+    zig-overlay.inputs.flake-utils.follows = "flake-utils";
+    zig-overlay.inputs.nixpkgs.follows = "nixpkgs";
+
     zls.url = "github:zigtools/zls";
     zls.inputs.nixpkgs.follows = "nixpkgs";
     zls.inputs.flake-utils.follows = "flake-utils";
     zls.inputs.gitignore.follows = "pre-commit-hooks/gitignore";
+    zls.inputs.zig-overlay.follows = "zig-overlay";
 
     nvchad.url = "github:nvchad/nvchad/v2.0";
     nvchad.flake = false;
 
-    cachyos-ananicy-rules.url = "github:cachyos/ananicy-rules";
-    cachyos-ananicy-rules.flake = false;
+    chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    chaotic.inputs.home-manager.follows = "home-manager";
+    chaotic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -54,6 +60,7 @@
     emacs-overlay,
     hyprland,
     zls,
+    chaotic,
     ...
   }: let
     dotfiles = import self.outPath;
@@ -149,6 +156,7 @@
           inputs.home-manager.nixosModule
           inputs.stylix.nixosModules.stylix
           hyprland.nixosModules.default
+          chaotic.nixosModules.default
           {
             config.nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
           }

@@ -3,14 +3,14 @@ final: _: let
 in {
   rust-analyzer-unwrapped = rustPlatform.buildRustPackage rec {
     pname = "rust-analyzer-unwrapped";
-    version = "2023-11-27";
-    cargoSha256 = "sha256-nqrtveKwkPpszxBmKGgVuooSMw68HBR2zLvxb+0GU6k=";
+    version = "2024-01-29";
+    cargoSha256 = "sha256-3f+Nc2HXCQsaZ+FFSH7ML0o1yikZWhsRZmA8JtBc2TY=";
 
     src = fetchFromGitHub {
       owner = "rust-lang";
       repo = "rust-analyzer";
       rev = version;
-      sha256 = "sha256-pOz99NESIGosyt19tqNw7gfS6NQJtFY0kGF3rFV0bZ0=";
+      sha256 = "sha256-6K5rK1b2APQfXOrC+Hm+0QcyfPVt+TV81Q6Fd/QjMlQ=";
     };
 
     cargoBuildFlags = ["--bin" "rust-analyzer" "--bin" "rust-analyzer-proc-macro-srv"];
