@@ -18,7 +18,11 @@ in {
 
     package = wrappedHelix;
 
-    languages = [
+    languages.language-servers.pyright-langserver = {
+      command = "pyright-langserver";
+      args = ["--stdio"];
+    };
+    languages.language = [
       {
         name = "skylark";
         scope = "scope.python";
@@ -33,10 +37,7 @@ in {
       }
       {
         name = "python";
-        language-server = {
-          command = "pyright-langserver";
-          args = ["--stdio"];
-        };
+        language-servers = ["pyright-langserver"];
       }
     ];
   };
