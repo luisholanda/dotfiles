@@ -43,7 +43,7 @@ in {
 
     # Python
     black
-    nodePackages.pyright
+    pylyzer
     python310Packages.isort
 
     # Shell
