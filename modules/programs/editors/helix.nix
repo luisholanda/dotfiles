@@ -49,25 +49,12 @@ in {
         };
         run.enable = false;
       };
-      linkedProjects = [];
       references.excludeImports = true;
     };
     languages.language-servers.yaml-language-server.config = {
       yaml.keyOrdering = false;
     };
     languages.language = [
-      {
-        name = "skylark";
-        scope = "scope.python";
-        file-types = ["bazel" "bzl" "BUILD" "WORKSPACE"];
-        roots = [];
-        comment-token = "#";
-        indent = {
-          tab-width = 4;
-          unit = "    ";
-        };
-        grammar = "python";
-      }
       {
         name = "python";
         language-servers = ["pylyzer"];

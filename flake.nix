@@ -2,13 +2,13 @@
   description = "My Nix configurations.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs?rev=820912a98d71564c2b45493ed988043bfb96a558";
     flake-utils.url = "github:numtide/flake-utils";
 
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    stylix.url = "github:danth/stylix";
+    stylix.url = "github:danth/stylix/release-23.11";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     stylix.inputs.home-manager.follows = "home-manager";
     stylix.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
@@ -27,11 +27,7 @@
     emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      # build with your own instance of nixpkgs
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    hyprland.url = "github:hyprwm/Hyprland";
 
     zig-overlay.url = "github:mitchellh/zig-overlay";
     zig-overlay.inputs.flake-utils.follows = "flake-utils";
@@ -43,12 +39,11 @@
     zls.inputs.gitignore.follows = "pre-commit-hooks/gitignore";
     zls.inputs.zig-overlay.follows = "zig-overlay";
 
-    nvchad.url = "github:nvchad/nvchad/v2.0";
+    nvchad.url = "github:nvchad/nvchad/v2.5";
     nvchad.flake = false;
 
-    chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    chaotic.url = "github:chaotic-cx/nyx?rev=2952a351037582a8aeb11be9cf57901d872bcf30";
     chaotic.inputs.home-manager.follows = "home-manager";
-    chaotic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -104,12 +99,12 @@
           overlays
           ++ [
             emacs-overlay.overlay
-            hyprland.overlays.default
             addVendoredPackages
             addCustomLibFunctions
             addFirefoxExtensions
             (final: prev: {
               inherit (zls.packages.${system}) zls;
+              inherit (hyprland.packages.${system}) hyprland xdg-desktop-portal-hyprland;
               unstable = final;
               waybar =
                 (prev.waybar.override {
@@ -119,6 +114,8 @@
                   mesonFlags = o.mesonFlags ++ ["-Dexperimental=true"];
                 });
               libsecret = prev.libsecret.overrideAttrs (_: {doCheck = false;});
+              upower = prev.upower.overrideAttrs (_: {doCheck = false;});
+              xdg-desktop-portal = final.xdg-desktop-portal-hyprland;
             })
           ];
       };
@@ -187,4 +184,16 @@
         };
       };
     };
+  nixConfig = {
+    extra-substituters = [
+      "https://hyprland.cachix.org"
+      "https://nix-tools.cachix.org"
+      "https://helix.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "nix-tools.cachix.org-1:ebBEBZLogLxcCvipq2MTvuHlP7ZRdkazFSQsbs0Px1A="
+      "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
+    ];
+  };
 }

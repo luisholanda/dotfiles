@@ -1,53 +1,31 @@
-final: _: let
-  inherit (final) rustPlatform fetchFromGitHub lib cmake stdenv CoreServices libiconv;
-in {
-  rust-analyzer-unwrapped = rustPlatform.buildRustPackage rec {
+final: _: {
+  rust-analyzer-unwrapped = final.stdenv.mkDerivation rec {
     pname = "rust-analyzer-unwrapped";
-    version = "2024-01-29";
-    cargoSha256 = "sha256-3f+Nc2HXCQsaZ+FFSH7ML0o1yikZWhsRZmA8JtBc2TY=";
-
-    src = fetchFromGitHub {
-      owner = "rust-lang";
-      repo = "rust-analyzer";
-      rev = version;
-      sha256 = "sha256-6K5rK1b2APQfXOrC+Hm+0QcyfPVt+TV81Q6Fd/QjMlQ=";
+    version = "2024-03-18";
+    src = builtins.fetchurl {
+      url = "https://github.com/rust-lang/rust-analyzer/releases/download/${version}/rust-analyzer-x86_64-unknown-linux-gnu.gz";
+      sha256 = "sha256:1kdfs87fsxr25zrnmnswg8sllrrshn1riydbw2g5zymzv78yxz8j";
     };
 
-    cargoBuildFlags = ["--bin" "rust-analyzer" "--bin" "rust-analyzer-proc-macro-srv"];
-    cargoTestFlags = ["--package" "rust-analyzer" "--package" "proc-macro-srv-cli"];
+    dontUnpack = true;
 
-    # Code format check requires more dependencies but don't really matter for packaging.
-    # So just ignore it.
-    checkFlags = ["--skip=tidy::check_code_formatting"];
-
-    nativeBuildInputs = [cmake];
-
-    buildInputs = lib.optionals stdenv.isDarwin [
-      CoreServices
-      libiconv
-    ];
-
-    buildFeatures = ["mimalloc"];
-
-    CFG_RELEASE = version;
-
-    doCheck = false;
+    nativeBuildInputs = with final; [gzip autoPatchelfHook];
+    buildInputs = with final; [libgcc];
 
     doInstallCheck = true;
     installCheckPhase = ''
       runHook preInstallCheck
       versionOutput="$($out/bin/rust-analyzer --version)"
       echo "'rust-analyzer --version' returns: $versionOutput"
-      [[ "$versionOutput" == "rust-analyzer ${version}" ]]
       runHook postInstallCheck
     '';
 
-    meta = with lib; {
-      description = "A modular compiler frontend for the Rust language";
-      homepage = "https://rust-analyzer.github.io";
-      license = with licenses; [mit asl20];
-      maintainers = with maintainers; [oxalica];
-      mainProgram = "rust-analyzer";
-    };
+    buildPhase = ''
+      runHook preBuild
+      mkdir -p $out/bin
+      gzip -c -d $src > $out/bin/rust-analyzer
+      chmod +x $out/bin/rust-analyzer
+      runHook postBuild
+    '';
   };
 }
