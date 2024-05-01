@@ -27,11 +27,16 @@ in {
       cursor-shape.insert = "bar";
     };
 
-    languages.language-servers.rust-analyzer.config = {
+    languages.language-server.rust-analyzer.config = {
       assist.emitMustUse = true;
       cargo.features = "all";
       check.command = "clippy";
       checkOnSave = true;
+      completion = {
+        limit = 20;
+        termSearch.enable = true;
+      };
+      hover.memoryLayout.niches = true;
       imports.prefix = "crate";
       inlayHints = {
         expressionAdjustmentHints = {
@@ -51,7 +56,7 @@ in {
       };
       references.excludeImports = true;
     };
-    languages.language-servers.yaml-language-server.config = {
+    languages.language-server.yaml-language-server.config = {
       yaml.keyOrdering = false;
     };
     languages.language = [
