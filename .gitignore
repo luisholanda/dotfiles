@@ -4,6 +4,7 @@ result
 
 .pre-commit-config.yaml
 nix-access-tokens
+copilot-auth-key
 
 config/doom-emacs/**/*.el
 !config/doom-emacs/init.el

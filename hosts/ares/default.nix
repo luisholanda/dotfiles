@@ -13,14 +13,13 @@ in {
 
   modules = {
     editors = {
-      neovim.enable = true;
       helix.enable = true;
+      zed.enable = true;
     };
 
     games.steam.enable = true;
 
     services = {
-      dnscrypt-proxy2.enable = true;
       docker.enable = true;
 
       hyprland.enable = true;
@@ -34,7 +33,7 @@ in {
 
       git = {
         enable = true;
-        emailAccount = "personalGmail";
+        emailAccount = "personalProtonmail";
         ssh.always = false;
         addons = {
           delta.enable = true;
@@ -69,7 +68,6 @@ in {
 
     accounts.email.accounts = {
       personalGmail = rec {
-        primary = true;
         flavor = "gmail.com";
         address = "luiscmholanda@gmail.com";
         realName = "Luis C. M. Holanda";
@@ -82,6 +80,19 @@ in {
           encryptByDefault = true;
         };
       };
+      personalProtonmail = rec {
+        primary = true;
+        flavor = "protonmail.com";
+        address = "luiscmholanda@protonmail.com";
+        realName = "Luis Holanda";
+        userName = address;
+
+        gpg = {
+          key = "27D88FA704EDF786";
+          signByDefault = true;
+          encryptByDefault = true;
+        };
+      };
     };
 
     packages = with pkgs; [
@@ -90,7 +101,6 @@ in {
       nomacs
       pcmanfm
       zathura
-      jetbrains.rust-rover
       (wrapProgram slack {
         appendFlags = [
           "--enable-zero-copy"
@@ -102,12 +112,20 @@ in {
       (wrapProgram logseq {
         prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
       })
-      #lutris
+      (unstable.ollama.override {acceleration = "rocm";})
     ];
   };
 
+  services.ollama = {
+    enable = true;
+    package = pkgs.unstable.ollama;
+    environmentVariables = {
+      HSA_OVERRIDE_GFX_VERSION = "11.0.0";
+    };
+  };
+
   theme.wallpaper =
-    config.dotfiles.dir + "/wallpapers/bottle-miku.png";
+    config.dotfiles.dir + "/wallpapers/yamochi.jpg";
   theme.polarity = "dark";
   theme.fonts = {
     serif = {
@@ -127,7 +145,7 @@ in {
       name = "Pragmasevka Nerd Font";
     };
     sizes.desktop = 12;
-    sizes.terminal = 11;
+    sizes.terminal = 10;
   };
 
   documentation.man = {

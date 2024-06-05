@@ -25,6 +25,8 @@ in {
     })
     (mkIf gpu.isAMD {
       boot.kernelParams = ["amdgp.ppfeaturemask=0xffffffff"];
+
+      services.ollama.acceleration = "rocm";
     })
   ];
 }

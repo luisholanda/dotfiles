@@ -13,6 +13,7 @@ in {
     # General
     git
     (ripgrep.override {withPCRE2 = true;})
+    (unstable.ollama.override {acceleration = "rocm";})
 
     # Bazel
     bazel-buildtools

@@ -1,0 +1,111 @@
+window#waybar {
+	background: none;
+}
+
+.modules-left, .modules-right, .modules-center {
+	margin: 0 8px 4px;
+}
+
+.modules-left *, .modules-right *, .modules-center * {
+	padding: 0 4px;
+}
+
+.modules-left widget:first-child > *, .modules-right widget:first-child > * {
+	border-radius: 4px 0 0 4px;
+}
+
+.modules-left widget:last-child > *, .modules-right widget:last-child > * {
+	border-radius: 0 4px 4px 0;
+}
+
+#tray {
+  background-color: @base00;
+}
+
+/* Below is adapted from stylix */
+
+window #workspaces button {
+    background-color: @base07;
+    color: @base00;
+}
+#wireplumber {
+    background-color: @base09;
+    color: @base00;
+}
+
+#wireplumber.muted {
+    background-color: @base0C;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    background: @base03;
+}
+#workspaces button.urgent {
+    background-color: @base08;
+}
+
+#upower,
+#battery {
+    background-color: @base0D;
+    color: @base00;
+}
+#upower.charging,
+#battery.Charging {
+    background-color: @base0E;
+}
+#network {
+    background-color: @base0B;
+    color: @base00;
+}
+#network.disconnected {
+    background-color: @base0C;
+}
+#user {
+    background-color: @base0F;
+    color: @base00;
+}
+#clock {
+    background-color: @base03;
+    color: @base00;
+}
+#backlight {
+    background-color: @base0E;
+    color: @base00;
+}
+ #cpu {
+    background-color: @base0B;
+    color: @base00;
+}
+#disk {
+    background-color: @base02;
+    color: @base00;
+}
+#idle_inhibitor {
+    background-color: @base06;
+    color: @base00;
+}
+#temperature {
+    background-color: @base07;
+    color: @base00;
+}
+#mpd {
+    background-color: @base02;
+    color: @base00;
+}
+#language {
+    background-color: @base02;
+    color: @base00;
+}
+#keyboard-state {
+    background-color: @base03;
+    color: @base00;
+}
+#memory {
+    background-color: @base09;
+    color: @base00;
+}
+#window {
+    background-color: @base0C;
+    color: @base00;
+}

@@ -35,6 +35,7 @@
     wrapProgramArgs = builtins.concatStringsSep " " (flatten [set suffix prefix appendFlags]);
   in
     runCommandLocal ((getName pkg) + "-wrapped") {
+      inherit (pkg) version;
       src = [pkg];
       buildInputs = [makeBinaryWrapper];
     } ''

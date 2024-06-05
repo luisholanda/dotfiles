@@ -97,7 +97,7 @@ in {
       };
 
       user.sessionVariables = mkIf cfg.enable {
-        GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or "";
+        GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or null;
       };
 
       user.home.programs.ssh.matchBlocks =

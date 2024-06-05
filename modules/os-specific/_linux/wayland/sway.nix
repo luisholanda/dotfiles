@@ -117,17 +117,6 @@ in {
 
     security.pam.services.swaylock = {};
 
-    services.xserver.displayManager.session = [
-      {
-        manage = "desktop";
-        name = "Sway";
-        start = ''
-          ${swayWrapped}/bin/sway &
-          waitPID=$!
-        '';
-      }
-    ];
-
     #user.home.programs.swaylock.settings = lib.mkAliasDefinitions opts.lock.settings;
     user.home.services.kanshi.enable = cfg.enable;
     user.home.services.swayidle = {

@@ -23,22 +23,8 @@ in {
     programs.gamescope.enable = true;
     programs.gamescope.package = pkgs.gamescope_git;
     programs.steam.enable = true;
-    chaotic.steam.extraCompatPackages = with pkgs; [proton-ge-custom];
-
-    user.home.extraConfig.systemd.user.services.steam = rec {
-      Unit = {
-        Description = "A digital distribution platform";
-        After = ["graphical-session.target"];
-      };
-
-      Service = {
-        ExecStart = "${pkgs.steam}/bin/steam -silent";
-        ExecStop = "${pkgs.coreutils}/bin/kill -SIGUSR2 $MAINPID";
-        Restart = "on-failure";
-        KillMode = "mixed";
-      };
-
-      Install.WantedBy = Unit.After;
-    };
+    programs.steam.extraCompatPackages = with pkgs; [proton-ge-custom];
+    programs.steam.gamescopeSession.enable = true;
+    programs.steam.package = pkgs.unstable.steam;
   };
 }

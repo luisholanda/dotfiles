@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkDefault mkEnableOption;
+  inherit (lib) mkIf mkEnableOption;
   inherit (config.lib.stylix) colors;
 
   active = colors.base0A;
@@ -27,8 +27,6 @@ in {
       enable = true;
       xwayland.enable = true;
     };
-
-    services.xserver.displayManager.defaultSession = mkDefault "hyprland";
 
     user.sessionVariables.NIXOS_OZONE_WL = 1;
     user.xdg.configFile."hypr/hyprland.conf".text = ''

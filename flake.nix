@@ -2,7 +2,8 @@
   description = "My Nix configurations.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?rev=820912a98d71564c2b45493ed988043bfb96a558";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager.url = "github:nix-community/home-manager/release-23.11";
@@ -27,7 +28,7 @@
     emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "github:hyprwm/Hyprland?rev=89543e8e3cb7d3d3e1755649779c3835bd5c5fd9";
 
     zig-overlay.url = "github:mitchellh/zig-overlay";
     zig-overlay.inputs.flake-utils.follows = "flake-utils";
@@ -49,6 +50,7 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    nixpkgs-unstable,
     firefox-addons,
     flake-utils,
     pre-commit-hooks,
@@ -105,7 +107,10 @@
             (final: prev: {
               inherit (zls.packages.${system}) zls;
               inherit (hyprland.packages.${system}) hyprland xdg-desktop-portal-hyprland;
-              unstable = final;
+              unstable = import nixpkgs-unstable {
+                inherit system;
+                config.allowUnfree = true;
+              };
               waybar =
                 (prev.waybar.override {
                   withMediaPlayer = true;
