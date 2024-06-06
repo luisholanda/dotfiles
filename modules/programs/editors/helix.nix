@@ -7,7 +7,7 @@
   inherit (lib) mkEnableOption mkIf;
   inherit (lib.my) addToPath;
 
-  wrappedHelix = addToPath pkgs.unstable.helix config.modules.editors.extraPackages;
+  wrappedHelix = addToPath pkgs.helix config.modules.editors.extraPackages;
 in {
   options.modules.editors.helix = {
     enable = mkEnableOption "helix";
@@ -35,13 +35,6 @@ in {
       popup-border = "popup";
     };
 
-    languages.language-server.gpt = {
-      command = "${pkgs.unstable.helix-gpt}/bin/helix-gpt";
-      args = ["--handler" "copilot" "--ollamaModel" "codegemma:2b-code-q4_0"];
-      environment.COPILOT_API_KEY = builtins.readFile "${config.dotfiles.dir}/copilot-auth-key";
-      environment.CODEIUM_API_KEY = builtins.readFile "${config.dotfiles.dir}/codeium-auth-key";
-    };
-
     languages.language-server.rust-analyzer.config = {
       assist.emitMustUse = true;
       cargo.features = "all";
@@ -51,7 +44,6 @@ in {
         limit = 20;
         termSearch.enable = true;
       };
-      hover.memoryLayout.niches = true;
       imports.prefix = "crate";
       inlayHints = {
         expressionAdjustmentHints = {
