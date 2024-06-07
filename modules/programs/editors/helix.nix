@@ -25,7 +25,7 @@ in {
       cursorline = true;
       lsp = {
         display-messages = true;
-        display-inlay-hints = false;
+        display-inlay-hints = true;
       };
       cursor-shape.insert = "bar";
       line-number = "relative";
@@ -74,6 +74,11 @@ in {
       {
         name = "rust";
         language-servers = ["rust-analyzer"];
+      }
+      {
+        name = "nix";
+        auto-format = true;
+        formatter.command = "${pkgs.alejandra}/bin/alejandra";
       }
     ];
   };

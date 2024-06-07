@@ -16,6 +16,10 @@ in {
     user.home.programs.kitty = {
       enable = true;
 
+      extraConfig = ''
+        modify_font cell_height 1px
+      '';
+
       settings = {
         disable_ligatures = "cursor";
         scroll_back_lines = 3000;
@@ -23,6 +27,11 @@ in {
         copy_on_select = true;
         strip_trailing_spaces = "smart";
         focus_follows_mouse = true;
+        font_features = let
+          sss =
+            builtins.concatStringsSep " "
+            (map (i: "+ss0${toString i}") (lib.range 1 9));
+        in "MonaspaceNeon +calt +liga ${sss}";
         repaint_delay = 3;
         enable_audio_bell = false;
         hide_window_decorations = true;

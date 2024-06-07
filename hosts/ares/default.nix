@@ -101,14 +101,6 @@ in {
       nomacs
       pcmanfm
       zathura
-      (wrapProgram slack {
-        appendFlags = [
-          "--enable-zero-copy"
-          "--use-angle=opengl"
-          "--ignore-gpu-blocklist"
-          "--ozone-platform=wayland"
-        ];
-      })
       (wrapProgram logseq {
         prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
       })
@@ -141,8 +133,8 @@ in {
       name = "Noto Color Emoji";
     };
     monospace = {
-      package = pkgs.pragmasevka;
-      name = "Pragmasevka Nerd Font";
+      package = pkgs.monaspace;
+      name = "Monaspace Neon";
     };
     sizes.desktop = 12;
     sizes.terminal = 10;
