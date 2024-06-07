@@ -171,7 +171,6 @@
           };
       in {
         ares = mkHost' ./hosts/ares;
-        hermes = mkHost' ./hosts/hermes;
       };
     });
 
