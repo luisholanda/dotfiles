@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/release-24.05";
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager.url = "github:nix-community/home-manager/release-23.11";
@@ -152,7 +152,7 @@
       };
 
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
-      nixosConfigurations = let
+      packages.nixosConfigurations = let
         extraModules = [
           dotfiles
           inputs.home-manager.nixosModule
@@ -173,14 +173,9 @@
         ares = mkHost' ./hosts/ares;
       };
     });
-
-    system = builtins.currentSystem;
   in
     systemAttrs
     // {
-      nixosModules = systemAttrs.nixosModules."${system}";
-      nixosConfigurations = systemAttrs.nixosConfigurations."${system}";
-
       templates = {
         full = {
           path = self.outPath;

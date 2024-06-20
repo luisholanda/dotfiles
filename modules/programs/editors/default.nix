@@ -15,12 +15,16 @@ in {
     (ripgrep.override {withPCRE2 = true;})
     (unstable.ollama.override {acceleration = "rocm";})
 
+    # ASM
+    asm-lsp
+
     # Bazel
     bazel-buildtools
 
     # C/C++
     ccls
     clang-tools_16
+    unstable.cmake-language-server
 
     # Docker
     nodePackages.dockerfile-language-server-nodejs
@@ -36,6 +40,7 @@ in {
 
     # Nix
     nil
+    nixd
     alejandra
 
     # Protobuffer

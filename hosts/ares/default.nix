@@ -13,8 +13,8 @@ in {
 
   modules = {
     editors = {
+      neovim.enable = true;
       helix.enable = true;
-      zed.enable = true;
     };
 
     games.steam.enable = true;
@@ -57,7 +57,7 @@ in {
     description = "Luis Holanda";
     # TODO: move these groups to their respective modules.
     groups = ["wheel" "networking" "video" "adbusers" "docker"];
-    passwordFile = "${config.dotfiles.dir}/hosts/plutus/passfile";
+    passwordFile = "${config.dotfiles.dir}/hosts/ares/passfile";
 
     # Run Bazel sandbox inside a tempfs.
     home.file.".bazelrc".text = "build --sandbox_base=/dev/shm/";
@@ -104,17 +104,12 @@ in {
       (wrapProgram logseq {
         prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
       })
-      (unstable.ollama.override {acceleration = "rocm";})
     ];
   };
 
-  services.ollama = {
-    enable = true;
-    package = pkgs.unstable.ollama;
-    environmentVariables = {
-      HSA_OVERRIDE_GFX_VERSION = "11.0.0";
-    };
-  };
+  stylix.cursor.package = pkgs.google-cursor;
+  stylix.cursor.name = "GoogleDot-White";
+  stylix.cursor.size = 24;
 
   theme.wallpaper =
     config.dotfiles.dir + "/wallpapers/yamochi.jpg";
@@ -133,8 +128,10 @@ in {
       name = "Noto Color Emoji";
     };
     monospace = {
-      package = pkgs.monaspace;
-      name = "Monaspace Neon";
+      package = pkgs.unstable.nerdfonts.override {
+        fonts = ["Monaspace"];
+      };
+      name = "MonaspiceNe Nerd Font Mono";
     };
     sizes.desktop = 12;
     sizes.terminal = 10;

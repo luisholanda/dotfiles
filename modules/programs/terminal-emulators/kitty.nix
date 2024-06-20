@@ -16,8 +16,59 @@ in {
     user.home.programs.kitty = {
       enable = true;
 
-      extraConfig = ''
+      extraConfig = let
+        font_features = let
+          sss =
+            builtins.concatStringsSep " "
+            (map (i: "+ss0${toString i}") (lib.range 1 9));
+          styles = [
+            "Bold"
+            "BoldItalic"
+            "ExtraBold"
+            "ExtraBoldItalic"
+            "ExtraLightItalic"
+            "Italic"
+            "Light"
+            "LightItalic"
+            "Medium"
+            "MediumItalic"
+            "SemiBold"
+            "SemiBoldItalic"
+            "SemiWideBold"
+            "SemiWideBoldItalic"
+            "SemiWideExtraBold"
+            "SemiWideExtraBoldItalic"
+            "SemiWideExtraLight"
+            "SemiWideExtraLightItalic"
+            "SemiWideItalic"
+            "SemiWideLight"
+            "SemiWideLightItalic"
+            "SemiWideMedium"
+            "SemiWideMediumItalic"
+            "SemiWideRegular"
+            "SemiWideSemiBold"
+            "SemiWideSemiBoldItalic"
+            "Regular"
+            "WideBold"
+            "WideBoldItalic"
+            "WideExtraBold"
+            "WideExtraBoldItalic"
+            "WideExtraLight"
+            "WideExtraLightItalic"
+            "WideItalic"
+            "WideLight"
+            "WideLightItalic"
+            "WideMedium"
+            "WideMediumItalic"
+            "WideRegular"
+            "WideSemiBold"
+            "WideSemiBoldItalic"
+          ];
+        in
+          builtins.concatStringsSep "\n" (builtins.map (s: "font_features MonaspaceNeon-${s} +calt +liga ${sss}") styles);
+      in ''
         modify_font cell_height 1px
+        ${font_features}
       '';
 
       settings = {
@@ -27,11 +78,6 @@ in {
         copy_on_select = true;
         strip_trailing_spaces = "smart";
         focus_follows_mouse = true;
-        font_features = let
-          sss =
-            builtins.concatStringsSep " "
-            (map (i: "+ss0${toString i}") (lib.range 1 9));
-        in "MonaspaceNeon +calt +liga ${sss}";
         repaint_delay = 3;
         enable_audio_bell = false;
         hide_window_decorations = true;

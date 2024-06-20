@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit (lib) mkIf makeBinPath;
@@ -12,7 +11,7 @@
 
   extraPackages =
     config.modules.editors.extraPackages
-    ++ (with pkgs; [zig nodejs_20]);
+    ++ (with pkgs; [zig nodejs_20 unstable.codeium]);
 
   wrappedNeovim = wrapProgram pkgs.neovim-unwrapped {
     suffix.PATH = makeBinPath extraPackages;
@@ -35,10 +34,7 @@ in {
 
     user.sessionVariables.EDITOR = nvimPath;
 
-    user.xdg.configFile.nvim = {
-      recursive = true;
-      source = inputs.nvchad;
-    };
-    user.xdg.configFile."nvim/lua/custom".source = neovimConfigSource;
+    user.xdg.configFile.nvim.source = neovimConfigSource;
+    user.xdg.configFile.nvim.recursive = true;
   };
 }

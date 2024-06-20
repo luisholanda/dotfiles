@@ -27,5 +27,6 @@ in {
     wget
     unzip
     fzf
+    git
   ];
 }

@@ -6,6 +6,7 @@
 }: let
   inherit (lib) mkIf mkEnableOption;
   inherit (config.lib.stylix) colors;
+  inherit (config.stylix) cursor fonts;
 
   active = colors.base0A;
   inactive = colors.base03;
@@ -32,10 +33,15 @@ in {
     user.xdg.configFile."hypr/hyprland.conf".text = ''
       source = ${config.dotfiles.configDir}/hyprland.conf
 
-      ${startUserService "waybar"}
-
-      exec-once = ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
+      exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME
       exec = ${pkgs.swaybg}/bin/swaybg -m fill -i ${config.theme.wallpaper}
+
+      exec-once = gsettings set org.gnome.desktop.interface cursor-theme '${cursor.name}'
+      exec-once = gsettings set org.gnome.desktop.interface font-theme '${fonts.sansSerif.name}'
+
+      ${startUserService "waybar"}
+      ${startUserService "xdg-desktop-portal-hyprland"}
 
       general {
         col.active_border = rgb(${active})

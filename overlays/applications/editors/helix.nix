@@ -3,30 +3,50 @@ final: _: let
     url = "https://patch-diff.githubusercontent.com/raw/helix-editor/helix/pull/6417.patch";
     sha256 = "sha256:0wjr3wvfh3h4l6cqa4p95c2ns066k53dnx39y8qbgm8kqf4d454y";
   };
-  fix-completion-resolution = builtins.fetchurl {
-    url = "https://patch-diff.githubusercontent.com/raw/helix-editor/helix/pull/10873.patch";
-    sha256 = "sha256:0cn8rnih8jhqpmfw9hdd1w2kq2wimvvxqw75h3v0ajc2rpj7ga8s";
+
+  src = final.fetchFromGitHub {
+    owner = "helix-editor";
+    repo = "helix";
+    rev = "9c479e6d2de3bca9dec304f9182cee2b1c0ad766";
+    sha256 = "sha256-/XOumFymqlUSS2OZZSOIUL7z1vQyxOEpuOqynH85aYI=";
   };
 
-  ts-grammars-links =
+  ts-grammars-links = let
+    languages-toml = builtins.fromTOML (builtins.readFile "${src}/languages.toml");
+    grammars =
+      builtins.listToAttrs
+      (builtins.map (g: {
+          inherit (g) name;
+          value =
+            (final.unstable.tree-sitter.buildGrammar {
+              inherit (final.unstable.tree-sitter) version;
+              language = g.name;
+              src = builtins.fetchGit {
+                inherit (g.source) rev;
+                url = g.source.git;
+                ref = g.source.ref or "HEAD";
+                shallow = true;
+                allRefs = true;
+              };
+              location = g.source.subpath or null;
+            })
+            .overrideAttrs (_: {allowSubstitutes = false;});
+        })
+        languages-toml.grammar);
+  in
     final.lib.mapAttrsToList
-    (name: artifact: "cp --no-preserve=mode,ownership ${artifact}/parser $out/lib/runtime/grammars/${final.lib.removePrefix "tree-sitter-" name}.so")
-    (final.lib.filterAttrs (_: final.lib.isDerivation) final.unstable.tree-sitter-grammars);
+    (name: artifact: "cp --no-preserve=mode,ownership ${artifact}/parser $out/lib/runtime/grammars/${name}.so")
+    grammars;
 in {
   helix = final.unstable.rustPlatform.buildRustPackage {
+    inherit src;
+
     pname = "helix";
     version = "24.03";
 
     doCheck = false;
 
-    src = final.fetchFromGitHub {
-      owner = "helix-editor";
-      repo = "helix";
-      rev = "c39cde8fc2a99871ff1ec9118d65ae404af9e702";
-      sha256 = "sha256-6HqcZrRemA74n7mFWVUkt2fm4mfOp6/+hgGjBMYfAMA=";
-    };
-
-    cargoHash = "sha256-BEBg/+NIyeBzOAQJOIo/7L3LUNzmWfFKK8SGHeIB0Gc=";
+    cargoHash = "sha256-rt/FkUXQypehDqGEEHqjkWsPmJScbBY1IfqEV5Bpb6s=";
 
     nativeBuildInputs = with final; [git installShellFiles];
 
@@ -44,7 +64,7 @@ in {
       ${builtins.concatStringsSep "\n" ts-grammars-links}
     '';
 
-    patches = [inline-diagnostics fix-completion-resolution];
+    patches = [inline-diagnostics];
 
     patchArgs = ["-p1" "--merge" "--force"];
 

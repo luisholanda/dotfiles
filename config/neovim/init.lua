@@ -1,41 +1,39 @@
-vim.loader.enable()
+vim.g.base46_cache = vim.fn.stdpath("data") .. "/nvchad/base46/"
+vim.g.mapleader = " "
 
-local hl_overrides = {
-	["@lsp.mod.mutable"] = {
-		underline = true,
-	},
-	["@lsp.mod.reference"] = {
-		italic = true,
-	},
-	["@lsp.type.comment"] = {},
+-- bootstrap lazy and all plugins
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-	-- Comment tokens
-	["@text.note"] = {
-		link = "DiagnosticInfo",
-	},
-	["@text.danger"] = {
-		link = "DiagnosticError",
-	},
-	["@text.warning"] = {
-		link = "DiagnosticWarn",
-	},
-}
+if not vim.loop.fs_stat(lazypath) then
+	local repo = "https://github.com/folke/lazy.nvim.git"
+	vim.fn.system({ "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath })
+end
 
-local group = vim.api.nvim_create_augroup("UserAutoCmds", { clear = true })
+vim.opt.rtp:prepend(lazypath)
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	desc = "Set custom highlight overrides",
-	group = group,
-	callback = function()
-		for hl, value in pairs(hl_overrides) do
-			vim.api.nvim_set_hl(0, hl, value)
-		end
-	end,
-})
+local lazy_config = require("configs.lazy")
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	desc = "Consider all .tf files as terraform files",
-	group = group,
-	pattern = { "*.tf" },
-	command = "set filetype=terraform",
-})
+-- load plugins
+require("lazy").setup({
+	{
+		"NvChad/NvChad",
+		lazy = false,
+		branch = "v2.5",
+		import = "nvchad.plugins",
+		config = function()
+			require("options")
+		end,
+	},
+
+	{ import = "plugins" },
+}, lazy_config)
+
+-- load theme
+dofile(vim.g.base46_cache .. "defaults")
+dofile(vim.g.base46_cache .. "statusline")
+
+require("nvchad.autocmds")
+
+vim.schedule(function()
+	require("mappings")
+end)
