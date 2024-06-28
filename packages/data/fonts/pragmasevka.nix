@@ -8,8 +8,8 @@
   privateBuildPlan = {
     family = "Pragmasevka";
     serifs = "sans";
-    no-cv-ss = true;
-    export-glyph-names = true;
+    noCvSs = true;
+    exportGlyphNames = true;
 
     hintParams = ["-a" "qqq"];
 
@@ -27,7 +27,7 @@
       disables = ["slash-asterisk"];
     };
 
-    metric-override = {
+    metricOverride = {
       leaning = 1100;
       periodSize = "default_periodSize * 1.2";
       xHeight = 550;

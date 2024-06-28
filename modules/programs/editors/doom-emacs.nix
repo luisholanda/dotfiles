@@ -10,7 +10,7 @@
   emacsCfg = config.modules.editors.emacs;
   editorPkgs = config.modules.editors.extraPackages;
 
-  baseEmacs = pkgs.emacsPgtk.overrideAttrs (_old: {
+  baseEmacs = pkgs.emacs-pgtk.overrideAttrs (_old: {
     buildBuildInputs = [pkgs.gtk3];
   });
 

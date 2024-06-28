@@ -36,6 +36,7 @@ map("n", "<leader>/", "<cmd>Telescope live_grep<CR>", { desc = "Global search in
 map("n", "<leader>d", "<cmd>Telescope diagnostics bufnr=0<CR>", { desc = "Open diagnostic picker" })
 map("n", "<leader>D", "<cmd>Telescope diagnostics<CR>", { desc = "Open workspace diagnostic picker" })
 map("n", "<leader>s", "<cmd>Telescope lsp_references<CR>", { desc = "Select symbol references" })
+map("n", "<leader>k", "<cmd>TodoTelescope<CR>", { desc = "List workspace keyword comments" })
 
 -- LSP
 vim.api.nvim_create_autocmd({ "LspAttach" }, {
@@ -61,4 +62,4 @@ vim.api.nvim_create_autocmd({ "LspAttach" }, {
 -- terminals
 map({ "n", "t" }, "<leader>t", function()
 	require("nvchad.term").toggle({ pos = "float", id = "floatterm" })
-end)
+end, { desc = "Toggle terminal" })

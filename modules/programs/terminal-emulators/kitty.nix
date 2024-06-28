@@ -64,8 +64,9 @@ in {
             "WideSemiBold"
             "WideSemiBoldItalic"
           ];
+          font-name = builtins.replaceStrings [" "] [""] config.theme.fonts.monospace.name;
         in
-          builtins.concatStringsSep "\n" (builtins.map (s: "font_features MonaspaceNeon-${s} +calt +liga ${sss}") styles);
+          builtins.concatStringsSep "\n" (builtins.map (s: "font_features ${font-name}-${s} +calt +liga ${sss}") styles);
       in ''
         modify_font cell_height 1px
         ${font_features}

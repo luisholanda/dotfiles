@@ -12,11 +12,7 @@ in {
   host.hardware.gpu.isAMD = true;
 
   modules = {
-    editors = {
-      neovim.enable = true;
-      helix.enable = true;
-    };
-
+    editors.neovim.enable = true;
     games.steam.enable = true;
 
     services = {
@@ -97,7 +93,7 @@ in {
 
     packages = with pkgs; [
       bemenu
-      discord
+      vesktop
       nomacs
       pcmanfm
       zathura
@@ -110,6 +106,7 @@ in {
   stylix.cursor.package = pkgs.google-cursor;
   stylix.cursor.name = "GoogleDot-White";
   stylix.cursor.size = 24;
+  stylix.targets.vesktop.enable = true;
 
   theme.wallpaper =
     config.dotfiles.dir + "/wallpapers/yamochi.jpg";

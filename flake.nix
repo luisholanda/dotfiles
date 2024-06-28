@@ -2,11 +2,11 @@
   description = "My Nix configurations.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/release-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
 
-    home-manager.url = "github:nix-community/home-manager/release-23.11";
+    home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     stylix.url = "github:danth/stylix/release-23.11";
@@ -15,7 +15,6 @@
     stylix.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
-    pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
     pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
 
@@ -24,13 +23,12 @@
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
     # Current HEAD causes problems.
-    emacs-overlay.url = "github:nix-community/emacs-overlay?rev=a3abd804a0f05d3d388a6efced4f7bf50792deb6";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
     emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    hyprland.url = "github:hyprwm/Hyprland?rev=89543e8e3cb7d3d3e1755649779c3835bd5c5fd9";
-
     zig-overlay.url = "github:mitchellh/zig-overlay";
+    zig-overlay.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
     zig-overlay.inputs.flake-utils.follows = "flake-utils";
     zig-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -40,11 +38,11 @@
     zls.inputs.gitignore.follows = "pre-commit-hooks/gitignore";
     zls.inputs.zig-overlay.follows = "zig-overlay";
 
-    nvchad.url = "github:nvchad/nvchad/v2.5";
-    nvchad.flake = false;
-
     chaotic.url = "github:chaotic-cx/nyx?rev=2952a351037582a8aeb11be9cf57901d872bcf30";
+    chaotic.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
+    chaotic.inputs.flake-utils.follows = "flake-utils";
     chaotic.inputs.home-manager.follows = "home-manager";
+    chaotic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -55,7 +53,6 @@
     flake-utils,
     pre-commit-hooks,
     emacs-overlay,
-    hyprland,
     zls,
     chaotic,
     ...
@@ -104,9 +101,8 @@
             addVendoredPackages
             addCustomLibFunctions
             addFirefoxExtensions
-            (final: prev: {
+            (_: prev: {
               inherit (zls.packages.${system}) zls;
-              inherit (hyprland.packages.${system}) hyprland xdg-desktop-portal-hyprland;
               unstable = import nixpkgs-unstable {
                 inherit system;
                 config.allowUnfree = true;
@@ -120,7 +116,6 @@
                 });
               libsecret = prev.libsecret.overrideAttrs (_: {doCheck = false;});
               upower = prev.upower.overrideAttrs (_: {doCheck = false;});
-              xdg-desktop-portal = final.xdg-desktop-portal-hyprland;
             })
           ];
       };
@@ -157,7 +152,6 @@
           dotfiles
           inputs.home-manager.nixosModule
           inputs.stylix.nixosModules.stylix
-          hyprland.nixosModules.default
           chaotic.nixosModules.default
           {
             config.nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];

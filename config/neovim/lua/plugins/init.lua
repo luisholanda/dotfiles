@@ -1,12 +1,21 @@
---@type LazyPluginSpec[]
+---@type LazyPluginSpec[]
 return {
 	{
 		"hrsh7th/nvim-cmp",
 		opts = function()
 			local opts = require("nvchad.configs.cmp")
+			local icons = require("nvchad.icons.lspkind")
 			opts.formatting.fields = { "kind", "abbr" }
+			opts.formatting.format = function(_, item)
+				local icon = icons[item.kind] or ""
+				item.kind = " " .. icon .. " "
+				return item
+			end
 			opts.view = { enable = "native" }
 			table.insert(opts.sources, { name = "codeium" })
+			opts.window.completion.border = nil
+			opts.window.completion.side_padding = 0
+			opts.window.documentation.border = nil
 			return opts
 		end,
 		config = function(_, opts)
@@ -24,6 +33,17 @@ return {
 				},
 			})
 		end,
+		dependencies = {
+			{
+				"Exafunction/codeium.nvim",
+				cmd = { "Codeium" },
+				opts = {
+					enable_local_search = true,
+					enable_index_service = true,
+					wrapper = "steam-run",
+				},
+			},
+		},
 	},
 	{
 		"neovim/nvim-lspconfig",
@@ -81,24 +101,49 @@ return {
 		},
 	},
 	{
-		"Exafunction/codeium.nvim",
-		enable = true,
+		"folke/todo-comments.nvim",
 		opts = {
-			enable_local_search = true,
-			enable_index_service = true,
-			tools = {
-				language_server = "codeium",
+			keywords = {
+				SAFETY = { icon = "", color = "error" },
+			},
+			highlight = {
+				keyword = "fg",
+				pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]],
 			},
 		},
+	},
+
+	-- Colorschemes
+	-- FIX: has a bad `force` argument to nvim_set_hl
+	--{
+	--  "slugbyte/lackluster.nvim",
+	--  enable = false,
+	--  lazy = false,
+	--  priority = 1000,
+	--  init = function()
+	--    vim.cmd.colorscheme("lackluster-hack")
+	--  end
+	--},
+	{
+		"sho-87/kanagawa-paper.nvim",
+		lazy = false,
+		priority = 1000,
+		init = function()
+			vim.cmd.colorscheme("kanagawa-paper")
+		end,
 	},
 
 	-- Disabled built-in stuff.
 	{
 		"nvim-tree/nvim-tree.lua",
-		enable = false,
+		enabled = false,
 	},
 	{
 		"williamboman/mason.nvim",
-		enable = false,
+		enabled = false,
+	},
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		enabled = false,
 	},
 }

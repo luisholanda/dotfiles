@@ -32,7 +32,7 @@ in {
     user.shellAliases.vi = nvimPath;
     user.shellAliases.vim = nvimPath;
 
-    user.sessionVariables.EDITOR = nvimPath;
+    user.sessionVariables.EDITOR = "nvim";
 
     user.xdg.configFile.nvim.source = neovimConfigSource;
     user.xdg.configFile.nvim.recursive = true;

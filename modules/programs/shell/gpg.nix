@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib.my) mkEnableOpt;
@@ -9,7 +10,7 @@ in {
 
   config = {
     programs.gnupg.agent.enable = true;
-    programs.gnupg.agent.pinentryFlavor = "qt";
+    programs.gnupg.agent.pinentryPackage = pkgs.pinentry-qt;
     user.home.programs.gpg = {
       inherit (config.modules.programs.gpg) enable;
 

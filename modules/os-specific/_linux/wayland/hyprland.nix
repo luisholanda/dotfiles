@@ -25,6 +25,8 @@ in {
     environment.systemPackages = with pkgs; [bemenu screenshot wl-clipboard];
 
     programs.hyprland = {
+      package = pkgs.unstable.hyprland;
+      portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
       enable = true;
       xwayland.enable = true;
     };

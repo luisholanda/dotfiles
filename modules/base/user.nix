@@ -142,7 +142,7 @@ in {
       in
         cleanExtraConfig
         // {
-          home.sessionVariables = cfg.sessionVariables;
+          home.sessionVariables = mkAliasDefinitions cfg.sessionVariables;
           # Necessary for home-manager to work with flakes, otherwise it will
           # look for a nixpkgs channel.
           home.stateVersion = config.system.stateVersion;

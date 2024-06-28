@@ -85,5 +85,6 @@ in {
     inlay_hints_hide_redundant_param_names = true;
     inlay_hints_hide_redundant_param_names_last_token = true;
     highlight_global_var_declarations = true;
+    skip_std_references = true;
   };
 }
