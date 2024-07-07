@@ -106,7 +106,7 @@ in {
   stylix.cursor.package = pkgs.google-cursor;
   stylix.cursor.name = "GoogleDot-White";
   stylix.cursor.size = 24;
-  stylix.targets.vesktop.enable = true;
+  #stylix.targets.vesktop.enable = true;
 
   theme.wallpaper =
     config.dotfiles.dir + "/wallpapers/yamochi.jpg";
