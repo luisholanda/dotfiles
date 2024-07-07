@@ -62,6 +62,8 @@ in {
       "~/Projects"
     ];
 
+    home.extraConfig.stylix.targets.vesktop.enable = true;
+
     accounts.email.accounts = {
       personalGmail = rec {
         flavor = "gmail.com";
@@ -106,31 +108,17 @@ in {
   stylix.cursor.package = pkgs.google-cursor;
   stylix.cursor.name = "GoogleDot-White";
   stylix.cursor.size = 24;
-  #stylix.targets.vesktop.enable = true;
 
-  theme.wallpaper =
+  stylix.image =
     config.dotfiles.dir + "/wallpapers/yamochi.jpg";
-  theme.polarity = "dark";
-  theme.fonts = {
-    serif = {
-      package = pkgs.noto-fonts;
-      name = "Noto Serif";
-    };
-    sansSerif = {
-      package = pkgs.noto-fonts;
-      name = "Noto Sans";
-    };
-    emoji = {
-      package = pkgs.noto-fonts-emoji;
-      name = "Noto Color Emoji";
-    };
+  stylix.polarity = "dark";
+  stylix.fonts = {
     monospace = {
       package = pkgs.unstable.nerdfonts.override {
         fonts = ["Monaspace"];
       };
       name = "MonaspiceNe Nerd Font Mono";
     };
-    sizes.desktop = 12;
     sizes.terminal = 10;
   };
 

@@ -24,7 +24,6 @@ in {
     # C/C++
     ccls
     clang-tools_16
-    unstable.cmake-language-server
 
     # Docker
     nodePackages.dockerfile-language-server-nodejs
@@ -50,7 +49,6 @@ in {
     # Python
     black
     pylyzer
-    python310Packages.isort
 
     # Shell
     shellcheck

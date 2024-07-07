@@ -24,9 +24,12 @@ in {
       hardware.cpu.amd.updateMicrocode = true;
     })
     (mkIf gpu.isAMD {
-      boot.kernelParams = ["amdgp.ppfeaturemask=0xffffffff"];
+      programs.corectrl.enable = true;
+      programs.corectrl.gpuOverclock.enable = true;
+      programs.corectrl.gpuOverclock.ppfeaturemask = "0xffffffff";
 
       services.ollama.acceleration = "rocm";
+      user.groups = ["corectrl"];
     })
   ];
 }

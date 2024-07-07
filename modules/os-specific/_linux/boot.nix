@@ -66,7 +66,5 @@ in {
     systemd.services.NetworkManager-wait-online.wantedBy = mkForce [];
 
     hardware.enableRedistributableFirmware = true;
-
-    services.thermald.enable = true;
   };
 }

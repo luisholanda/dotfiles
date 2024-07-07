@@ -37,7 +37,7 @@ in {
 
       exec-once = ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME
-      exec = ${pkgs.swaybg}/bin/swaybg -m fill -i ${config.theme.wallpaper}
+      exec = ${pkgs.swaybg}/bin/swaybg -m fill -i ${config.stylix.image}
 
       exec-once = gsettings set org.gnome.desktop.interface cursor-theme '${cursor.name}'
       exec-once = gsettings set org.gnome.desktop.interface font-theme '${fonts.sansSerif.name}'

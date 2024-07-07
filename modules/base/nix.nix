@@ -19,7 +19,7 @@
   binaryCaches = map (x: x.url) caches;
 in {
   config = {
-    nix.package = pkgs.unstable.nixVersions.git;
+    nix.package = pkgs.unstable.nixVersions.latest;
 
     nix.settings = {
       substituters = binaryCaches;

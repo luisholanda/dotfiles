@@ -22,7 +22,7 @@ in {
       filtering = {
         protection_enabled = true;
         filtering_enabled = true;
-        safe_search = "enabled";
+        safe_search.enabled = true;
       };
       statistics.enabled = true;
     };

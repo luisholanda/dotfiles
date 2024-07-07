@@ -10,6 +10,7 @@ in {
 
   config = mkIf config.host.hardware.isIntel {
     hardware.cpu.intel.updateMicrocode = true;
+    services.thermald.enable = true;
     #hardware.opengl.extraPackages = with pkgs; [
     #  intel-media-driver
     #  intel-compute-runtime

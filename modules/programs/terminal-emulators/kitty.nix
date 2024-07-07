@@ -13,6 +13,8 @@ in {
 
   config = mkIf config.modules.programs.kitty.enable {
     user.terminalCmd = "${lib.makeBinPath [pkgs.kitty]}/kitty";
+    user.home.extraConfig.stylix.targets.kitty.enable = true;
+    user.home.extraConfig.stylix.targets.kitty.variant256Colors = true;
     user.home.programs.kitty = {
       enable = true;
 
@@ -64,7 +66,7 @@ in {
             "WideSemiBold"
             "WideSemiBoldItalic"
           ];
-          font-name = builtins.replaceStrings [" "] [""] config.theme.fonts.monospace.name;
+          font-name = builtins.replaceStrings [" "] [""] config.stylix.fonts.monospace.name;
         in
           builtins.concatStringsSep "\n" (builtins.map (s: "font_features ${font-name}-${s} +calt +liga ${sss}") styles);
       in ''

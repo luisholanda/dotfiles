@@ -29,15 +29,20 @@ in {
       kernel = {
         nmi_watchdog = 0;
         split_lock_mitigate = 0;
+        sched_rt_runtime_us = -1;
       };
       net = {
         core.default_qdisc = "cake";
-        ipv4.tcp_congestion_control = "bbr2";
+        ipv4 = {
+          tcp_congestion_control = "bbr2";
+          tcp_fastopen = 3;
+          tcp_ecn = 1;
+          tcp_timestamps = 0;
+        };
       };
       vm = {
         dirty_background_ratio = 5;
         dirty_ratio = 10;
-        ipv4.tcp_fastopen = 3;
         page-cluster = 1;
         swappiness = 30;
         vfs_cache_pressure = 50;

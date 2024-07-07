@@ -196,7 +196,7 @@ in {
 
           fonts = {
             names = config.fonts.fontconfig.defaultFonts.sansSerif ++ config.fonts.fontconfig.defaultFonts.emoji;
-            size = 0.8 * config.theme.fonts.size.ui;
+            size = 0.8 * config.stylix.fonts.size.ui;
           };
 
           keybindings = let

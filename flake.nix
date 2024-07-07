@@ -9,7 +9,7 @@
     home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    stylix.url = "github:danth/stylix/release-23.11";
+    stylix.url = "github:danth/stylix/release-24.05";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     stylix.inputs.home-manager.follows = "home-manager";
     stylix.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
@@ -26,6 +26,7 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    emacs-overlay.inputs.nixpkgs-stable.follows = "nixpkgs";
 
     zig-overlay.url = "github:mitchellh/zig-overlay";
     zig-overlay.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
@@ -38,9 +39,7 @@
     zls.inputs.gitignore.follows = "pre-commit-hooks/gitignore";
     zls.inputs.zig-overlay.follows = "zig-overlay";
 
-    chaotic.url = "github:chaotic-cx/nyx?rev=2952a351037582a8aeb11be9cf57901d872bcf30";
-    chaotic.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
-    chaotic.inputs.flake-utils.follows = "flake-utils";
+    chaotic.url = "github:chaotic-cx/nyx?rev=1b67ffd345f496daf5e7b78d9c1fa0a5c3595b61";
     chaotic.inputs.home-manager.follows = "home-manager";
     chaotic.inputs.nixpkgs.follows = "nixpkgs";
   };
