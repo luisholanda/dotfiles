@@ -9,7 +9,7 @@ in {
   imports = [./hardware.nix];
 
   host.hardware.isIntel = true;
-  host.hardware.gpu.isAMD = true;
+  host.hardware.gpu.isNVIDIA = true;
 
   modules = {
     editors.neovim.enable = true;
@@ -102,6 +102,9 @@ in {
       (wrapProgram logseq {
         prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
       })
+      (wrapOBS {
+        plugins = with obs-studio-plugins; [wlrobs input-overlay obs-pipewire-audio-capture];
+      })
     ];
   };
 
@@ -110,7 +113,7 @@ in {
   stylix.cursor.size = 24;
 
   stylix.image =
-    config.dotfiles.dir + "/wallpapers/yamochi.jpg";
+    config.dotfiles.dir + "/wallpapers/youkai-grey.jpg";
   stylix.polarity = "dark";
   stylix.fonts = {
     monospace = {
