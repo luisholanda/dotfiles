@@ -13,65 +13,12 @@ in {
 
   config = mkIf config.modules.programs.kitty.enable {
     user.terminalCmd = "${lib.makeBinPath [pkgs.kitty]}/kitty";
-    user.home.extraConfig.stylix.targets.kitty.enable = true;
     user.home.extraConfig.stylix.targets.kitty.variant256Colors = true;
     user.home.programs.kitty = {
       enable = true;
 
-      extraConfig = let
-        font_features = let
-          sss =
-            builtins.concatStringsSep " "
-            (map (i: "+ss0${toString i}") (lib.range 1 9));
-          styles = [
-            "Bold"
-            "BoldItalic"
-            "ExtraBold"
-            "ExtraBoldItalic"
-            "ExtraLightItalic"
-            "Italic"
-            "Light"
-            "LightItalic"
-            "Medium"
-            "MediumItalic"
-            "SemiBold"
-            "SemiBoldItalic"
-            "SemiWideBold"
-            "SemiWideBoldItalic"
-            "SemiWideExtraBold"
-            "SemiWideExtraBoldItalic"
-            "SemiWideExtraLight"
-            "SemiWideExtraLightItalic"
-            "SemiWideItalic"
-            "SemiWideLight"
-            "SemiWideLightItalic"
-            "SemiWideMedium"
-            "SemiWideMediumItalic"
-            "SemiWideRegular"
-            "SemiWideSemiBold"
-            "SemiWideSemiBoldItalic"
-            "Regular"
-            "WideBold"
-            "WideBoldItalic"
-            "WideExtraBold"
-            "WideExtraBoldItalic"
-            "WideExtraLight"
-            "WideExtraLightItalic"
-            "WideItalic"
-            "WideLight"
-            "WideLightItalic"
-            "WideMedium"
-            "WideMediumItalic"
-            "WideRegular"
-            "WideSemiBold"
-            "WideSemiBoldItalic"
-          ];
-          font-name = builtins.replaceStrings [" "] [""] config.stylix.fonts.monospace.name;
-        in
-          builtins.concatStringsSep "\n" (builtins.map (s: "font_features ${font-name}-${s} +calt +liga ${sss}") styles);
-      in ''
+      extraConfig = ''
         modify_font cell_height 1px
-        ${font_features}
       '';
 
       settings = {

@@ -121,6 +121,25 @@ in {
     };
     sizes.terminal = 10;
   };
+  user.home.programs.kitty.extraConfig = let
+    sss =
+      builtins.concatStringsSep " "
+      (map (i: "+ss0${toString i}") (lib.range 1 9));
+    styles = [
+      "Bold"
+      "BoldItalic"
+      "Italic"
+      "Light"
+      "LightItalic"
+      "Medium"
+      "MediumItalic"
+      "Regular"
+    ];
+    font-name = "MonaspiceNeNFM";
+    extra-features = "+calt +liga";
+  in
+    builtins.concatStringsSep "\n" (builtins.map (s: "font_features ${font-name}-${s} ${extra-features} ${sss}") styles);
+
 
   documentation.man = {
     enable = true;
