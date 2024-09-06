@@ -48,5 +48,8 @@ in {
         vfs_cache_pressure = 50;
       };
     };
+
+    chaotic.scx.enable = true;
+    chaotic.scx.scheduler = "scx_rustland";
   };
 }
