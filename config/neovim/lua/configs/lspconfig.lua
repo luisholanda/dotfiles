@@ -38,8 +38,9 @@ local servers = {
 	},
 	cmake = {},
 	dockerls = {},
+  hls = {},
 	nil_ls = {},
-	pyright = {},
+	basedpyright = {},
 	terraformls = {},
 	yamlls = {
 		settings = {

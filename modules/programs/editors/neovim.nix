@@ -13,7 +13,7 @@
     config.modules.editors.extraPackages
     ++ (with pkgs; [zig nodejs_20 unstable.codeium]);
 
-  wrappedNeovim = wrapProgram pkgs.neovim-unwrapped {
+  wrappedNeovim = wrapProgram pkgs.unstable.neovim-unwrapped {
     suffix.PATH = makeBinPath extraPackages;
   };
 

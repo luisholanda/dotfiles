@@ -13,7 +13,6 @@ in {
     # General
     git
     (ripgrep.override {withPCRE2 = true;})
-    (unstable.ollama.override {acceleration = "rocm";})
 
     # ASM
     asm-lsp
@@ -47,8 +46,8 @@ in {
     buf-language-server
 
     # Python
-    black
-    pylyzer
+    unstable.basedpyright
+    ruff
 
     # Shell
     shellcheck
@@ -79,6 +78,8 @@ in {
   ];
 
   config.user.xdg.configFile."zls.json".text = builtins.toJSON {
+    enable_build_on_save = true;
+    build_on_save_step = "check";
     warn_style = true;
     inlay_hints_hide_redundant_param_names = true;
     inlay_hints_hide_redundant_param_names_last_token = true;

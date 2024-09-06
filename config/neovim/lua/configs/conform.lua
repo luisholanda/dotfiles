@@ -8,10 +8,15 @@ local options = {
 		lua = { "stylua" },
 		nix = { "alejandra" },
 		proto = { "buf" },
-		python = { "docstrfmt", "ruff_format", "ruff_fix" },
+		python = { "docstrfmt", "ruff_fix", "ruff_organize_imports", "ruff_format" },
 		rust = { "rustfmt" },
 		sh = { "shfmt" },
+    ["*"] = { "trim_newlines", "trim_whitespace" },
 	},
+  format_on_save = {
+    lsp_format = "fallback",
+    timeout = 500,
+  }
 }
 
 require("conform").setup(options)
