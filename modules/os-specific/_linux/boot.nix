@@ -64,6 +64,8 @@ in {
     # don't wait for network during boot.
     systemd.targets.network-online.wantedBy = mkForce [];
     systemd.services.NetworkManager-wait-online.wantedBy = mkForce [];
+    # Don't wait for DHCP during boot.
+    networking.dhcpcd.wait = "background";
 
     hardware.enableRedistributableFirmware = true;
   };
