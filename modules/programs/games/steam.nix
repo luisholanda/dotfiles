@@ -22,9 +22,9 @@ in {
     };
 
     programs.gamescope.enable = true;
-    programs.gamescope.capSysNice = true;
+    programs.gamescope.capSysNice = false;
     programs.gamescope.package = pkgs.gamescope_git;
-    programs.gamescope.args = ["--rt" "--immediate-flips" "--adaptive-sync" "--force-composition"];
+    programs.gamescope.args = ["--rt" "--immediate-flips" "--adaptive-sync"];
 
     programs.steam.enable = true;
     programs.steam.extraCompatPackages = with pkgs; [proton-ge-custom];
