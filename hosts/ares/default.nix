@@ -99,6 +99,7 @@ in {
       vesktop
       nomacs
       pcmanfm
+      protonmail-desktop
       zathura
       (wrapProgram logseq {
         prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
@@ -122,6 +123,10 @@ in {
         fonts = ["Monaspace"];
       };
       name = "MonaspiceNe Nerd Font Mono";
+    };
+    sansSerif = {
+      package = pkgs.atkinson-hyperlegible;
+      name = "Atkinson Hyperlegible";
     };
     sizes.terminal = 10;
   };
