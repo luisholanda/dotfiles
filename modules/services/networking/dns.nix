@@ -4,6 +4,7 @@ in {
   config = {
     networking.resolvconf.useLocalResolver = true;
     services.adguardhome.enable = true;
+    services.adguardhome.port = 2000;
     services.adguardhome.settings = {
       dns = {
         bind_hosts = ["127.0.0.1" "::1"];

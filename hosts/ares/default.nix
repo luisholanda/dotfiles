@@ -30,7 +30,8 @@ in {
       git = {
         enable = true;
         emailAccount = "personalProtonmail";
-        ssh.always = false;
+        ssh.always = true;
+        ssh.keys."gitlab.com" = "~/.ssh/gitlab_key";
         addons = {
           delta.enable = true;
         };

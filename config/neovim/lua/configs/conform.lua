@@ -19,4 +19,6 @@ local options = {
   }
 }
 
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
 require("conform").setup(options)

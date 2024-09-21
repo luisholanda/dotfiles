@@ -74,6 +74,9 @@ in {
             // cfg.addons.delta.options;
         };
 
+        lfs.enable = true;
+        lfs.skipSmudge = true;
+
         extraConfig = {
           branch.autosetuprebase = "always";
           core.commentChar = "@";
@@ -93,6 +96,8 @@ in {
             smtpuser = account.address;
           };
           github.user = "luisholanda";
+          # Use GitHub cli to authenticate in case we don't want to use SSH.
+          credential."https://github.com".helper = "!${pkgs.gitAndTools.gh}/bin/gh auth git-credential";
         };
       };
 
@@ -113,18 +118,14 @@ in {
         cfg.ssh.keys;
     }
 
-    # Use GitHub cli to authenticate in case we don't want to use SSH.
-    (mkIf (!cfg.ssh.always) {
-      user.home.programs.git.extraConfig = {
-        credential."https://github.com".helper = "!${pkgs.gitAndTools.gh}/bin/gh auth git-credential";
-      };
-    })
-
     # SSH-specific configurations.
     (mkIf cfg.ssh.always {
-      user.home.programs.git.extraConfig = {
-        url."git@github.com:".insteadOf = "https://github.com/";
-      };
+      user.home.programs.git.extraConfig.url =
+        lib.mapAttrs' (hostname: _: {
+          name = "git@${hostname}";
+          value.insteadOf = "https://${hostname}";
+        })
+        cfg.ssh.keys;
     })
     # Stacked-git addon.
     (mkIf cfg.addons.stgit.enable {

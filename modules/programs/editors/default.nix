@@ -46,7 +46,7 @@ in {
     buf-language-server
 
     # Python
-    unstable.basedpyright
+    unstable.pyright
     ruff
 
     # Shell
