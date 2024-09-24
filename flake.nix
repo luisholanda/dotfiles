@@ -41,7 +41,6 @@
 
     chaotic.url = "github:chaotic-cx/nyx?rev=1b67ffd345f496daf5e7b78d9c1fa0a5c3595b61";
     chaotic.inputs.home-manager.follows = "home-manager";
-    chaotic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -82,7 +81,8 @@
 
         config.allowUnfree = true;
         config.permittedInsecurePackages = [
-          "electron-25.9.0"
+            #"electron-25.9.0"
+          "electron-27.3.11"
         ];
 
         overlays = let

@@ -98,7 +98,6 @@ in {
       bemenu
       vesktop
       nomacs
-      pcmanfm
       protonmail-desktop
       zathura
       (wrapProgram logseq {
