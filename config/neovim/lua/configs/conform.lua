@@ -11,12 +11,12 @@ local options = {
 		python = { "docstrfmt", "ruff_fix", "ruff_organize_imports", "ruff_format" },
 		rust = { "rustfmt" },
 		sh = { "shfmt" },
-    ["*"] = { "trim_newlines", "trim_whitespace" },
+		["*"] = { "trim_newlines", "trim_whitespace" },
 	},
-  format_on_save = {
-    lsp_format = "fallback",
-    timeout = 500,
-  }
+	format_on_save = {
+		lsp_format = "fallback",
+		timeout = 500,
+	},
 }
 
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"

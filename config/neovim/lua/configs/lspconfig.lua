@@ -30,6 +30,11 @@ local function on_attach(client, bufnr)
 			end,
 		})
 	end
+
+	if client.name == "ruff_lsp" then
+		-- Prefer hover from pyright.
+		client.server_capabilities.hoverProvider = false
+	end
 end
 
 local servers = {
@@ -38,9 +43,76 @@ local servers = {
 	},
 	cmake = {},
 	dockerls = {},
-  hls = {},
+	hls = {},
 	nil_ls = {},
-	pyright = {},
+	-- Python
+	basedpyright = {
+		settings = {
+			basedpyright = {
+				disableOrganizeImports = true,
+				analysis = {
+					autoImportCompletions = true,
+					typeCheckingMode = "strict",
+				},
+			},
+		},
+	},
+	ruff = {
+		init_options = {
+			settings = {
+				lint = {
+					select = {
+						-- pyflakes
+						"F",
+						-- pycodestyle
+						"E",
+						"W",
+						-- mccabe
+						"C90",
+						-- isort
+						"I",
+						-- pep8-naming
+						"N",
+						-- flake8-annotation
+						"ANN",
+						-- flake8-async
+						"ASYNC",
+						-- flake8-bugbear
+						"B",
+						-- flake8-comprehensions
+						"C4",
+						-- flake8-datetime
+						"DTZ",
+						-- flake8-errmsg
+						"EM",
+						-- flake8-pie
+						"PIE",
+						-- flake8-pyi
+						"PYI",
+						-- flake8-pytest-style
+						"PT",
+						-- flake8-simplify
+						"SIM",
+						-- pandas-vet
+						"PD",
+						-- pylint
+						"PL",
+						-- tryceratops
+						"TRY",
+						-- fastapi
+						"FAST",
+						-- perflint
+						"PERF",
+						-- refurb
+						"FURB",
+						-- ruff
+						"RUFF",
+					},
+				},
+			},
+		},
+	},
+
 	terraformls = {},
 	yamlls = {
 		settings = {
