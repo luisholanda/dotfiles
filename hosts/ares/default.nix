@@ -109,6 +109,8 @@ in {
     ];
   };
 
+  systemd.packages = with pkgs; [pritunl-client];
+
   stylix.cursor.package = pkgs.google-cursor;
   stylix.cursor.name = "GoogleDot-White";
   stylix.cursor.size = 24;
@@ -147,7 +149,6 @@ in {
     extra-features = "+calt +liga";
   in
     builtins.concatStringsSep "\n" (builtins.map (s: "font_features ${font-name}-${s} ${extra-features} ${sss}") styles);
-
 
   documentation.man = {
     enable = true;
