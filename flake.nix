@@ -24,7 +24,6 @@
 
     # Current HEAD causes problems.
     emacs-overlay.url = "github:nix-community/emacs-overlay";
-    emacs-overlay.inputs.flake-utils.follows = "flake-utils";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay.inputs.nixpkgs-stable.follows = "nixpkgs";
 
@@ -39,7 +38,7 @@
     zls.inputs.gitignore.follows = "pre-commit-hooks/gitignore";
     zls.inputs.zig-overlay.follows = "zig-overlay";
 
-    chaotic.url = "github:chaotic-cx/nyx?rev=1b67ffd345f496daf5e7b78d9c1fa0a5c3595b61";
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     chaotic.inputs.home-manager.follows = "home-manager";
   };
 

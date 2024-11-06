@@ -50,6 +50,7 @@ in {
     };
 
     chaotic.scx.enable = true;
-    chaotic.scx.scheduler = "scx_rustland";
+    chaotic.scx.package = pkgs.scx_git.bpfland;
+    chaotic.scx.scheduler = "scx_bpfland";
   };
 }
