@@ -1,10 +1,11 @@
---@type conform.setupOpts
+---@type conform.setupOpts
 local options = {
 	formatters_by_ft = {
 		bash = { "shfmt" },
 		bzl = { "buildifier" },
 		c = { "clang-format" },
 		cpp = { "clang-format" },
+		go = { "gofumpt", "goimports" },
 		lua = { "stylua" },
 		nix = { "alejandra" },
 		proto = { "buf" },

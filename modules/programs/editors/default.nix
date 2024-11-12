@@ -27,6 +27,10 @@ in {
     # Docker
     nodePackages.dockerfile-language-server-nodejs
 
+    # Go
+    golangci-lint-langserver
+    gopls
+
     # Lua
     luajitPackages.luacheck
     sumneko-lua-language-server

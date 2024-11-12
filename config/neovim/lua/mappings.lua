@@ -60,6 +60,6 @@ vim.api.nvim_create_autocmd({ "LspAttach" }, {
 })
 
 -- terminals
-map({ "n", "t" }, "<leader>t", function()
+map({ "n" }, "<leader>t", function()
 	require("nvchad.term").toggle({ pos = "float", id = "floatterm" })
 end, { desc = "Toggle terminal" })

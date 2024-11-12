@@ -2,9 +2,12 @@
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require("lspconfig")
+local conform = require("conform")
 
 local autocmd_group = vim.api.nvim_create_augroup("LspCustomAutoCmds", { clear = true })
 
+---@param client vim.lsp.Client
+---@param bufnr number
 local function on_attach(client, bufnr)
 	vim.api.nvim_create_autocmd("CursorHold", {
 		buffer = bufnr,
@@ -26,7 +29,7 @@ local function on_attach(client, bufnr)
 			buffer = bufnr,
 			group = autocmd_group,
 			callback = function()
-				vim.lsp.buf.format()
+				conform.format({ bufnr = bufnr, async = true }, nil)
 			end,
 		})
 	end
@@ -37,6 +40,7 @@ local function on_attach(client, bufnr)
 	end
 end
 
+---@type table<string, lspconfig.Config>
 local servers = {
 	clangd = {
 		filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
@@ -45,6 +49,29 @@ local servers = {
 	dockerls = {},
 	hls = {},
 	nil_ls = {},
+	-- Go
+	gopls = {
+		settings = {
+			gopls = {
+				gofumpt = true,
+				semanticTokens = true,
+				noSemanticString = true,
+				noSemanticNumber = true,
+				staticcheck = true,
+				vulcheck = true,
+				analyses = {
+					loopclosure = false,
+					shadow = true,
+				},
+				hints = {
+					assignVariableType = true,
+					constantValues = true,
+					parameterNames = true,
+				},
+			},
+		},
+	},
+	golangci_lint_ls = {},
 	-- Python
 	basedpyright = {
 		settings = {
