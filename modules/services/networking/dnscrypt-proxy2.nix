@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  inherit (lib) optionals;
+  inherit (lib) mkIf;
   inherit (lib.my) mkAttrsOpt mkEnableOpt;
 
   domainsBlacklist = builtins.fetchurl {
@@ -18,9 +18,9 @@ in {
     settings = mkAttrsOpt "Settings for dnscrypt-proxy2";
   };
 
-  config = {
+  config = mkIf cfg.enable {
     networking.resolvconf.useLocalResolver = cfg.enable;
-    networking.nameservers = optionals (!cfg.enable) ["8.8.8.8" "8.8.4.4"];
+    networking.nameservers = ["8.8.8.8" "8.8.4.4"];
     services.dnscrypt-proxy2 = {
       inherit (cfg) enable;
       settings =

@@ -1,5 +1,10 @@
-{lib, ...}: let
+{
+  lib,
+  system,
+  ...
+}: let
   inherit (lib.my) mapModules;
+  inherit (lib) hasSuffix;
 in rec {
   # Create a new host based on a given path.
   mkHost = path: {
@@ -31,4 +36,7 @@ in rec {
   # Create new hosts from every path inside dir.
   mkHostsFromDir = dir: attrs:
     mapModules dir (hostPath: mkHost hostPath attrs);
+
+  isLinux = hasSuffix "-linux" system;
+  isDarwin = hasSuffix "-darwin" system;
 }

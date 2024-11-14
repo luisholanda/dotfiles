@@ -4,59 +4,61 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkDefault;
+  inherit (lib) mkDefault mkMerge optionalAttrs;
+  inherit (lib.my) isLinux;
   inherit (config.user.xdg) configDir;
-  inherit (config) theme;
 in {
-  config = {
-    fonts = {
-      enableDefaultPackages = true;
-      fontDir.enable = true;
-
-      fontconfig.useEmbeddedBitmaps = true;
-
-      packages = with pkgs; [
+  config = mkMerge [
+    {
+      fonts.packages = with pkgs; [
         noto-fonts-cjk-sans
         noto-fonts-cjk-serif
       ];
-    };
 
-    gtk.iconCache.enable = true;
-    qt.platformTheme.name = "gtk2";
-    qt.style = "gtk2";
-
-    user.home.extraConfig = {
-      gtk = {
-        gtk2.configLocation = "${configDir}/gtk-2.0/gtkrc";
+      user.home.extraConfig = {
+        gtk = {
+          gtk2.configLocation = "${configDir}/gtk-2.0/gtkrc";
+        };
+        qt = {
+          enable = true;
+          platformTheme.name = "gtk";
+        };
       };
-      qt = {
+
+      stylix = {
         enable = true;
-        platformTheme.name = "gtk";
+
+        fonts = {
+          serif = mkDefault {
+            package = pkgs.noto-fonts-lgc-plus;
+            name = "Noto Serif";
+          };
+          sansSerif = mkDefault {
+            package = pkgs.noto-fonts-lgc-plus;
+            name = "Noto Sans";
+          };
+          emoji = mkDefault {
+            package = pkgs.noto-fonts-emoji-blob-bin;
+            name = "Noto Color Emoji";
+          };
+          monospace = mkDefault {
+            package = pkgs.pragmasevka;
+            name = "Pragmasevka Nerd Font";
+          };
+          sizes.desktop = mkDefault 12;
+        };
       };
-    };
-
-    stylix = {
-      enable = true;
-
+    }
+    (optionalAttrs isLinux {
       fonts = {
-        serif = mkDefault {
-          package = pkgs.noto-fonts-lgc-plus;
-          name = "Noto Serif";
-        };
-        sansSerif = mkDefault {
-          package = pkgs.noto-fonts-lgc-plus;
-          name = "Noto Sans";
-        };
-        emoji = mkDefault {
-          package = pkgs.noto-fonts-emoji-blob-bin;
-          name = "Noto Color Emoji";
-        };
-        monospace = mkDefault {
-          package = pkgs.pragmasevka;
-          name = "Pragmasevka Nerd Font";
-        };
-        sizes.desktop = mkDefault 12;
+        fontDir.enable = true;
+
+        fontconfig.useEmbeddedBitmaps = true;
       };
-    };
-  };
+
+      gtk.iconCache.enable = true;
+      qt.platformTheme.name = "gtk2";
+      qt.style = "gtk2";
+    })
+  ];
 }
