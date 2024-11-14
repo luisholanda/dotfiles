@@ -6,14 +6,15 @@ in rec {
     system,
     pkgs,
     inputs,
+    systemFn,
     modules ? [],
     ...
   }: let
     inherit (builtins) baseNameOf;
-    inherit (pkgs.lib) mkDefault nixosSystem removeSuffix;
+    inherit (pkgs.lib) mkDefault removeSuffix;
     inherit (pkgs) lib;
   in
-    nixosSystem {
+    systemFn {
       inherit system;
       specialArgs = {inherit lib inputs system;};
       modules =

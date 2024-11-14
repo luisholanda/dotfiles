@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   mkCache = url: key: {inherit url key;};
   caches = let
     nixos =
@@ -25,14 +21,6 @@ in {
       substituters = binaryCaches;
       auto-optimise-store = true;
       allowed-users = ["@whell" "@builders"];
-      #sandbox-paths = lib.optionals isDarwin [
-      #  "/System/Library/Frameworks"
-      #  "/System/Library/PrivateFrameworks"
-      #  "/usr/lib"
-      #  "/private/tmp"
-      #  "/private/var/tmp"
-      #  "/usr/bin/env"
-      #];
       trusted-public-keys = map (x: x.key) caches;
       trusted-substituters = binaryCaches;
       experimental-features = "nix-command flakes";
@@ -43,7 +31,5 @@ in {
     #nix.extraOptions = ''
     #  include ${config.dotfiles.dir}/nix-access-tokens
     #'';
-
-    system.stateVersion = "22.05";
   };
 }

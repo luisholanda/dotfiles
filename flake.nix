@@ -22,11 +22,6 @@
     firefox-addons.inputs.flake-utils.follows = "flake-utils";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Current HEAD causes problems.
-    emacs-overlay.url = "github:nix-community/emacs-overlay";
-    emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
-    emacs-overlay.inputs.nixpkgs-stable.follows = "nixpkgs";
-
     zig-overlay.url = "github:mitchellh/zig-overlay";
     zig-overlay.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
     zig-overlay.inputs.flake-utils.follows = "flake-utils";
@@ -40,6 +35,9 @@
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     chaotic.inputs.home-manager.follows = "home-manager";
+
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -49,9 +47,9 @@
     firefox-addons,
     flake-utils,
     pre-commit-hooks,
-    emacs-overlay,
     zls,
     chaotic,
+    nix-darwin,
     ...
   }: let
     dotfiles = import self.outPath;
@@ -80,7 +78,6 @@
 
         config.allowUnfree = true;
         config.permittedInsecurePackages = [
-          #"electron-25.9.0"
           "electron-27.3.11"
         ];
 
@@ -95,7 +92,6 @@
         in
           overlays
           ++ [
-            emacs-overlay.overlay
             addVendoredPackages
             addCustomLibFunctions
             addFirefoxExtensions
@@ -134,6 +130,20 @@
           };
         };
       };
+
+      extraModules = [
+        dotfiles
+        {
+          config.nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
+        }
+      ];
+
+      myModules = mapModulesRec' ./modules import;
+      mkHost' = path: systemFn:
+        mkHost path {
+          inherit dotfiles pkgs system inputs systemFn;
+          modules = myModules ++ extraModules;
+        };
     in {
       checks = {inherit pre-commit-check;};
 
@@ -145,25 +155,23 @@
       };
 
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
-      packages.nixosConfigurations = let
-        extraModules = [
-          dotfiles
+      packages.nixosConfigurations.ares = let
+        modules = [
           inputs.home-manager.nixosModule
           inputs.stylix.nixosModules.stylix
           chaotic.nixosModules.default
-          {
-            config.nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
-          }
         ];
-
-        mkHost' = path:
-          mkHost path {
-            inherit dotfiles pkgs system inputs;
-            modules = (mapModulesRec' ./modules import) ++ extraModules;
-          };
-      in {
-        ares = mkHost' ./hosts/ares;
-      };
+        systemFn = args: pkgs.lib.nixosSystem (args // {modules = modules ++ args.modules;});
+      in
+        mkHost' ./hosts/ares systemFn;
+      darwinConfigurations.hephaestus = let
+        modules = [
+          inputs.home-manager.darwinModules.home-manager
+          inputs.stylix.darwinModules.stylix
+        ];
+        systemFn = args: nix-darwin.lib.darwinSystem (args // {modules = modules ++ args.modules;});
+      in
+        mkHost' ./hosts/hephaestus systemFn;
     });
   in
     systemAttrs
