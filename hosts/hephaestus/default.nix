@@ -51,6 +51,8 @@
       vesktop
       logseq
     ];
+
+    home.extraConfig.home.stateVersion = "24.05";
   };
 
   networking.knownNetworkServices = ["Wi-Fi"];

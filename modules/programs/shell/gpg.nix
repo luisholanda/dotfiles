@@ -4,13 +4,17 @@
   pkgs,
   ...
 }: let
-  inherit (lib.my) mkEnableOpt;
+  inherit (lib) mkMerge optionalAttrs;
+  inherit (lib.my) mkEnableOpt isLinux;
 in {
   options.modules.programs.gpg.enable = mkEnableOpt "Enable GnuPG configuration.";
 
   config = {
-    programs.gnupg.agent.enable = true;
-    programs.gnupg.agent.pinentryPackage = pkgs.pinentry-qt;
+    programs.gnupg.agent = mkMerge [
+      {inherit (config.modules.programs.gpg) enable;}
+      (optionalAttrs isLinux {pinentryPackage = pkgs.pinentry-qt;})
+    ];
+
     user.home.programs.gpg = {
       inherit (config.modules.programs.gpg) enable;
 

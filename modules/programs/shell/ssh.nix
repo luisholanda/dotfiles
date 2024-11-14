@@ -3,7 +3,8 @@
   lib,
   ...
 }: let
-  inherit (lib.my) mkEnableOpt mkBoolOpt;
+  inherit (lib) optionalAttrs;
+  inherit (lib.my) mkEnableOpt mkBoolOpt isLinux;
 
   cfg = config.modules.programs.ssh;
 in {
@@ -24,7 +25,7 @@ in {
       controlMaster = "auto";
     };
 
-    programs.ssh.startAgent = cfg.agent.enable;
+    programs.ssh = optionalAttrs isLinux {startAgent = cfg.agent.enable;};
 
     user.sessionVariables.SSH_AUTH_SOCK = "\${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent";
   };

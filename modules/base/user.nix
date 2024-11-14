@@ -5,8 +5,8 @@
   pkgs,
   ...
 }: let
-  inherit (lib) types mkAliasDefinitions mkOption splitString;
-  inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt;
+  inherit (lib) types mkAliasDefinitions mkOption splitString mkDefault mkMerge optionalAttrs;
+  inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt isLinux;
 
   cfg = config.user;
 in {
@@ -116,47 +116,54 @@ in {
     };
   };
 
-  config = {
-    users.mutableUsers = false;
-    users.users.${cfg.name} = {
-      inherit (cfg) description shell packages;
+  config = mkMerge [
+    {
+      users.users.${cfg.name} = {
+        inherit (cfg) description shell packages;
+        home = cfg.home.dir;
+      };
 
-      isNormalUser = true;
-      home = cfg.home.dir;
-      extraGroups = cfg.groups;
-      hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
-    };
+      environment.shells = [cfg.shell];
 
-    environment.shells = [cfg.shell];
+      user.packages = with pkgs; [xdg_utils httpie jq];
 
-    user.packages = with pkgs; [xdg_utils httpie jq];
+      home-manager = {
+        # Install user packages in /etc/profiles instead. Necessary for
+        # nixos-rebuild build-vm to work.
+        useGlobalPkgs = true;
+        useUserPackages = true;
 
-    home-manager = {
-      # Install user packages in /etc/profiles instead. Necessary for
-      # nixos-rebuild build-vm to work.
-      useGlobalPkgs = true;
-      useUserPackages = true;
+        users.${cfg.name} = let
+          cleanExtraConfig = builtins.removeAttrs cfg.home.extraConfig ["programs" "services"];
+        in
+          mkMerge [
+            cleanExtraConfig
+            {
+              home.sessionVariables = mkAliasDefinitions cfg.sessionVariables;
+              # Necessary for home-manager to work with flakes, otherwise it will
+              # look for a nixpkgs channel.
+              home.stateVersion = mkDefault config.system.stateVersion;
+              home.file = cfg.home.file;
 
-      users.${cfg.name} = let
-        cleanExtraConfig = builtins.removeAttrs cfg.home.extraConfig ["programs" "services"];
-      in
-        cleanExtraConfig
-        // {
-          home.sessionVariables = mkAliasDefinitions cfg.sessionVariables;
-          # Necessary for home-manager to work with flakes, otherwise it will
-          # look for a nixpkgs channel.
-          home.stateVersion = config.system.stateVersion;
-          home.file = cfg.home.file;
+              programs = mkAliasDefinitions options.user.home.programs;
+              services = mkAliasDefinitions options.user.home.services;
 
-          programs = mkAliasDefinitions options.user.home.programs;
-          services = mkAliasDefinitions options.user.home.services;
+              xdg.configFile = cfg.xdg.configFile;
+              xdg.dataFile = cfg.xdg.dataFile;
+            }
+          ];
+      };
 
-          xdg.configFile = cfg.xdg.configFile;
-          xdg.dataFile = cfg.xdg.dataFile;
-        };
-    };
-
-    nix.settings.trusted-users = ["root" cfg.name];
-    nix.settings.allowed-users = ["root" cfg.name];
-  };
+      nix.settings.trusted-users = ["root" cfg.name];
+      nix.settings.allowed-users = ["root" cfg.name];
+    }
+    (optionalAttrs isLinux {
+      users.mutableUsers = false;
+      users.users.${cfg.name} = {
+        isNormalUser = true;
+        extraGroups = cfg.groups;
+        hashedPassword = builtins.head (splitString "\n" (builtins.readFile cfg.passwordFile));
+      };
+    })
+  ];
 }
