@@ -48,7 +48,21 @@ local servers = {
 	cmake = {},
 	dockerls = {},
 	hls = {},
-	nil_ls = {},
+	nil_ls = {
+		settings = {
+			["nil"] = {
+				diagnostics = {
+					excludedFiles = { "Cargo.nix" },
+				},
+				nix = {
+					flake = {
+						autoArchive = true,
+						autoEvalInputs = true,
+					},
+				},
+			},
+		},
+	},
 	-- Go
 	gopls = {
 		settings = {

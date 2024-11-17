@@ -58,6 +58,12 @@ return {
 					require("configs.conform")
 				end,
 			},
+			{
+				"mfussenegger/nvim-lint",
+				config = function()
+					require("configs.nvim-lint")
+				end,
+			},
 		},
 	},
 	{

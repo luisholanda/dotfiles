@@ -13,6 +13,7 @@ in {
     # General
     git
     (ripgrep.override {withPCRE2 = true;})
+    fd
 
     # ASM
     asm-lsp
@@ -20,16 +21,14 @@ in {
     # Bazel
     bazel-buildtools
 
-    # C/C++
-    ccls
-    clang-tools_16
-
     # Docker
     nodePackages.dockerfile-language-server-nodejs
 
     # Go
     golangci-lint-langserver
     gopls
+    gofumpt
+    gotools
 
     # Lua
     luajitPackages.luacheck
@@ -55,6 +54,7 @@ in {
 
     # Shell
     shellcheck
+    shfmt
     nodePackages.bash-language-server
 
     # Terraform

@@ -59,7 +59,7 @@ in {
     };
 
     chaotic.scx.enable = true;
-    chaotic.scx.package = pkgs.scx_git.bpfland;
-    chaotic.scx.scheduler = "scx_bpfland";
+    chaotic.scx.package = pkgs.scx_git.lavd;
+    chaotic.scx.scheduler = "scx_lavd";
   };
 }
