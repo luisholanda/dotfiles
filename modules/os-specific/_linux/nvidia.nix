@@ -15,7 +15,8 @@ in {
   config = mkIf config.host.hardware.gpu.isNVIDIA {
     services.xserver.videoDrivers = ["nvidia"];
     hardware.opengl.extraPackages = with pkgs; [vaapiVdpau nvidia-vaapi-driver];
-    hardware.nvidia.package = nvidiaPackages.vulkan_beta;
+    hardware.nvidia.open = false;
+    hardware.nvidia.package = nvidiaPackages.beta;
     hardware.nvidia.nvidiaPersistenced = true;
 
     boot.extraModprobeConfig = ''

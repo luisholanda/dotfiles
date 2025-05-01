@@ -5,6 +5,13 @@
   ...
 }: let
   inherit (lib.my) wrapProgram;
+
+  chromiumCmdArgs = [
+    "--disable-gpu-blacklist"
+    "--enable-raw-draw"
+    "--enable-skia-graphite"
+    "--skia-graphite"
+  ];
 in {
   imports = [./hardware.nix];
 
@@ -64,6 +71,7 @@ in {
     ];
 
     home.extraConfig.stylix.targets.vesktop.enable = true;
+    home.programs.brave.commandLineArgs = chromiumCmdArgs;
 
     accounts.email.accounts = {
       personalGmail = rec {
@@ -96,20 +104,24 @@ in {
 
     packages = with pkgs; [
       bemenu
-      vesktop
+      (wrapProgram vesktop {
+        appendFlags = chromiumCmdArgs;
+      })
       nomacs
-      protonmail-desktop
-      zathura
       (wrapProgram logseq {
         prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
+        appendFlags = chromiumCmdArgs;
       })
       (wrapOBS {
         plugins = with obs-studio-plugins; [wlrobs input-overlay obs-pipewire-audio-capture];
       })
+      (wrapProgram obsidian {
+        appendFlags = chromiumCmdArgs;
+      })
+      zathura
+      zotero
     ];
   };
-
-  systemd.packages = with pkgs; [pritunl-client];
 
   stylix.cursor.package = pkgs.google-cursor;
   stylix.cursor.name = "GoogleDot-White";
@@ -120,9 +132,7 @@ in {
   stylix.polarity = "dark";
   stylix.fonts = {
     monospace = {
-      package = pkgs.unstable.nerdfonts.override {
-        fonts = ["Monaspace"];
-      };
+      package = pkgs.unstable.nerd-fonts.monaspace;
       name = "MonaspiceNe Nerd Font Mono";
     };
     sansSerif = {

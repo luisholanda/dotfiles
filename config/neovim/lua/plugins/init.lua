@@ -1,7 +1,8 @@
 ---@type LazyPluginSpec[]
 return {
 	{
-		"hrsh7th/nvim-cmp",
+		"iguanacucumber/magazine.nvim",
+		name = "nvim-cmp",
 		opts = function()
 			local opts = require("nvchad.configs.cmp")
 			local icons = require("nvchad.icons.lspkind")
@@ -43,6 +44,11 @@ return {
 					wrapper = "steam-run",
 				},
 			},
+			{ "iguanacucumber/mag-nvim-lsp", name = "cmp-nvim-lsp", opts = {} },
+			{ "iguanacucumber/mag-nvim-lua", name = "cmp-nvim-lua" },
+			{ "iguanacucumber/mag-buffer", name = "cmp-buffer" },
+			{ "iguanacucumber/mag-cmdline", name = "cmp-cmdline" },
+			"https://codeberg.org/FelipeLema/cmp-async-path",
 		},
 	},
 	{
@@ -127,6 +133,19 @@ return {
 		},
 	},
 
+	{
+		"Julian/lean.nvim",
+		event = { "BufReadPre *.lean", "BufNewFile *.lean" },
+		dependencies = {
+			"neovim/nvim-lspconfig",
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+		opts = {
+			mappings = true,
+		},
+	},
+
 	-- Colorschemes
 	-- FIX: has a bad `force` argument to nvim_set_hl
 	--{
@@ -160,4 +179,43 @@ return {
 		"lukas-reineke/indent-blankline.nvim",
 		enabled = false,
 	},
+	--{
+	--  "hrsh7th/nvim-cmp",
+	--  enabled = false,
+	--},
+	--{
+	--  "hrsh7th/cmp-buffer",
+	--  enabled = false,
+	--},
+	--{
+	--  "hrsh7th/cmp-cmdline",
+	--  enabled = false,
+	--},
+	--{
+	--  "hrsh7th/cmp-nvim-lsp",
+	--  enabled = false,
+	--},
+	--{
+	--  "hrsh7th/cmp-nvim-lua",
+	--  enabled = false,
+	--},
+	--{
+	--  "hrsh7th/cmp-path",
+	--  enabled = false,
+	--},
+
+	{
+		"nvchad/ui",
+		config = function()
+			require("nvchad")
+		end,
+	},
+	{
+		"nvchad/base46",
+		lazy = true,
+		build = function()
+			require("base46").load_all_highlights()
+		end,
+	},
+	"nvzone/volt",
 }

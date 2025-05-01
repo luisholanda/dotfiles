@@ -125,7 +125,7 @@ in {
 
       environment.shells = [cfg.shell];
 
-      user.packages = with pkgs; [xdg_utils httpie jq];
+      user.packages = with pkgs; [xdg-utils httpie jq];
 
       home-manager = {
         # Install user packages in /etc/profiles instead. Necessary for

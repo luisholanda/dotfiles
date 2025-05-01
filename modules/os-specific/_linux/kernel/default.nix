@@ -8,15 +8,6 @@
   inherit (lib) optionals;
   inherit (lib.my) flattenAttrs;
 in {
-  imports = [
-    # renamed stuff on unstable.
-    (lib.mkAliasOptionModule ["hardware" "graphics" "enable"] ["hardware" "opengl" "enable"])
-    (lib.mkAliasOptionModule ["hardware" "graphics" "enable32Bit"] ["hardware" "opengl" "driSupport32Bit"])
-    (lib.mkAliasOptionModule ["hardware" "graphics" "package"] ["hardware" "opengl" "package"])
-    (lib.mkAliasOptionModule ["hardware" "graphics" "package32"] ["hardware" "opengl" "package32"])
-    (lib.mkAliasOptionModule ["hardware" "graphics" "extraPackages"] ["hardware" "opengl" "extraPackages"])
-    (lib.mkAliasOptionModule ["hardware" "graphics" "extraPackages32"] ["hardware" "opengl" "extraPackages32"])
-  ];
   config = {
     boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
 
@@ -58,8 +49,8 @@ in {
       };
     };
 
-    chaotic.scx.enable = true;
-    chaotic.scx.package = pkgs.scx_git.lavd;
-    chaotic.scx.scheduler = "scx_lavd";
+    services.scx.enable = true;
+    services.scx.package = pkgs.scx_git.full;
+    services.scx.scheduler = "scx_lavd";
   };
 }

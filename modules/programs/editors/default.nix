@@ -20,6 +20,7 @@ in {
 
     # Bazel
     bazel-buildtools
+    unstable.starpls
 
     # Docker
     nodePackages.dockerfile-language-server-nodejs
@@ -46,10 +47,10 @@ in {
 
     # Protobuffer
     buf
-    buf-language-server
 
     # Python
-    unstable.basedpyright
+    #unstable.basedpyright
+    unstable.pyright
     ruff
 
     # Shell
@@ -71,7 +72,7 @@ in {
     nodePackages.vscode-json-languageserver
 
     # Zig
-    zls
+    #zls
 
     # ShitHub Actions
     actionlint

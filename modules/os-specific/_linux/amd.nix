@@ -14,12 +14,12 @@ in {
   config = mkMerge [
     (mkIf (isAMD || gpu.isAMD) {
       boot.initrd.kernelModules = ["amdgpu"];
-      hardware.opengl.extraPackages = with pkgs; [rocm-opencl-icd rocm-opencl-runtime];
-      hardware.opengl.driSupport = true;
-      hardware.opengl.driSupport32Bit = true;
+      hardware.graphics.extraPackages = with pkgs; [rocm-opencl-icd rocm-opencl-runtime];
+      hardware.graphics.enable32Bit = true;
       environment.variables.AMD_VULKAN_ICD = "RADV";
       chaotic.mesa-git.enable = true;
-      chaotic.mesa-git.method = "GBM_BACKENDS_PATH";
+      chaotic.mesa-git.fallbackSpecialisation = true;
+      chaotic.mesa-git.replaceBasePackage = true;
     })
     (mkIf isAMD {
       hardware.cpu.amd.updateMicrocode = true;

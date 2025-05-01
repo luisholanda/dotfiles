@@ -1,4 +1,3 @@
--- EXAMPLE
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require("lspconfig")
@@ -32,6 +31,10 @@ local function on_attach(client, bufnr)
 				conform.format({ bufnr = bufnr, async = true }, nil)
 			end,
 		})
+	end
+
+	if client.server_capabilities.inlayHintProvider then
+		vim.lsp.inlay_hint.enable(true)
 	end
 
 	if client.name == "ruff_lsp" then
@@ -153,8 +156,13 @@ local servers = {
 			},
 		},
 	},
+	starpls = {
+		cmd = { "starpls", "server", "--experimental_enable_label_completions", "--experimental_infer_ctx_attributes" },
+	},
 
-	terraformls = {},
+	terraformls = {
+		filetypes = { "terraform", "tf", "hcl" },
+	},
 	yamlls = {
 		settings = {
 			yaml = {
@@ -164,6 +172,38 @@ local servers = {
 	},
 	zls = {},
 	rust_analyzer = {
+		commands = {
+			RustGenRustProject = {
+				function()
+					vim.ui.input({
+						prompt = "Target set: ",
+						default = "//...",
+					}, function(input)
+						if input == nil then
+							return
+						end
+
+						local target_sets = vim.split(input, " ", { trimempty = true })
+						local cmd = {
+							"bazel",
+							"run",
+							"@rules_rust//tools/rust_analyzer:gen_rust_project",
+							"--",
+							table.unpack(target_sets),
+						}
+						vim.system(cmd, {}, function(out)
+							if out.code == 0 then
+								vim.print("rust-project.json generated! Reloading rust-analyzer")
+								vim.cmd("LspRestart")
+							else
+								vim.print("rust-project.json failed! Stderr:\n", out.stderr)
+							end
+						end)
+					end)
+				end,
+				description = "Generate the rust-project.json file.",
+			},
+		},
 		settings = {
 			["rust-analyzer"] = {
 				assist = {

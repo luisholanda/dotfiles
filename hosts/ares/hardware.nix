@@ -52,7 +52,7 @@ in {
   hardware = {
     brillo.enable = true;
     ksm.enable = true;
-    opengl.enable = true;
+    graphics.enable = true;
   };
   host.hardware.isIntel = true;
 

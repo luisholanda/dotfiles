@@ -115,6 +115,8 @@ in {
     user.sessionCmd = "${swayWrapped}/bin/sway";
     user.packages = [screenshot] ++ (with pkgs; [wl-clipboard]);
 
+    xdg.portal.extraPortals = with pkgs; [xdg-portal-gtk];
+
     security.pam.services.swaylock = {};
 
     #user.home.programs.swaylock.settings = lib.mkAliasDefinitions opts.lock.settings;
