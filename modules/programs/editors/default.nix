@@ -16,17 +16,18 @@ in {
     fd
 
     # ASM
-    asm-lsp
+    #asm-lsp
 
     # Bazel
     bazel-buildtools
     unstable.starpls
 
     # Docker
-    nodePackages.dockerfile-language-server-nodejs
+    dockerfile-language-server-nodejs
 
     # Go
     golangci-lint-langserver
+    golangci-lint
     gopls
     gofumpt
     gotools
@@ -37,7 +38,7 @@ in {
     stylua
 
     # Markdown
-    nodePackages.markdownlint-cli2
+    markdownlint-cli2
     proselint
 
     # Nix
@@ -56,20 +57,16 @@ in {
     # Shell
     shellcheck
     shfmt
-    nodePackages.bash-language-server
+    bash-language-server
 
     # Terraform
     terraform-ls
 
-    # Typescript
-    nodePackages.typescript
-
     # Rust
-    rust-analyzer
+    unstable.rust-analyzer
 
     # YAML/JSON
-    nodePackages.yaml-language-server
-    nodePackages.vscode-json-languageserver
+    yaml-language-server
 
     # Zig
     #zls
@@ -78,8 +75,8 @@ in {
     actionlint
 
     # DAP
-    lldb_16
-    llvmPackages_16.llvm
+    lldb_19
+    llvmPackages_19.llvm
   ];
 
   config.user.xdg.configFile."zls.json".text = builtins.toJSON {

@@ -34,10 +34,10 @@ in {
       boot.kernel.sysctl."net.core.rmem_max" = 8 * 1024 * 1024;
       boot.kernel.sysctl."net.core.wmem_max" = 8 * 1024 * 1024;
     })
-    (optionalAttrs isDarwin {
-      networking.dns = ["127.0.0.1" "::1"];
-      services.nextdns.enable = true;
-      services.nextdns.arguments = ["-cache-size" "256MB"];
-    })
+    #(optionalAttrs isDarwin {
+    #  networking.dns = ["127.0.0.1" "::1"];
+    #  services.nextdns.enable = true;
+    #  services.nextdns.arguments = ["-cache-size" "256MB"];
+    #})
   ];
 }

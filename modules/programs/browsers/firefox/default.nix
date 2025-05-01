@@ -6,14 +6,13 @@
 }: let
   inherit (builtins) readFile concatStringsSep;
   inherit (lib) mkIf mkOption types;
-  inherit (lib.my) flattenAttrs mkCssFileOpt mkCssFilesOpt mkEnableOpt mkPkgsOpt;
+  inherit (lib.my) flattenAttrs mkCssFileOpt mkCssFilesOpt mkEnableOpt;
 
   cfg = config.modules.programs.firefox;
   hasWayland = config.modules.services.sway.enable;
 in {
   options.modules.programs.firefox = {
     enable = mkEnableOpt "Enable Firefox configuration.";
-    extensions = mkPkgsOpt "Firefox extensions";
 
     settings = mkOption {
       type = types.attrs;

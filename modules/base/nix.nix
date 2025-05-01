@@ -16,10 +16,10 @@
 in {
   config = {
     nix.package = pkgs.unstable.nixVersions.latest;
+    nix.optimise.automatic = true;
 
     nix.settings = {
       substituters = binaryCaches;
-      auto-optimise-store = true;
       allowed-users = ["@whell" "@builders"];
       trusted-public-keys = map (x: x.key) caches;
       trusted-substituters = binaryCaches;

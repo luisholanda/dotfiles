@@ -99,7 +99,10 @@ in {
 
       dir = mkOption {
         type = str;
-        default = "/home/${cfg.name}";
+        default =
+          if isLinux
+          then "/home/${cfg.name}"
+          else "/Users/${cfg.name}";
         description = "Home directory for the user.";
       };
     };
@@ -125,7 +128,7 @@ in {
 
       environment.shells = [cfg.shell];
 
-      user.packages = with pkgs; [xdg-utils httpie jq];
+      user.packages = with pkgs; [xdg-utils jq];
 
       home-manager = {
         # Install user packages in /etc/profiles instead. Necessary for

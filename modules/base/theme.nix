@@ -20,7 +20,7 @@ in {
           gtk2.configLocation = "${configDir}/gtk-2.0/gtkrc";
         };
         qt = {
-          enable = true;
+          enable = false;
           platformTheme.name = "gtk";
         };
       };

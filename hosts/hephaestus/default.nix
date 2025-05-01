@@ -7,17 +7,16 @@
     editors.neovim.enable = true;
 
     programs = {
-      brave.enable = true;
       fish.enable = true;
 
       git = {
         enable = true;
         emailAccount = "personalProtonmail";
         addons.delta.enable = true;
+        ssh.always = false;
       };
 
       gpg.enable = true;
-      kitty.enable = true;
       ssh.enable = true;
     };
   };
@@ -27,7 +26,6 @@
   user = {
     name = "lholanda";
     description = "Luis Holanda";
-    passwordFile = "${config.dotfiles.dir}/hosts/hephaestus/passfile";
 
     home.extraConfig.stylix.targets.vesktop.enable = true;
 
@@ -47,14 +45,38 @@
       };
     };
 
-    packages = with pkgs; [
-      vesktop
-      logseq
-    ];
+    packages = with pkgs; [darwin-rebuild gh];
 
     home.extraConfig.home.stateVersion = "24.05";
   };
 
+  stylix.image = config.dotfiles.dir + "/wallpapers/youkai-color.png";
+  stylix.fonts.sizes.terminal = 13;
+  stylix.polarity = "dark";
+
   networking.knownNetworkServices = ["Wi-Fi"];
   system.stateVersion = 5;
+  nix.useDaemon = true;
+
+  homebrew = {
+    enable = true;
+    caskArgs = {
+      appdir = "/Applications/Brew Apps";
+      require_sha = true;
+    };
+    onActivation.cleanup = "zap";
+    brews = ["bazelisk" "valgrind"];
+    casks = [
+      "brave-browser"
+      "datagrip"
+      "ghostty"
+      "raycast"
+      "zed"
+    ];
+  };
+
+  nix-homebrew = {
+    enable = true;
+    user = config.user.name;
+  };
 }

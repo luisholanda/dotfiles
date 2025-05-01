@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) mkIf;
-  inherit (lib.my) mkEnableOpt;
+  inherit (lib.my) mkEnableOpt isLinux;
 in {
   options.modules.programs.kitty = {
     enable = mkEnableOpt "Enable the use of kitty terminal emulator.";
@@ -30,7 +30,7 @@ in {
         focus_follows_mouse = true;
         repaint_delay = 3;
         enable_audio_bell = false;
-        hide_window_decorations = true;
+        hide_window_decorations = isLinux;
         resize_draw_strategy = "scale";
         tab_bar_style = "separator";
         tab_separator = " |";

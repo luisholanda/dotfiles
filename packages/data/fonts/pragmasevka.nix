@@ -33,11 +33,6 @@
       xHeight = 550;
     };
 
-    slopes = {
-      upright = "default.upright";
-      italic = "default.italic";
-    };
-
     variants = {
       inherits = "ss08";
       design = {

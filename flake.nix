@@ -18,10 +18,6 @@
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
     pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
 
-    firefox-addons.url = "github:nix-community/nur-combined?dir=repos/rycee/pkgs/firefox-addons";
-    firefox-addons.inputs.flake-utils.follows = "flake-utils";
-    firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
-
     zig-overlay.url = "github:mitchellh/zig-overlay";
     zig-overlay.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
     zig-overlay.inputs.flake-utils.follows = "flake-utils";
@@ -36,15 +32,15 @@
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     chaotic.inputs.home-manager.follows = "home-manager";
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-24.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
   };
 
   outputs = inputs @ {
     self,
     nixpkgs,
     nixpkgs-unstable,
-    firefox-addons,
     flake-utils,
     pre-commit-hooks,
     zls,
@@ -88,13 +84,12 @@
               pkgs = final;
             };
           addCustomLibFunctions = _final: _prev: {inherit lib;};
-          addFirefoxExtensions = _final: _prev: {firefox.extensions = firefox-addons.packages.${system};};
         in
           overlays
           ++ [
+            nix-darwin.overlays.default
             addVendoredPackages
             addCustomLibFunctions
-            addFirefoxExtensions
             (_: prev: {
               inherit (zls.packages.${system}) zls;
               unstable = import nixpkgs-unstable {
@@ -164,10 +159,11 @@
         systemFn = args: pkgs.lib.nixosSystem (args // {modules = modules ++ args.modules;});
       in
         mkHost' ./hosts/ares systemFn;
-      darwinConfigurations.hephaestus = let
+      packages.darwinConfigurations.hephaestus = let
         modules = [
           inputs.home-manager.darwinModules.home-manager
           inputs.stylix.darwinModules.stylix
+          inputs.nix-homebrew.darwinModules.nix-homebrew
         ];
         systemFn = args: nix-darwin.lib.darwinSystem (args // {modules = modules ++ args.modules;});
       in
