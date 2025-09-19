@@ -33,12 +33,12 @@
       personalProtonmail = rec {
         primary = true;
         flavor = "protonmail.com";
-        address = "luiscmholanda@protonmail.com";
+        address = "luiscmholanda@pm.me";
         realName = "Luis Holanda";
         userName = address;
 
         gpg = {
-          key = "27D88FA704EDF786";
+          key = "2BD82F194D71A437";
           signByDefault = true;
           encryptByDefault = true;
         };
@@ -52,11 +52,15 @@
 
   stylix.image = config.dotfiles.dir + "/wallpapers/youkai-color.png";
   stylix.fonts.sizes.terminal = 13;
+  stylix.fonts.monospace = {
+    package = pkgs.monaspace;
+    name = "Monaspace Neon Var";
+  };
   stylix.polarity = "dark";
 
   networking.knownNetworkServices = ["Wi-Fi"];
   system.stateVersion = 5;
-  nix.useDaemon = true;
+  system.primaryUser = "lholanda";
 
   homebrew = {
     enable = true;
@@ -65,7 +69,7 @@
       require_sha = true;
     };
     onActivation.cleanup = "zap";
-    brews = ["bazelisk" "valgrind"];
+    brews = ["bazelisk"];
     casks = [
       "brave-browser"
       "datagrip"
