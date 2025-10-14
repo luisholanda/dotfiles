@@ -14,10 +14,8 @@ in {
   config = mkMerge [
     (mkIf (isAMD || gpu.isAMD) {
       boot.initrd.kernelModules = ["amdgpu"];
-      hardware.graphics.extraPackages = with pkgs; [rocm-opencl-icd rocm-opencl-runtime];
       hardware.graphics.enable32Bit = true;
-      environment.variables.AMD_VULKAN_ICD = "RADV";
-      chaotic.mesa-git.enable = true;
+      chaotic.mesa-git.enable = false;
       chaotic.mesa-git.fallbackSpecialisation = true;
       chaotic.mesa-git.replaceBasePackage = true;
     })
@@ -25,9 +23,24 @@ in {
       hardware.cpu.amd.updateMicrocode = true;
     })
     (mkIf gpu.isAMD {
+      environment.variables.AMD_VULKAN_ICD = "RADV";
+
+      hardware.amdgpu = {
+        amdvlk = {
+          enable = false;
+          package = pkgs.unstable.amdvlk;
+          supportExperimental.enable = true;
+          settings = {
+            ShaderCacheMode = 2;
+            RequestHighPriorityVmid = 1;
+            EnableNativeFence = 1;
+            LdsPsGroupSize = 1;
+          };
+        };
+        initrd.enable = true;
+      };
       programs.corectrl.enable = true;
       programs.corectrl.gpuOverclock.enable = true;
-      programs.corectrl.gpuOverclock.ppfeaturemask = "0xffffffff";
 
       services.ollama.acceleration = "rocm";
       user.groups = ["corectrl"];

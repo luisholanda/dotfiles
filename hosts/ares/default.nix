@@ -16,10 +16,11 @@ in {
   imports = [./hardware.nix];
 
   host.hardware.isIntel = true;
-  host.hardware.gpu.isNVIDIA = true;
+  host.hardware.gpu.isAMD = true;
 
   modules = {
     editors.neovim.enable = true;
+    editors.zed.enable = true;
     games.steam.enable = true;
 
     services = {
@@ -31,7 +32,10 @@ in {
     };
 
     programs = {
-      brave.enable = true;
+      brave = {
+        enable = true;
+      };
+
       fish.enable = true;
 
       git = {
@@ -39,13 +43,13 @@ in {
         emailAccount = "personalProtonmail";
         ssh.always = true;
         ssh.keys."gitlab.com" = "~/.ssh/gitlab_key";
+        ssh.keys."git.sr.ht" = "~/.ssh/sourcehut";
         addons = {
           delta.enable = true;
         };
       };
 
       gpg.enable = true;
-      kitty.enable = true;
       ssh.enable = true;
     };
   };
@@ -63,6 +67,8 @@ in {
     groups = ["wheel" "networking" "video" "adbusers" "docker"];
     passwordFile = "${config.dotfiles.dir}/hosts/ares/passfile";
 
+    terminalCmd = "${pkgs.unstable.ghostty}/bin/ghostty";
+
     # Run Bazel sandbox inside a tempfs.
     home.file.".bazelrc".text = "build --sandbox_base=/dev/shm/";
 
@@ -71,7 +77,7 @@ in {
     ];
 
     home.extraConfig.stylix.targets.vesktop.enable = true;
-    home.programs.brave.commandLineArgs = chromiumCmdArgs;
+    home.extraConfig.programs.brave.commandLineArgs = chromiumCmdArgs;
 
     accounts.email.accounts = {
       personalGmail = rec {
@@ -107,11 +113,8 @@ in {
       (wrapProgram vesktop {
         appendFlags = chromiumCmdArgs;
       })
+      unstable.ghostty
       nomacs
-      (wrapProgram logseq {
-        prefix.LD_LIBRARY_PATH = "${pkgs.libGL}/lib";
-        appendFlags = chromiumCmdArgs;
-      })
       (wrapOBS {
         plugins = with obs-studio-plugins; [wlrobs input-overlay obs-pipewire-audio-capture];
       })
@@ -132,8 +135,8 @@ in {
   stylix.polarity = "dark";
   stylix.fonts = {
     monospace = {
-      package = pkgs.unstable.nerd-fonts.monaspace;
-      name = "MonaspiceNe Nerd Font Mono";
+      package = pkgs.monaspace;
+      name = "Monaspace Xenon NF";
     };
     sansSerif = {
       package = pkgs.atkinson-hyperlegible;
@@ -141,24 +144,6 @@ in {
     };
     sizes.terminal = 10;
   };
-  user.home.programs.kitty.extraConfig = let
-    sss =
-      builtins.concatStringsSep " "
-      (map (i: "+ss0${toString i}") (lib.range 1 9));
-    styles = [
-      "Bold"
-      "BoldItalic"
-      "Italic"
-      "Light"
-      "LightItalic"
-      "Medium"
-      "MediumItalic"
-      "Regular"
-    ];
-    font-name = "MonaspiceNeNFM";
-    extra-features = "+calt +liga";
-  in
-    builtins.concatStringsSep "\n" (builtins.map (s: "font_features ${font-name}-${s} ${extra-features} ${sss}") styles);
 
   documentation.man = {
     enable = true;

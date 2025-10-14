@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkDefault mkMerge optionalAttrs;
+  inherit (lib) mkForce mkDefault mkMerge optionalAttrs;
   inherit (lib.my) isLinux;
   inherit (config.user.xdg) configDir;
 in {
@@ -19,10 +19,7 @@ in {
         gtk = {
           gtk2.configLocation = "${configDir}/gtk-2.0/gtkrc";
         };
-        qt = {
-          enable = false;
-          platformTheme.name = "gtk";
-        };
+        qt.enable = true;
       };
 
       stylix = {
@@ -57,8 +54,7 @@ in {
       };
 
       gtk.iconCache.enable = true;
-      qt.platformTheme.name = "gtk2";
-      qt.style = "gtk2";
+      qt.style = mkForce "gtk2";
     })
   ];
 }

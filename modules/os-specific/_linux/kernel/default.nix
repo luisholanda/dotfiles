@@ -9,7 +9,7 @@
   inherit (lib.my) flattenAttrs;
 in {
   config = {
-    boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
+    boot.kernelPackages = pkgs.linuxPackages_latest_xen_dom0;
 
     boot.kernelParams = let
       defaultParams = [

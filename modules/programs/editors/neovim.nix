@@ -11,7 +11,7 @@
 
   extraPackages =
     config.modules.editors.extraPackages
-    ++ (with pkgs; [zig]);
+    ++ (with pkgs; [zig lua51Packages.lua lua51Packages.luarocks]);
 
   wrappedNeovim = wrapProgram pkgs.unstable.neovim-unwrapped {
     suffix.PATH = makeBinPath extraPackages;

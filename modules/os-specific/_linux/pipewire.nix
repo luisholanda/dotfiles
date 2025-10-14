@@ -6,7 +6,7 @@
   inherit (lib) mkEnableOption;
 
   quantum = 64;
-  rate = 96000;
+  rate = 48000;
 in {
   options.modules.services.pipewire.enable = mkEnableOption "pipewire";
 

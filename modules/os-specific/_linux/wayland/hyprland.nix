@@ -25,7 +25,7 @@ in {
     environment.systemPackages = with pkgs; [bemenu screenshot wl-clipboard];
 
     programs.hyprland = {
-      package = pkgs.hyprland;
+      package = pkgs.unstable.hyprland;
       portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
       enable = true;
       xwayland.enable = true;
@@ -34,6 +34,10 @@ in {
     user.sessionVariables.NIXOS_OZONE_WL = 1;
     user.xdg.configFile."hypr/hyprland.conf".text = ''
       source = ${config.dotfiles.configDir}/hyprland.conf
+
+      debug {
+        disable_logs = false
+      }
 
       exec-once = ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME

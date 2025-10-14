@@ -1,14 +1,18 @@
-require("nvchad.options")
+require "nvchad.options"
 
 vim.o.cursorlineopt = "both"
-
+vim.o.exrc = true
 vim.o.relativenumber = true
+vim.o.number = true
 
 local rnu_toggle = vim.api.nvim_create_augroup("RelNumToggle", { clear = true })
 
 vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave" }, {
-	group = rnu_toggle,
-	callback = function(args)
-		vim.o.relativenumber = args.event == "InsertLeave"
-	end,
+  group = rnu_toggle,
+  callback = function(args)
+    vim.o.relativenumber = args.event == "InsertLeave"
+    if not vim.o.relativenumber then
+      vim.o.number = true
+    end
+  end,
 })

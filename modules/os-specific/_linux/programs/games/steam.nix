@@ -31,5 +31,7 @@ in {
     programs.steam.package = pkgs.steam;
 
     user.groups = ["gamemode"];
+
+    boot.kernelModules = ["ntsync"];
   };
 }

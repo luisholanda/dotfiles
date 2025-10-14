@@ -1,61 +1,39 @@
 ---@type (string | LazyPluginSpec)[]
 return {
+  { import = "nvchad.blink.lazyspec" },
   {
-    "iguanacucumber/magazine.nvim",
-    name = "nvim-cmp",
-    opts = function()
-      local opts = require "nvchad.configs.cmp"
-      local icons = require "nvchad.icons.lspkind"
-      opts.formatting.fields = { "kind", "abbr" }
-      opts.formatting.format = function(_, item)
-        local icon = icons[item.kind] or ""
-        item.kind = " " .. icon .. " "
-        return item
-      end
-      opts.view = { enable = "native" }
-      table.insert(opts.sources, { name = "codeium" })
-      opts.window.completion.border = nil
-      opts.window.completion.side_padding = 0
-      opts.window.documentation.border = nil
-      return opts
-    end,
-    config = function(_, opts)
-      local cmp = require "cmp"
-      cmp.setup(opts)
-
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        preselect = "item",
-        sources = {
-          { name = "buffer" },
-        },
-        view = {
-          enable = { name = "wildmenu", separator = "|" },
-        },
-      })
-    end,
-    dependencies = {
-      {
-        "Exafunction/codeium.nvim",
-        cmd = { "Codeium" },
-        opts = {
-          enable_local_search = true,
-          enable_index_service = true,
-          wrapper = "steam-run",
+    "Saghen/blink.cmp",
+    opts = {
+      completion = {
+        keyword = { range = "full" },
+      },
+      menu = {
+        draw = {
+          components = {
+            label = {
+              text = function(ctx)
+                return require("colorful-menu").blink_components_text(ctx)
+              end,
+              highlight = function(ctx)
+                return require("colorful-menu").blink_components_highlight(ctx)
+              end,
+            },
+          },
         },
       },
-      { "iguanacucumber/mag-nvim-lsp", name = "cmp-nvim-lsp", opts = {} },
-      { "iguanacucumber/mag-nvim-lua", name = "cmp-nvim-lua" },
-      { "iguanacucumber/mag-buffer", name = "cmp-buffer" },
-      { "iguanacucumber/mag-cmdline", name = "cmp-cmdline" },
-      "https://codeberg.org/FelipeLema/cmp-async-path",
+      signature = { enabled = true },
+      trigger = {
+        show_on_insert_on_trigger_character = true,
+      },
+    },
+    dependencies = {
+      "xzbdmw/colorful-menu.nvim",
     },
   },
   {
     "neovim/nvim-lspconfig",
     config = function()
       require("nvchad.configs.lspconfig").defaults()
-      require "configs.lspconfig"
     end,
     dependencies = {
       {
@@ -135,6 +113,7 @@ return {
 
   {
     "Julian/lean.nvim",
+    rocks = { enabled = false },
     event = { "BufReadPre *.lean", "BufNewFile *.lean" },
     dependencies = {
       "neovim/nvim-lspconfig",
@@ -179,30 +158,6 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     enabled = false,
   },
-  --{
-  --  "hrsh7th/nvim-cmp",
-  --  enabled = false,
-  --},
-  --{
-  --  "hrsh7th/cmp-buffer",
-  --  enabled = false,
-  --},
-  --{
-  --  "hrsh7th/cmp-cmdline",
-  --  enabled = false,
-  --},
-  --{
-  --  "hrsh7th/cmp-nvim-lsp",
-  --  enabled = false,
-  --},
-  --{
-  --  "hrsh7th/cmp-nvim-lua",
-  --  enabled = false,
-  --},
-  --{
-  --  "hrsh7th/cmp-path",
-  --  enabled = false,
-  --},
 
   {
     "nvchad/ui",

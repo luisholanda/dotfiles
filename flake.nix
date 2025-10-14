@@ -148,7 +148,7 @@
       nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
       packages.nixosConfigurations.ares = let
         modules = [
-          inputs.home-manager.nixosModule
+          inputs.home-manager.nixosModules.default
           inputs.stylix.nixosModules.stylix
           chaotic.nixosModules.default
         ];

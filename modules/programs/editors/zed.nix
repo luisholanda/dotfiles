@@ -6,12 +6,7 @@
 }: let
   inherit (lib) mkEnableOption;
 
-  baseZed = lib.my.addToPath pkgs.unstable.zed-editor config.modules.editors.extraPackages;
-
-  zed = pkgs.buildFHSEnv {
-    name = "zed";
-    runScript = "${baseZed}/bin/zed";
-  };
+  zed = lib.my.addToPath pkgs.unstable.zed-editor config.modules.editors.extraPackages;
 in {
   options.modules.editors.zed.enable = mkEnableOption "Enable the Zed text editor configuration.";
 
