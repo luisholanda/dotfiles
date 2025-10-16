@@ -39,4 +39,4 @@ vim.schedule(function()
   require "mappings"
 end)
 
-require "configs.lspconfig"
+require "lsp"

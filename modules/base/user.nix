@@ -5,7 +5,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) types mkAliasDefinitions mkOption splitString mkDefault mkMerge optionalAttrs;
+  inherit (lib) types mkAliasDefinitions mkOption splitString mkDefault mkIf mkMerge optionalAttrs;
   inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt isLinux;
 
   cfg = config.user;
@@ -150,7 +150,8 @@ in {
 
               programs = mkAliasDefinitions options.user.home.programs;
               services = mkAliasDefinitions options.user.home.services;
-
+            }
+            {
               xdg.configFile = cfg.xdg.configFile;
               xdg.dataFile = cfg.xdg.dataFile;
             }

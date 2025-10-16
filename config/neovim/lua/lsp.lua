@@ -1,3 +1,7 @@
+local capabilities = require("nvchad.configs.lspconfig").capabilities
+
+local conform = require "conform"
+
 local autocmd_group = vim.api.nvim_create_augroup("LspCustomAutoCmds", { clear = true })
 
 ---@param client vim.lsp.Client
@@ -23,13 +27,9 @@ local function on_attach(client, bufnr)
       buffer = bufnr,
       group = autocmd_group,
       callback = function()
-        require("conform").format({ bufnr = bufnr, async = true }, nil)
+        conform.format({ bufnr = bufnr, async = true }, nil)
       end,
     })
-  end
-
-  if client.server_capabilities.inlayHintProvider then
-    vim.lsp.inlay_hint.enable(true)
   end
 
   if client.name == "ruff_lsp" then
@@ -38,7 +38,7 @@ local function on_attach(client, bufnr)
   end
 end
 
----@type table<string, vim.lsp.Config>
+---@type table<string, lspconfig.Config>
 local servers = {
   clangd = {
     filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
@@ -167,6 +167,38 @@ local servers = {
   },
   zls = {},
   rust_analyzer = {
+    commands = {
+      RustGenRustProject = {
+        function()
+          vim.ui.input({
+            prompt = "Target set: ",
+            default = "//...",
+          }, function(input)
+            if input == nil then
+              return
+            end
+
+            local target_sets = vim.split(input, " ", { trimempty = true })
+            local cmd = {
+              "bazel",
+              "run",
+              "@rules_rust//tools/rust_analyzer:gen_rust_project",
+              "--",
+              table.unpack(target_sets),
+            }
+            vim.system(cmd, {}, function(out)
+              if out.code == 0 then
+                vim.print "rust-project.json generated! Reloading rust-analyzer"
+                vim.cmd "LspRestart"
+              else
+                vim.print("rust-project.json failed! Stderr:\n", out.stderr)
+              end
+            end)
+          end)
+        end,
+        description = "Generate the rust-project.json file.",
+      },
+    },
     settings = {
       ["rust-analyzer"] = {
         assist = {

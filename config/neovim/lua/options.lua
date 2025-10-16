@@ -1,9 +1,9 @@
 require "nvchad.options"
 
 vim.o.cursorlineopt = "both"
-vim.o.exrc = true
-vim.o.relativenumber = true
 vim.o.number = true
+vim.o.relativenumber = true
+vim.o.exrc = true
 
 local rnu_toggle = vim.api.nvim_create_augroup("RelNumToggle", { clear = true })
 
