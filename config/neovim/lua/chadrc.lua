@@ -1,20 +1,22 @@
--- This file  needs to have same structure as nvconfig.lua
--- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvconfig.lua
-
 ---@type ChadrcConfig
 local M = {}
 
 M.base46 = {
-	theme = "onedark",
-	hl_override = {
-		Comment = { italic = true },
-		["@comment"] = { italic = true },
-	},
+  theme = "ashes",
+  hl_override = {
+    Comment = { italic = true },
+    ["@comment"] = { link = "Comment" },
+    ["@puntuation.bracket"] = { link = "@puntuation" },
+    ["@puntuation.special"] = { link = "@puntuation" },
+    ["@string"] = { link = "String" },
+    LspInlayHint = { bg = "NONE" },
+  },
+  integrations = { "semantic_tokens", "neogit" },
 }
 M.ui = {
-	cmp = {
-		style = "atom",
-	},
+  cmp = {
+    style = "atom",
+  },
 }
 
 return M

@@ -6,25 +6,25 @@ return {
     opts = {
       completion = {
         keyword = { range = "full" },
-      },
-      menu = {
-        draw = {
-          components = {
-            label = {
-              text = function(ctx)
-                return require("colorful-menu").blink_components_text(ctx)
-              end,
-              highlight = function(ctx)
-                return require("colorful-menu").blink_components_highlight(ctx)
-              end,
+        menu = {
+          draw = {
+            components = {
+              label = {
+                text = function(ctx)
+                  return require("colorful-menu").blink_components_text(ctx)
+                end,
+                highlight = function(ctx)
+                  return require("colorful-menu").blink_components_highlight(ctx)
+                end,
+              },
             },
           },
         },
+        trigger = {
+          show_on_insert_on_trigger_character = true,
+        },
       },
       signature = { enabled = true },
-      trigger = {
-        show_on_insert_on_trigger_character = true,
-      },
     },
     dependencies = {
       "xzbdmw/colorful-menu.nvim",
@@ -32,9 +32,6 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    config = function()
-      require("nvchad.configs.lspconfig").defaults()
-    end,
     dependencies = {
       {
         "stevearc/conform.nvim",
@@ -48,11 +45,15 @@ return {
           require "configs.nvim-lint"
         end,
       },
+      {
+        "icholy/lsplinks.nvim",
+        config = function()
+          local lsplinks = require "lsplinks"
+          lsplinks.setup()
+          vim.keymap.set("n", "gx", lsplinks.gx)
+        end,
+      },
     },
-  },
-  {
-    "icholy/lsplinks.nvim",
-    dependencies = { "neovim/nvim-lspconfig" },
   },
   {
     "saecki/crates.nvim",
@@ -61,27 +62,13 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = {
-      incremental_selection = {
-        enable = false,
-      },
-      indent = {
-        enable = true,
-      },
-    },
-  },
-  "yorickpeterse/nvim-pqf",
-  {
-    "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    branch = "main",
     config = function()
-      vim.diagnostic.config {
-        virtual_text = false,
-        virtual_lines = {
-          highlight_whole_line = false,
-        },
-      }
+      dofile(vim.g.base46_cache .. "treesitter")
     end,
+    build = ":TSUpdate",
   },
+  { "yorickpeterse/nvim-pqf", lazy = false },
   {
     "m4xshen/smartcolumn.nvim",
     opts = {
@@ -97,16 +84,20 @@ return {
     opts = {
       graph_style = "unicode",
     },
+    config = function()
+      dofile(vim.g.base46_cache .. "neogit")
+    end,
   },
   {
     "folke/todo-comments.nvim",
+    lazy = false,
     opts = {
+      -- SAFETY:
       keywords = {
         SAFETY = { icon = "", color = "error" },
       },
-      highlight = {
-        keyword = "fg",
-        pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]],
+      search = {
+        pattern = [[.*<(KEYWORDS)\s*\(.*\)\s*:]],
       },
     },
   },
@@ -123,26 +114,6 @@ return {
     opts = {
       mappings = true,
     },
-  },
-
-  -- Colorschemes
-  -- FIX: has a bad `force` argument to nvim_set_hl
-  --{
-  --  "slugbyte/lackluster.nvim",
-  --  enable = false,
-  --  lazy = false,
-  --  priority = 1000,
-  --  init = function()
-  --    vim.cmd.colorscheme("lackluster-hack")
-  --  end
-  --},
-  {
-    "sho-87/kanagawa-paper.nvim",
-    lazy = false,
-    priority = 1000,
-    init = function()
-      vim.cmd.colorscheme "kanagawa-paper"
-    end,
   },
 
   -- Disabled built-in stuff.
@@ -168,8 +139,9 @@ return {
   {
     "nvchad/base46",
     branch = "v3.0",
-    lazy = true,
+    lazy = false,
     build = function()
+      require("base46").compile()
       require("base46").load_all_highlights()
     end,
   },

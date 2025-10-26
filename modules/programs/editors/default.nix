@@ -14,6 +14,7 @@ in {
     git
     (ripgrep.override {withPCRE2 = true;})
     fd
+    unstable.typos-lsp
 
     # ASM
     #asm-lsp
@@ -45,9 +46,10 @@ in {
     nil
     nixd
     alejandra
+    deadnix
 
     # Protobuffer
-    buf
+    unstable.protolint
 
     # Python
     #unstable.basedpyright
@@ -63,16 +65,16 @@ in {
     terraform-ls
 
     # Rust
-    unstable.rust-analyzer
+    rust-analyzer
 
     # YAML/JSON
     yaml-language-server
 
-    # Zig
-    #zls
-
     # ShitHub Actions
     actionlint
+
+    # SQL
+    unstable.sqruff
 
     # DAP
     lldb_19

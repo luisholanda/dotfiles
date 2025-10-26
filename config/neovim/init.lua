@@ -21,22 +21,20 @@ require("lazy").setup({
     lazy = false,
     branch = "v2.5",
     import = "nvchad.plugins",
-    config = function()
-      require "options"
-    end,
   },
 
   { import = "plugins" },
 }, lazy_config)
 
 -- load theme
+dofile(vim.g.base46_cache .. "syntax")
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
 require "nvchad.autocmds"
+require "options"
+require "lsp"
 
 vim.schedule(function()
   require "mappings"
 end)
-
-require "lsp"

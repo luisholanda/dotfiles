@@ -18,15 +18,15 @@ map("n", "<C-k>", "<C-w>k", { desc = "switch window up" })
 
 -- buffers
 map("n", "<tab>", function()
-	require("nvchad.tabufline").next()
+  require("nvchad.tabufline").next()
 end, { desc = "buffer goto next" })
 
 map("n", "<S-tab>", function()
-	require("nvchad.tabufline").prev()
+  require("nvchad.tabufline").prev()
 end, { desc = "buffer goto prev" })
 
 map("n", "<leader>x", function()
-	require("nvchad.tabufline").close_buffer()
+  require("nvchad.tabufline").close_buffer()
 end, { desc = "buffer close" })
 
 -- pickers
@@ -40,26 +40,48 @@ map("n", "<leader>k", "<cmd>TodoTelescope<CR>", { desc = "List workspace keyword
 
 -- LSP
 vim.api.nvim_create_autocmd({ "LspAttach" }, {
-	callback = function(args)
-		local bufnr = args.buf
+  callback = function(args)
+    local bufnr = args.buf
 
-		local function opts(desc)
-			return { buffer = bufnr, desc = desc }
-		end
+    local function opts(desc)
+      return { buffer = bufnr, desc = desc }
+    end
 
-		map("n", "gD", vim.lsp.buf.declaration, opts("Goto declaration"))
-		map("n", "gd", vim.lsp.buf.definition, opts("Goto definition"))
-		map("n", "gi", vim.lsp.buf.implementation, opts("Goto implementation"))
-		map("n", "gr", vim.lsp.buf.references, opts("Show references"))
-		map("n", "<leader>r", function()
-			require("nvchad.lsp.renamer")()
-		end, opts("Rename symbol"))
-		map({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action, opts("Perform code action"))
-		map("n", "K", vim.lsp.buf.hover, opts("Symbol documentation"))
-	end,
+    map("n", "gD", vim.lsp.buf.declaration, opts "Goto declaration")
+    map("n", "gd", vim.lsp.buf.definition, opts "Goto definition")
+    map("n", "gi", vim.lsp.buf.implementation, opts "Goto implementation")
+    map("n", "gr", vim.lsp.buf.references, opts "Show references")
+    map("n", "K", function()
+      vim.lsp.buf.hover {
+        focusable = false,
+        focus = false,
+        border = "rounded",
+      }
+    end, opts "Symbol documentation")
+    map("n", "<leader>cr", function()
+      require "nvchad.lsp.renamer"()
+    end, opts "Rename symbol")
+    map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts "Perform code action")
+    map("n", "<leader>ci", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    end, opts "Toggle Inlay Hints")
+  end,
 })
 
 -- terminals
 map({ "n" }, "<leader>t", function()
-	require("nvchad.term").toggle({ pos = "float", id = "floatterm" })
+  require("nvchad.term").toggle { pos = "float", id = "floatterm" }
 end, { desc = "Toggle terminal" })
+
+-- Git
+local neogit = require "neogit"
+local gitOpen = function(opts)
+  return function()
+    neogit.open(opts)
+  end
+end
+map({ "n" }, "<leader>gg", gitOpen { kind = "floating" }, { desc = "Staging Area" })
+map({ "n" }, "<leader>gl", neogit.action("log", "log_head", {}), { desc = "Commit Log" })
+map({ "n" }, "<leader>gri", neogit.action("rebase", "interactively", {}), { desc = "Interactive Rebase" })
+map({ "n" }, "<leader>gp", gitOpen { "pull" }, { desc = "Pull" })
+map({ "n" }, "<leader>gP", neogit.action("push", "explicit_refspec", {}), { desc = "Push" })

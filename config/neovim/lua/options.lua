@@ -1,7 +1,6 @@
 require "nvchad.options"
 
 vim.o.cursorlineopt = "both"
-vim.o.number = true
 vim.o.relativenumber = true
 vim.o.exrc = true
 
@@ -16,3 +15,6 @@ vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave" }, {
     end
   end,
 })
+
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"

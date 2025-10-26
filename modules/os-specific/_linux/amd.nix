@@ -38,9 +38,9 @@ in {
           };
         };
         initrd.enable = true;
+        overdrive.enable = true;
       };
       programs.corectrl.enable = true;
-      programs.corectrl.gpuOverclock.enable = true;
 
       services.ollama.acceleration = "rocm";
       user.groups = ["corectrl"];

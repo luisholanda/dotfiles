@@ -122,24 +122,10 @@ in {
     (mkIf cfg.ssh.always {
       user.home.programs.git.extraConfig.url =
         lib.mapAttrs' (hostname: _: {
-          name = "git@${hostname}";
-          value.insteadOf = "https://${hostname}";
+          name = "git@${hostname}:";
+          value.insteadOf = "https://${hostname}/";
         })
         cfg.ssh.keys;
-    })
-    # Stacked-git addon.
-    (mkIf cfg.addons.stgit.enable {
-      user.packages = [pkgs.stgit];
-      user.home.programs.git.extraConfig.stgit = {
-        keepoptimized = "yes";
-        diff-opts = "-M -w -W";
-
-        alias = {
-          submit = "git stg-submit";
-        };
-      };
-
-      user.home.programs.git.aliases.stg-submit = "!f() { local patch=$\{1:?Must pass patch name}; shift; git push origin $@ $(stg id $patch):refs/heads/$(echo $patch | sed 's/\\(\\w\\)-/\\1\\//'); }; f";
     })
     # MacOS-specific configurations.
     (mkIf isDarwin {
