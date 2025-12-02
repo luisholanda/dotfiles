@@ -21,6 +21,8 @@ local function on_attach(client, bufnr)
     -- Prefer hover from pyright.
     client.server_capabilities.hoverProvider = false
   end
+
+  client.server_capabilities.semanticTokensProvider = nil
 end
 
 ---@type table<string, vim.lsp.Config>
@@ -53,10 +55,7 @@ local servers = {
       gopls = {
         gofumpt = true,
         semanticTokens = true,
-        noSemanticString = true,
-        noSemanticNumber = true,
         staticcheck = true,
-        vulcheck = true,
         analyses = {
           loopclosure = false,
           shadow = true,

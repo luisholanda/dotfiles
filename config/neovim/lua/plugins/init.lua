@@ -64,6 +64,16 @@ return {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
     config = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function(args)
+          if pcall(function()
+            vim.treesitter.start(args.buf)
+          end) then
+            vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+          end
+        end,
+      })
+
       dofile(vim.g.base46_cache .. "treesitter")
     end,
     build = ":TSUpdate",
