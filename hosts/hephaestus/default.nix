@@ -45,7 +45,7 @@
       };
     };
 
-    packages = with pkgs; [darwin-rebuild gh unstable.graphite-cli];
+    packages = with pkgs; [darwin-rebuild gh graphite-cli];
 
     home.extraConfig.home.stateVersion = "24.05";
     home.extraConfig.stylix.targets.fish.enable = false;
