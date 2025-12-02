@@ -3,15 +3,15 @@ final: _: let
 in {
   rust-analyzer-unwrapped = final.unstable.rustPlatform.buildRustPackage rec {
     pname = "rust-analyzer-unwrapped";
-    version = "2025-08-25";
+    version = "2025-12-01";
 
-    cargoHash = "sha256-G1R3IiKbQg1Dl6OFJSto0w4c18OUIrAPRiM/YStfkl0=";
+    cargoHash = "sha256-ChsaWQ4gfBuucdab1uRw7tCZJcqDn9drwyAqQ6b4Dac=";
 
     src = final.fetchFromGitHub {
       owner = "rust-lang";
       repo = "rust-analyzer";
-      rev = "8747cf81540bd1bbbab9ee2702f12c33aa887b46";
-      hash = "sha256-apbJj2tsJkL2l+7Or9tJm1Mt5QPB6w/zIyDkCx8pfvk=";
+      rev = version;
+      hash = "sha256-vR3vU9AwzMsBvjNeeG2inA5W/2MwseFk5NIIrLFEMHk=";
     };
 
     cargoBuildFlags = [
@@ -54,10 +54,6 @@ in {
 
     passthru = {
       updateScript = final.nix-update-script {};
-      # FIXME: Pass overrided `rust-analyzer` once `buildRustPackage` also implements #119942
-      # FIXME: test script can't find rust std lib so hover doesn't return expected result
-      # https://github.com/NixOS/nixpkgs/pull/354304
-      # tests.neovim-lsp = callPackage ./test-neovim-lsp.nix { };
     };
 
     meta = with lib; {
