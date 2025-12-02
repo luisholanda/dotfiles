@@ -200,19 +200,25 @@ local servers = {
     },
   },
   lua_ls = {
-    settings = {
-      Lua = {
+    on_init = function(client)
+      local config = vim.fn.stdpath "config"
+      if client.workspace_folders then
+        local path = client.workspace_folders[1].name
+        if path ~= config and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc")) then
+          return
+        end
+      end
+
+      client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
         runtime = { version = "LuaJIT" },
         workspace = {
-          library = {
-            vim.fn.expand "$VIMRUNTIME/lua",
-            vim.fn.stdpath "data" .. "/lazy/ui/nvchad_types",
-            vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy",
-            "${3rd}/luv/library",
-          },
+          checkThirdParty = false,
+          library = vim.tbl_filter(function(value)
+            return not value:match(config .. "/?a?f?t?e?r?")
+          end, vim.api.nvim_get_runtime_file("", true)),
         },
-      },
-    },
+      })
+    end,
   },
 }
 
@@ -234,6 +240,8 @@ vim.diagnostic.config {
     scope = "cursor",
   },
 }
+
+require("lsp.hover").setup {}
 
 -- lsps with default config
 for server, config in pairs(servers) do

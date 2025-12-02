@@ -126,6 +126,30 @@ return {
     },
   },
 
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false,
+
+    dependencies = { "saghen/blink.cmp" },
+    opts = function(_, _)
+      local presets = require "markview.presets"
+      return {
+        markdown = {
+          enable = true,
+          headings = presets.headings.marker,
+          horizontal_rules = presets.horizontal_rules.thick,
+          table = presets.tables.single,
+        },
+        markdown_inline = {
+          enable = true,
+        },
+        preview = {
+          enable_hibrid_mode = true,
+        },
+      }
+    end,
+  },
+
   -- Disabled built-in stuff.
   {
     "nvim-tree/nvim-tree.lua",
