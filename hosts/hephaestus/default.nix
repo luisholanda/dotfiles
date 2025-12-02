@@ -45,9 +45,13 @@
       };
     };
 
-    packages = with pkgs; [darwin-rebuild gh];
+    packages = with pkgs; [darwin-rebuild gh unstable.graphite-cli];
 
     home.extraConfig.home.stateVersion = "24.05";
+    home.extraConfig.stylix.targets.fish.enable = false;
+    home.file.".gnupg/gpg-agent.conf".text = ''
+      pinentry-program ${pkgs.pinentry_mac}/bin/pinentry-mac
+    '';
   };
 
   stylix.image = config.dotfiles.dir + "/wallpapers/youkai-color.png";
@@ -69,12 +73,14 @@
       require_sha = true;
     };
     onActivation.cleanup = "zap";
-    brews = ["bazelisk"];
+    brews = ["bazelisk" "pinentry"];
     casks = [
       "brave-browser"
       "datagrip"
       "ghostty"
+      "obsidian"
       "raycast"
+      "yaak"
       "zed"
     ];
   };
