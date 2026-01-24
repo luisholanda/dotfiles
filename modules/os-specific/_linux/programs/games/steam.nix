@@ -23,12 +23,14 @@ in {
 
     programs.gamescope.enable = true;
     programs.gamescope.capSysNice = false;
-    programs.gamescope.package = pkgs.gamescope_git;
+    programs.gamescope.package = pkgs.unstable.gamescope;
     programs.gamescope.args = ["--rt" "--immediate-flips" "--adaptive-sync"];
 
     programs.steam.enable = true;
-    programs.steam.extraCompatPackages = with pkgs; [proton-ge-custom];
+    programs.steam.extraCompatPackages = with pkgs.unstable; [proton-ge-bin];
     programs.steam.package = pkgs.steam;
+
+    programs.steam.protontricks.enable = true;
 
     user.groups = ["gamemode"];
 

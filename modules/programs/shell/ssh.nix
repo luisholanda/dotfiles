@@ -17,12 +17,14 @@ in {
     user.home.programs.ssh = {
       inherit (cfg) enable;
 
-      forwardAgent = true;
-      compression = true;
-      serverAliveInterval = 30;
-      serverAliveCountMax = 5;
-      hashKnownHosts = true;
-      controlMaster = "auto";
+      matchBlocks."*" = {
+        forwardAgent = true;
+        compression = true;
+        serverAliveInterval = 30;
+        serverAliveCountMax = 5;
+        hashKnownHosts = true;
+        controlMaster = "auto";
+      };
     };
 
     programs.ssh = optionalAttrs isLinux {startAgent = cfg.agent.enable;};

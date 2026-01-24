@@ -56,17 +56,46 @@ in {
 
   config = mkMerge [
     {
-      user.home.programs.git = {
-        inherit (cfg) enable package;
+      user.home.programs = {
+        git = {
+          inherit (cfg) enable package;
 
-        userName = account.realName;
-        userEmail = account.address;
+          signing.key = account.gpg.key;
+          signing.signByDefault = account.gpg.signByDefault;
 
-        signing.key = account.gpg.key;
-        signing.signByDefault = account.gpg.signByDefault;
+          lfs.enable = true;
+          lfs.skipSmudge = true;
+
+          settings = {
+            user.name = account.realName;
+            user.email = account.address;
+
+            branch.autosetuprebase = "always";
+            core.commentChar = "@";
+            color.ui = true;
+            credential.helper = "store";
+            diff.algorithm = "histogram";
+            pull.rebase = true;
+            rebase = {
+              autoSquash = true;
+              autoStash = true;
+              abbreviateCommands = true;
+            };
+            sendemail = {
+              smtpserver = "smtp.googlemail.com";
+              smtpencryption = "tls";
+              smtpserverport = 587;
+              smtpuser = account.address;
+            };
+            github.user = "luisholanda";
+            # Use GitHub cli to authenticate in case we don't want to use SSH.
+            credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
+          };
+        };
 
         delta = {
           inherit (cfg.addons.delta) enable;
+          enableGitIntegration = true;
           options =
             {
               syntax-theme = "OneHalfDark";
@@ -74,48 +103,22 @@ in {
             // cfg.addons.delta.options;
         };
 
-        lfs.enable = true;
-        lfs.skipSmudge = true;
-
-        extraConfig = {
-          branch.autosetuprebase = "always";
-          core.commentChar = "@";
-          color.ui = true;
-          credential.helper = "store";
-          diff.algorithm = "histogram";
-          pull.rebase = true;
-          rebase = {
-            autoSquash = true;
-            autoStash = true;
-            abbreviateCommands = true;
-          };
-          sendemail = {
-            smtpserver = "smtp.googlemail.com";
-            smtpencryption = "tls";
-            smtpserverport = 587;
-            smtpuser = account.address;
-          };
-          github.user = "luisholanda";
-          # Use GitHub cli to authenticate in case we don't want to use SSH.
-          credential."https://github.com".helper = "!${pkgs.gitAndTools.gh}/bin/gh auth git-credential";
-        };
+        ssh.matchBlocks =
+          builtins.mapAttrs (hostname: identityFile: {
+            inherit hostname identityFile;
+            user = "git";
+            identitiesOnly = true;
+            extraOptions = {
+              PreferredAuthentications = "publickey";
+              AddKeysToAgent = "yes";
+            };
+          })
+          cfg.ssh.keys;
       };
 
       user.sessionVariables = mkIf cfg.enable {
         GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or null;
       };
-
-      user.home.programs.ssh.matchBlocks =
-        builtins.mapAttrs (hostname: identityFile: {
-          inherit hostname identityFile;
-          user = "git";
-          identitiesOnly = true;
-          extraOptions = {
-            PreferredAuthentications = "publickey";
-            AddKeysToAgent = "yes";
-          };
-        })
-        cfg.ssh.keys;
     }
 
     # SSH-specific configurations.
@@ -156,7 +159,7 @@ in {
     })
     # Aliases
     {
-      user.home.programs.git.aliases = {
+      user.home.programs.git.settings.aliases = {
         # list all tags
         tags = "tag -n1 --list";
         # list all stashes

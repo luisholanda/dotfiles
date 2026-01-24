@@ -1,7 +1,7 @@
 {pkgs, ...}: {
-  # The default options don't give us enough control over the rules and types.
   config.services.ananicy = {
     enable = true;
-    rulesProvider = pkgs.ananicy-rules-cachyos_git;
+    package = pkgs.ananicy-cpp;
+    rulesProvider = pkgs.ananicy-rules-cachyos;
   };
 }

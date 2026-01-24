@@ -24,7 +24,7 @@ in {
     unstable.starpls
 
     # Docker
-    dockerfile-language-server-nodejs
+    dockerfile-language-server
 
     # Go
     golangci-lint-langserver
@@ -35,7 +35,7 @@ in {
 
     # Lua
     luajitPackages.luacheck
-    sumneko-lua-language-server
+    lua-language-server
     stylua
 
     # Markdown

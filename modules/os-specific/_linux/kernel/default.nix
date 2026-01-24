@@ -9,7 +9,7 @@
   inherit (lib.my) flattenAttrs;
 in {
   config = {
-    boot.kernelPackages = pkgs.linuxPackages_latest_xen_dom0;
+    boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
 
     boot.kernelParams = let
       defaultParams = [
@@ -31,14 +31,11 @@ in {
         split_lock_mitigate = 0;
         sched_rt_runtime_us = -1;
       };
-      net = {
-        core.default_qdisc = "cake";
-        ipv4 = {
-          tcp_congestion_control = "bbr2";
-          tcp_fastopen = 3;
-          tcp_ecn = 1;
-          tcp_timestamps = 0;
-        };
+      net.ipv4 = {
+        tcp_congestion_control = "bbr2";
+        tcp_fastopen = 3;
+        tcp_ecn = 1;
+        tcp_timestamps = 0;
       };
       vm = {
         dirty_background_ratio = 5;
@@ -50,7 +47,6 @@ in {
     };
 
     services.scx.enable = true;
-    services.scx.package = pkgs.scx_git.full;
     services.scx.scheduler = "scx_lavd";
   };
 }
