@@ -52,8 +52,8 @@ in {
     unstable.protolint
 
     # Python
-    #unstable.basedpyright
-    unstable.pyright
+    unstable.basedpyright
+    #unstable.pyright
     ruff
 
     # Shell
@@ -65,7 +65,7 @@ in {
     terraform-ls
 
     # Rust
-    rust-analyzer
+    unstable.rust-analyzer
 
     # YAML/JSON
     yaml-language-server

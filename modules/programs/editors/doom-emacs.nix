@@ -5,33 +5,31 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf makeBinPath;
-  inherit (config.theme) fonts;
+  inherit (pkgs.stdenv) isDarwin;
+  inherit (config.stylix) fonts;
 
   emacsCfg = config.modules.editors.emacs;
   editorPkgs = config.modules.editors.extraPackages;
 
-  baseEmacs = pkgs.emacs-pgtk.overrideAttrs (_old: {
-    buildBuildInputs = [pkgs.gtk3];
-  });
+  baseEmacs =
+    if isDarwin
+    then pkgs.emacs-macport
+    else
+      pkgs.emacs-pgtk.overrideAttrs (_old: {
+        buildBuildInputs = [pkgs.gtk3];
+      });
 
   emacs =
-    pkgs.runCommandLocal "doom-emacs" {
+    pkgs.runCommandLocal "doom-emacs"
+    {
       buildInputs = with pkgs; [makeBinaryWrapper];
-    } ''
+    }
+    ''
       mkdir -p $out/bin
 
       for bin in $(find ${baseEmacs}/bin -not -name '.*' -a \( -type f -o -type l \) ); do
         ln -s $(realpath $bin) $out/bin/$(basename $bin)
         wrapProgram $out/bin/$(basename $bin) \
-            --prefix PATH : "${makeBinPath editorPkgs}" \
-            --set DOOMDIR "~/.dotfiles/config/doom-emacs" \
-            --set EMACSDIR "${config.user.home.dir}/.config/emacs" \
-            --set EMACS_MONO_FONT_FAMILY "${fonts.monospace.name}" \
-            --set EMACS_VARIABLE_PITCH_FONT_FAMILY "${fonts.sansSerif.name}" \
-            --set EMACS_SERIF_FONT_FAMILY "${fonts.serif.name}" \
-            --set EMACS_UNICODE_FONT_FAMILY "Latin Modern Math" \
-            --set EMACS_TEXT_FONT_SIZE ${builtins.toString fonts.sizes.terminal} \
-            --set EMACS_UI_FONT_SIZE ${builtins.toString fonts.sizes.applications} \
             --set LSP_USE_PLISTS true
       done
 
@@ -60,13 +58,15 @@ in {
 
       ## Module dependencies
       # :checkers spell
-      (aspellWithDicts (ds:
-        with ds; [
-          en
-          en-computers
-          en-science
-          pt_BR
-        ]))
+      (aspellWithDicts (
+        ds:
+          with ds; [
+            en
+            en-computers
+            en-science
+            pt_BR
+          ]
+      ))
 
       # :checkers grammar
       languagetool
@@ -78,9 +78,6 @@ in {
       # :lang cc
       rtags
 
-      # :lang coq
-      lmmath
-
       # :lang markdown
       discount
 
@@ -89,12 +86,21 @@ in {
       nodePackages.stylelint
 
       # :tool docker
-      nodePackages.dockerfile-language-server-nodejs
-
-      # :tool tree-sitter
-      nodejs
+      dockerfile-language-server
     ];
 
-    user.packages = [doom emacs];
+    user.packages = mkIf (!isDarwin) [
+      doom
+      baseEmacs
+    ];
+
+    user.xdg.configFile.doom.source = "${config.dotfiles.dir}/config/doom-emacs";
+    user.xdg.configFile.doom.recursive = true;
+    user.sessionVariables.EMACS_PATH_PREFIX = makeBinPath editorPkgs;
+
+    environment.systemPackages = mkIf isDarwin [
+      doom
+      baseEmacs
+    ];
   };
 }

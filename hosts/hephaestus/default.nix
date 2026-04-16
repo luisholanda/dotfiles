@@ -4,6 +4,7 @@
   ...
 }: {
   modules = {
+    editors.emacs.doom.enable = true;
     editors.neovim.enable = true;
 
     programs = {
@@ -45,7 +46,14 @@
       };
     };
 
-    packages = with pkgs; [darwin-rebuild gh graphite-cli];
+    packages = with pkgs; [
+      bun
+      darwin-rebuild
+      graphite-cli
+      nodejs_24
+      gh
+      uv
+    ];
 
     home.extraConfig.home.stateVersion = "24.05";
     home.extraConfig.stylix.targets.fish.enable = false;
@@ -57,8 +65,8 @@
   stylix.image = config.dotfiles.dir + "/wallpapers/youkai-color.png";
   stylix.fonts.sizes.terminal = 13;
   stylix.fonts.monospace = {
-    package = pkgs.monaspace;
-    name = "Monaspace Neon Var";
+    package = pkgs.maple-mono.NF;
+    name = "Maple Mono NF";
   };
   stylix.polarity = "dark";
 
@@ -73,9 +81,14 @@
       require_sha = true;
     };
     onActivation.cleanup = "zap";
-    brews = ["bazelisk" "pinentry"];
+    brews = [
+      "bazelisk"
+      "elan-init"
+      "pinentry"
+    ];
     casks = [
       "brave-browser"
+      "claude-code"
       "datagrip"
       "ghostty"
       "obsidian"

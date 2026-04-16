@@ -5,8 +5,23 @@
   pkgs,
   ...
 }: let
-  inherit (lib) types mkAliasDefinitions mkOption splitString mkDefault mkIf mkMerge optionalAttrs;
-  inherit (lib.my) mkAttrsOpt mkPathOpt mkPkgOpt isLinux;
+  inherit
+    (lib)
+    types
+    mkAliasDefinitions
+    mkOption
+    splitString
+    mkDefault
+    mkMerge
+    optionalAttrs
+    ;
+  inherit
+    (lib.my)
+    mkAttrsOpt
+    mkPathOpt
+    mkPkgOpt
+    isLinux
+    ;
 
   cfg = config.user;
 in {
@@ -128,7 +143,10 @@ in {
 
       environment.shells = [cfg.shell];
 
-      user.packages = with pkgs; [xdg-utils jq];
+      user.packages = with pkgs; [
+        xdg-utils
+        jq
+      ];
 
       home-manager = {
         # Install user packages in /etc/profiles instead. Necessary for
@@ -137,7 +155,10 @@ in {
         useUserPackages = true;
 
         users.${cfg.name} = let
-          cleanExtraConfig = builtins.removeAttrs cfg.home.extraConfig ["programs" "services"];
+          cleanExtraConfig = builtins.removeAttrs cfg.home.extraConfig [
+            "programs"
+            "services"
+          ];
         in
           mkMerge [
             cleanExtraConfig
@@ -158,8 +179,14 @@ in {
           ];
       };
 
-      nix.settings.trusted-users = ["root" cfg.name];
-      nix.settings.allowed-users = ["root" cfg.name];
+      nix.settings.trusted-users = [
+        "root"
+        cfg.name
+      ];
+      nix.settings.allowed-users = [
+        "root"
+        cfg.name
+      ];
     }
     (optionalAttrs isLinux {
       users.mutableUsers = false;
