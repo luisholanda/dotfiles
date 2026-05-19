@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption;
   inherit (lib.my) addToPath;
 
   wrappedHelix = addToPath pkgs.helix config.modules.editors.extraPackages;
@@ -74,23 +74,41 @@ in {
       };
     };
 
+    languages.language-server.capnprotols = {
+      command = "capnprotols";
+    };
+    languages.language-server.gopls.config = {
+      gofumpt = true;
+      semanticTokens = true;
+      staticcheck = true;
+      analyses = {
+        loopclosure = false;
+        shadow = true;
+      };
+      hints = {
+        assignVariableType = true;
+        constantValues = true;
+        parameterNames = true;
+      };
+    };
     languages.language-server.rust-analyzer.config = {
       assist.emitMustUse = true;
       cargo.features = "all";
       check.command = "clippy";
       checkOnSave = true;
-      completion = {
-        limit = 20;
-        termSearch.enable = true;
-      };
-      imports.prefix = "crate";
       inlayHints = {
         expressionAdjustmentHints = {
           enable = "always";
           hideOutsideUnsafe = true;
         };
-        lifetimeElisionHints.useParameterNames = true;
-        typeHints.hideNamedConstructor = true;
+        lifetimeElisionHints = {
+          enable = "skip_trivial";
+          useParameterNames = true;
+        };
+        typeHints = {
+          hideClosureInitialization = true;
+          hideNamedConstructor = true;
+        };
       };
       lens = {
         references = {
@@ -102,22 +120,82 @@ in {
       };
       references.excludeImports = true;
     };
+    languages.language-server.starpls = {
+      args = [
+        "server"
+        "--experimental_enable_label_completions"
+        "--experimental_infer_ctx_attributes"
+      ];
+    };
+    languages.language-server.typos-lsp = {
+      command = "typos-lsp";
+    };
     languages.language-server.yaml-language-server.config = {
       yaml.keyOrdering = false;
     };
     languages.language = [
       {
+        name = "go";
+        language-servers = [
+          "gopls"
+          "golangci-lint-langserver"
+          {
+            name = "typos-lsp";
+            only-features = [
+              "code-action"
+              "diagnostics"
+            ];
+          }
+        ];
+      }
+      {
         name = "python";
-        language-servers = ["pylyzer"];
+        language-servers = [
+          "ruff"
+          {
+            name = "typos-lsp";
+            only-features = [
+              "code-action"
+              "diagnostics"
+            ];
+          }
+        ];
       }
       {
         name = "rust";
-        language-servers = ["rust-analyzer"];
+        language-servers = [
+          "rust-analyzer"
+          {
+            name = "typos-lsp";
+            only-features = [
+              "code-action"
+              "diagnostics"
+            ];
+          }
+        ];
       }
       {
         name = "nix";
         auto-format = true;
         formatter.command = "${pkgs.alejandra}/bin/alejandra";
+      }
+      {
+        name = "flatbuffers";
+        scope = "source.flatbuffers";
+        file-types = ["fbs"];
+        roots = [];
+        comment-token = "//";
+      }
+      {
+        name = "capnp";
+        language-servers = ["capnprotols"];
+      }
+    ];
+    languages.grammar = [
+      {
+        name = "flatbuffers";
+        source.git = "https://github.com/demfabris/tree-sitter-flatbuffers";
+        source.rev = "main";
       }
     ];
   };

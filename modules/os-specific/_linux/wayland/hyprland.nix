@@ -38,7 +38,6 @@ in {
         package = pkgs.unstable.hyprland;
         enable = true;
         xwayland.enable = true;
-        plugins = with pkgs.unstable.hyprlandPlugins; [hypr-dynamic-cursors];
         systemd.enableXdgAutostart = true;
       };
 

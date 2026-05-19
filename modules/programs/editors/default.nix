@@ -23,6 +23,9 @@ in {
     bazel-buildtools
     unstable.starpls
 
+    # Cap'n'Proto
+    capnprotols
+
     # Docker
     dockerfile-language-server
 

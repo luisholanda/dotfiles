@@ -184,7 +184,7 @@ local servers = {
             enable = "skip_trivial",
           },
           typeHints = {
-            hideClsoureInitialization = true,
+            hideClosureInitialization = true,
             hideNamedConstructor = true,
           },
         },

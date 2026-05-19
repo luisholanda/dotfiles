@@ -15,5 +15,6 @@
 in
   {
     pragmasevka = callPackage ./data/fonts/pragmasevka.nix;
+    capnprotols = callPackage ./capnprotols.nix;
   }
   // (optionalAttrs isLinux linuxPackages)
