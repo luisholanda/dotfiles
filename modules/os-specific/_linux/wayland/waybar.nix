@@ -3,9 +3,9 @@
   pkgs,
   ...
 }: let
-  inherit (config.modules.services) sway hyprland;
+  inherit (config.modules.services) sway;
 
-  isWaylandEnabled = sway.enable || hyprland.enable;
+  isWaylandEnabled = sway.enable;
 
   colors = with config.lib.stylix.colors.withHashtag;
   with config.stylix.fonts; ''
@@ -32,7 +32,7 @@ in {
       mainBar = {
         layer = "top";
         position = "bottom";
-        output = ["HDMI-A-1" "HDMI-A-2" "DP-1"];
+        output = ["HDMI-A-1" "HDMI-A-2" "DP-1" "DP-2"];
         ipc = sway.enable;
         modules-left = [
           "temperature"

@@ -54,6 +54,7 @@ in {
       };
     };
 
-    user.home.services.easyeffects.enable = true;
+    # Causes pyside6 to be included, which results in we building bunch of web engines from scratch.
+    #user.home.services.easyeffects.enable = true;
   };
 }

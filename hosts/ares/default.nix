@@ -1,26 +1,16 @@
 {
   config,
   pkgs,
-  lib,
   ...
-}: let
-  inherit (lib.my) wrapProgram;
-
-  chromiumCmdArgs = [
-    "--disable-gpu-blacklist"
-    "--enable-raw-draw"
-    "--enable-skia-graphite"
-    "--skia-graphite"
-  ];
-in {
+}: {
   imports = [./hardware.nix];
 
   host.hardware.isIntel = true;
   host.hardware.gpu.isAMD = true;
 
   modules = {
+    editors.helix.enable = true;
     editors.neovim.enable = true;
-    editors.zed.enable = true;
     games.steam.enable = true;
 
     services = {
@@ -32,10 +22,7 @@ in {
     };
 
     programs = {
-      brave = {
-        enable = true;
-      };
-
+      firefox.enable = true;
       fish.enable = true;
 
       git = {
@@ -54,17 +41,21 @@ in {
     };
   };
 
-  services.resolved.enable =
-    true;
+  services.resolved.enable = true;
 
-  dotfiles.dir =
-    /home/luiscm/dotfiles;
+  dotfiles.dir = /home/luiscm/dotfiles;
 
   user = {
     name = "luiscm";
     description = "Luis Holanda";
     # TODO: move these groups to their respective modules.
-    groups = ["wheel" "networking" "video" "adbusers" "docker"];
+    groups = [
+      "wheel"
+      "networking"
+      "video"
+      "adbusers"
+      "docker"
+    ];
     passwordFile = "${config.dotfiles.dir}/hosts/ares/passfile";
 
     terminalCmd = "${pkgs.unstable.ghostty}/bin/ghostty";
@@ -75,9 +66,6 @@ in {
     home.projectDirs = [
       "~/Projects"
     ];
-
-    home.extraConfig.stylix.targets.vesktop.enable = true;
-    home.extraConfig.programs.brave.commandLineArgs = chromiumCmdArgs;
 
     accounts.email.accounts = {
       personalGmail = rec {
@@ -110,19 +98,8 @@ in {
 
     packages = with pkgs; [
       bemenu
-      (wrapProgram vesktop {
-        appendFlags = chromiumCmdArgs;
-      })
       unstable.ghostty
-      nomacs
-      (wrapOBS {
-        plugins = with obs-studio-plugins; [wlrobs input-overlay obs-pipewire-audio-capture];
-      })
-      (wrapProgram obsidian {
-        appendFlags = chromiumCmdArgs;
-      })
       zathura
-      zotero
     ];
   };
 
@@ -130,13 +107,12 @@ in {
   stylix.cursor.name = "GoogleDot-White";
   stylix.cursor.size = 24;
 
-  stylix.image =
-    config.dotfiles.dir + "/wallpapers/youkai-grey.jpg";
+  stylix.image = config.dotfiles.dir + "/wallpapers/youkai-grey.jpg";
   stylix.polarity = "dark";
   stylix.fonts = {
     monospace = {
-      package = pkgs.monaspace;
-      name = "Monaspace Xenon NF";
+      package = pkgs.maple-mono.NF;
+      name = "Maple Mono NF";
     };
     sansSerif = {
       package = pkgs.atkinson-hyperlegible;

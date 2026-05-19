@@ -15,16 +15,6 @@
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
-    zig-overlay.url = "github:mitchellh/zig-overlay";
-    zig-overlay.inputs.flake-compat.follows = "pre-commit-hooks/flake-compat";
-    zig-overlay.inputs.flake-utils.follows = "flake-utils";
-    zig-overlay.inputs.nixpkgs.follows = "nixpkgs";
-
-    zls.url = "github:zigtools/zls";
-    zls.inputs.nixpkgs.follows = "nixpkgs";
-    zls.inputs.gitignore.follows = "pre-commit-hooks/gitignore";
-    zls.inputs.zig-overlay.follows = "zig-overlay";
-
     nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
@@ -36,7 +26,6 @@
     nixpkgs-unstable,
     flake-utils,
     pre-commit-hooks,
-    zls,
     nix-darwin,
     ...
   }: let
@@ -48,118 +37,135 @@
       aarch64-darwin
     ];
 
-    systemAttrs = flake-utils.lib.eachSystem systems (system: let
-      inherit (lib.my) mapModulesRec mapModulesRec' mkHost;
+    systemAttrs = flake-utils.lib.eachSystem systems (
+      system: let
+        inherit (lib.my) mapModulesRec mapModulesRec' mkHost;
 
-      overlays = mapModulesRec' ./overlays import;
+        overlays = mapModulesRec' ./overlays import;
 
-      lib = nixpkgs.lib.extend (self: _super: {
-        my = import ./lib {
-          inherit inputs system;
-          pkgs = nixpkgs.legacyPackages.${system};
-          lib = self;
-        };
-      });
-
-      pkgs = import nixpkgs {
-        inherit system;
-
-        config.allowUnfree = true;
-        config.permittedInsecurePackages = [
-          "electron-27.3.11"
-        ];
-
-        overlays = let
-          addVendoredPackages = final: _prev:
-            import ./packages {
-              inherit system lib;
-              pkgs = final;
+        lib = nixpkgs.lib.extend (
+          self: _super: {
+            my = import ./lib {
+              inherit inputs system;
+              pkgs = nixpkgs.legacyPackages.${system};
+              lib = self;
             };
-          addCustomLibFunctions = _final: _prev: {inherit lib;};
-        in
-          overlays
-          ++ [
-            nix-darwin.overlays.default
-            addVendoredPackages
-            addCustomLibFunctions
-            (_: prev: {
-              inherit (zls.packages.${system}) zls;
-              unstable = import nixpkgs-unstable {
-                inherit system;
-                config.allowUnfree = true;
-              };
-              waybar =
-                (prev.waybar.override {
-                  withMediaPlayer = true;
-                })
-                .overrideAttrs (o: {
-                  mesonFlags = o.mesonFlags ++ ["-Dexperimental=true"];
-                });
-              libsecret = prev.libsecret.overrideAttrs (_: {doCheck = false;});
-              upower = prev.upower.overrideAttrs (_: {doCheck = false;});
-            })
+          }
+        );
+
+        pkgs = import nixpkgs {
+          inherit system;
+
+          config.allowUnfree = true;
+          config.permittedInsecurePackages = [
+            "electron-27.3.11"
           ];
-      };
 
-      pre-commit-check = pre-commit-hooks.lib.${system}.run {
-        src = self.outPath;
-        hooks = {
-          alejandra.enable = true;
-          deadnix.enable = true;
-          statix.enable = true;
+          overlays = let
+            addVendoredPackages = final: _prev:
+              import ./packages {
+                inherit system lib;
+                pkgs = final;
+              };
+            addCustomLibFunctions = _final: _prev: {inherit lib;};
+          in
+            overlays
+            ++ [
+              nix-darwin.overlays.default
+              addVendoredPackages
+              addCustomLibFunctions
+              (_: prev: {
+                unstable = import nixpkgs-unstable {
+                  inherit system;
+                  config.allowUnfree = true;
+                };
+                waybar =
+                  (prev.waybar.override {
+                    withMediaPlayer = true;
+                  }).overrideAttrs
+                  (o: {
+                    mesonFlags = o.mesonFlags ++ ["-Dexperimental=true"];
+                  });
+              })
+            ];
+        };
 
-          stylua = {
-            enable = true;
-            name = "stylua";
-            description = "An Opinionated Lua Code Formatter";
-            types = ["file" "lua"];
-            entry = "${pkgs.stylua}/bin/stylua";
+        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          src = self.outPath;
+          hooks = {
+            alejandra.enable = true;
+            deadnix.enable = true;
+            statix.enable = true;
+
+            stylua = {
+              enable = true;
+              name = "stylua";
+              description = "An Opinionated Lua Code Formatter";
+              types = [
+                "file"
+                "lua"
+              ];
+              entry = "${pkgs.stylua}/bin/stylua";
+            };
           };
         };
-      };
 
-      extraModules = [
-        dotfiles
-        {
-          config.nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
-        }
-      ];
+        extraModules = [
+          dotfiles
+          {
+            config.nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
+          }
+        ];
 
-      myModules = mapModulesRec' ./modules import;
-      mkHost' = path: systemFn:
-        mkHost path {
-          inherit dotfiles pkgs system inputs systemFn;
-          modules = myModules ++ extraModules;
+        myModules = mapModulesRec' ./modules import;
+        mkHost' = path: systemFn:
+          mkHost path {
+            inherit
+              dotfiles
+              pkgs
+              system
+              inputs
+              systemFn
+              ;
+            modules = myModules ++ extraModules;
+          };
+      in {
+        checks = {inherit pre-commit-check;};
+
+        devShells.default = pkgs.mkShell {
+          inherit (pre-commit-check) shellHook;
+          name = "dotfiles";
+
+          buildInputs = with pkgs; [
+            gnumake
+            python3
+          ];
         };
-    in {
-      checks = {inherit pre-commit-check;};
 
-      devShells.default = pkgs.mkShell {
-        inherit (pre-commit-check) shellHook;
-        name = "dotfiles";
-
-        buildInputs = with pkgs; [gnumake python3];
-      };
-
-      nixosModules = {inherit dotfiles;} // mapModulesRec ./modules import;
-      packages.nixosConfigurations.ares = let
-        modules = [
-          inputs.home-manager.nixosModules.default
-          inputs.stylix.nixosModules.stylix
-        ];
-        systemFn = args: pkgs.lib.nixosSystem (args // {modules = modules ++ args.modules;});
-      in
-        mkHost' ./hosts/ares systemFn;
-      packages.darwinConfigurations.hephaestus = let
-        modules = [
-          inputs.home-manager.darwinModules.home-manager
-          inputs.stylix.darwinModules.stylix
-          inputs.nix-homebrew.darwinModules.nix-homebrew
-        ];
-        systemFn = args: nix-darwin.lib.darwinSystem (args // {modules = modules ++ args.modules;});
-      in
-        mkHost' ./hosts/hephaestus systemFn;
-    });
+        nixosModules =
+          {
+            inherit dotfiles;
+          }
+          // mapModulesRec ./modules import;
+        packages.nixosConfigurations.ares = let
+          modules = [
+            inputs.home-manager.nixosModules.default
+            inputs.stylix.nixosModules.stylix
+          ];
+          systemFn = args: pkgs.lib.nixosSystem (args // {modules = modules ++ args.modules;});
+        in
+          mkHost' ./hosts/ares systemFn;
+        packages.darwinConfigurations.hephaestus = let
+          modules = [
+            inputs.home-manager.darwinModules.home-manager
+            inputs.stylix.darwinModules.stylix
+            inputs.nix-homebrew.darwinModules.nix-homebrew
+          ];
+          systemFn = args: nix-darwin.lib.darwinSystem (args // {modules = modules ++ args.modules;});
+        in
+          mkHost' ./hosts/hephaestus systemFn;
+      }
+    );
   in
     systemAttrs
     // {

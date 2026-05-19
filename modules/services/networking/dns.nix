@@ -1,6 +1,6 @@
 {lib, ...}: let
   inherit (lib) mkMerge optionalAttrs;
-  inherit (lib.my) isLinux isDarwin;
+  inherit (lib.my) isLinux;
   cloudflare-sec-stamp = "sdns://AgMAAAAAAAAABzEuMC4wLjIAG3NlY3VyaXR5LmNsb3VkZmxhcmUtZG5zLmNvbQovZG5zLXF1ZXJ5";
 in {
   config = mkMerge [
@@ -27,6 +27,7 @@ in {
           protection_enabled = true;
           filtering_enabled = true;
           safe_search.enabled = true;
+          safe_browsing_enabled = true;
         };
         statistics.enabled = true;
       };

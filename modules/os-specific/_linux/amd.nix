@@ -24,8 +24,6 @@ in {
       hardware.amdgpu.initrd.enable = true;
       hardware.amdgpu.overdrive.enable = true;
 
-      programs.corectrl.enable = true;
-
       services.ollama.acceleration = "rocm";
       user.groups = ["corectrl"];
     })

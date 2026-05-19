@@ -12,7 +12,7 @@ in {
   config = {
     programs.gnupg.agent = mkMerge [
       {inherit (config.modules.programs.gpg) enable;}
-      (optionalAttrs isLinux {pinentryPackage = pkgs.pinentry-qt;})
+      (optionalAttrs isLinux {pinentryPackage = pkgs.pinentry-bemenu;})
     ];
 
     user.home.programs.gpg = {

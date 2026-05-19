@@ -22,13 +22,139 @@ in {
   options.modules.services.hyprland.enable = mkEnableOption "hyprland";
 
   config = mkIf config.modules.services.hyprland.enable {
-    environment.systemPackages = with pkgs; [bemenu screenshot wl-clipboard];
+    environment.systemPackages = with pkgs; [
+      bemenu
+      screenshot
+      wl-clipboard
+    ];
 
-    programs.hyprland = {
-      package = pkgs.unstable.hyprland;
-      portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
-      enable = true;
-      xwayland.enable = true;
+    xdg.portal = {
+      extraPortals = [pkgs.unstable.xdg-desktop-portal-hyprland];
+      configPackages = [pkgs.unstable.hyprland];
+    };
+
+    user.home = {
+      extraConfig.wayland.windowManager.hyprland = {
+        package = pkgs.unstable.hyprland;
+        enable = true;
+        xwayland.enable = true;
+        plugins = with pkgs.unstable.hyprlandPlugins; [hypr-dynamic-cursors];
+        systemd.enableXdgAutostart = true;
+      };
+
+      programs.ashell = {
+        enable = true;
+        package = pkgs.unstable.ashell;
+        systemd.enable = true;
+        settings = {
+          enable_esc_key = true;
+          outputs = "All";
+
+          modules = {
+            left = [
+              "Workspaces"
+              "MediaPlayer"
+            ];
+            center = ["WindowTitle"];
+            right = [
+              "Tray"
+              [
+                "SystemInfo"
+              ]
+              "Tempo"
+              [
+                "Privacy"
+                "Settings"
+              ]
+            ];
+          };
+
+          system_info = {
+            indicators = [
+              "Cpu"
+              "Memory"
+              "MemorySwap"
+            ];
+          };
+
+          window_title = {
+            mode = "Title";
+          };
+
+          settings = {
+            indicators = [
+              "Audio"
+              "Network"
+            ];
+            lock_cmd = "pidof hyprlock || hyprlock &";
+            audio_indicator_format = "IconAndPercentage";
+            audio_sinks_more_cmd = "${pkgs.pavucontrol}/bin/pavucontrol -t 3";
+            audio_sources_more_cmd = "${pkgs.pavucontrol}/bin/pavucontrol -t 4";
+            remove_airplane_btn = true;
+            remove_idle_btn = true;
+          };
+        };
+      };
+
+      programs.hyprlock = {
+        enable = true;
+        settings = {
+          general = {
+            hide_cursor = true;
+          };
+
+          label = [
+            {
+              position = "0, 0";
+              halign = "center";
+              valign = "center";
+              text = "cmd[update:60000] $(date) ｜ $TIME12";
+            }
+          ];
+        };
+      };
+
+      services.hyprpaper.settings = {
+        splash = false;
+
+        wallpapers = [
+          {
+            path = config.stylix.image;
+          }
+        ];
+      };
+
+      services.hypridle.enable = true;
+      services.hypridle.settings = {
+        general = {
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+          lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+        };
+
+        listeners = [
+          {
+            timeout = 60;
+            on-timeout = "loginctl lock-session";
+          }
+          {
+            timeout = 150;
+            on-timeout = "brightnessctl -s set 10";
+            on-resume = "brightnessctl -r";
+          }
+          {
+            timeout = 300;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on && brightnessctl -r";
+          }
+          {
+            timeout = 3600;
+            on-timeout = "systemctl suspend";
+          }
+        ];
+      };
+
+      services.hyprpolkitagent.enable = false;
     };
 
     user.sessionVariables.NIXOS_OZONE_WL = 1;
@@ -41,12 +167,10 @@ in {
 
       exec-once = ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME
-      exec = ${pkgs.swaybg}/bin/swaybg -m fill -i ${config.stylix.image}
 
       exec-once = gsettings set org.gnome.desktop.interface cursor-theme '${cursor.name}'
       exec-once = gsettings set org.gnome.desktop.interface font-theme '${fonts.sansSerif.name}'
 
-      ${startUserService "waybar"}
       ${startUserService "xdg-desktop-portal-hyprland"}
 
       general {
@@ -54,5 +178,7 @@ in {
         col.inactive_border = rgb(${inactive})
       }
     '';
+
+    security.pam.services.hyprlock = {};
   };
 }

@@ -12,7 +12,7 @@
         libkrb5
         keyutils
         gamemode.lib
-        (pkgs.runCommandNoCCLocal "libxcrypt-1" {src = libxcrypt;} ''
+        (pkgs.runCommandLocal "libxcrypt-1" {src = libxcrypt;} ''
           mkdir -p $out/lib
           cp $src/lib/libcrypt.so $out/lib/libcrypt.so.1
         '')

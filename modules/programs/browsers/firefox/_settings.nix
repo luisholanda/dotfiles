@@ -74,4 +74,7 @@ _: {
   "datareporting.healthreport.uploadEnabled" = false;
   "datareporting.healthreport.service.enabled" = false;
   "datareporting.policy.dataSubmissionEnabled" = false;
+  "gfx.use_text_smoothing_setting" = true;
+  "gfx.webrender.compositor" = true;
+  "gfx.webrender.precache-sharders" = true;
 }
