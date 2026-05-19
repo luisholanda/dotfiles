@@ -4,7 +4,7 @@
   ...
 }: {
   modules = {
-    editors.emacs.doom.enable = true;
+    editors.helix.enable = true;
     editors.neovim.enable = true;
 
     programs = {
@@ -49,9 +49,11 @@
     packages = with pkgs; [
       bun
       darwin-rebuild
-      graphite-cli
+      jujutsu
+      lazyjj
       nodejs_24
       gh
+      prek
       uv
     ];
 
@@ -60,13 +62,38 @@
     home.file.".gnupg/gpg-agent.conf".text = ''
       pinentry-program ${pkgs.pinentry_mac}/bin/pinentry-mac
     '';
+
+    home.programs.ghostty.enable = true;
+    home.programs.ghostty.package = null;
+
+    home.programs.ssh.matchBlocks = {
+      "coder.*" = {
+        proxyCommand = ''/opt/homebrew/bin/coder --global-config "/Users/lholanda/Library/Application Support/coderv2" ssh --stdio --ssh-host-prefix coder. %h'';
+        userKnownHostsFile = "/dev/null";
+        extraOptions = {
+          ConnectTimeout = "0";
+          StrictHostKeyChecking = "no";
+          LogLevel = "ERROR";
+        };
+      };
+      "*.coder" = {
+        match = ''host *.coder !exec "/opt/homebrew/bin/coder connect exists %h"'';
+        proxyCommand = ''/opt/homebrew/bin/coder --global-config "/Users/lholanda/Library/Application Support/coderv2" ssh --stdio --ssh-host-prefix coder. %h'';
+        userKnownHostsFile = "/dev/null";
+        extraOptions = {
+          ConnectTimeout = "0";
+          StrictHostKeyChecking = "no";
+          LogLevel = "ERROR";
+        };
+      };
+    };
   };
 
   stylix.image = config.dotfiles.dir + "/wallpapers/youkai-color.png";
   stylix.fonts.sizes.terminal = 13;
   stylix.fonts.monospace = {
-    package = pkgs.maple-mono.NF;
-    name = "Maple Mono NF";
+    package = pkgs.maple-mono.variable;
+    name = "Maple Mono";
   };
   stylix.polarity = "dark";
 
@@ -83,8 +110,11 @@
     onActivation.cleanup = "zap";
     brews = [
       "bazelisk"
+      "coder"
+      "go"
       "elan-init"
       "pinentry"
+      "opencode"
     ];
     casks = [
       "brave-browser"
@@ -92,7 +122,9 @@
       "datagrip"
       "ghostty"
       "obsidian"
+      "orbstack"
       "raycast"
+      "twingate"
       "yaak"
       "zed"
     ];

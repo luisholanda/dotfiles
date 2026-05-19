@@ -5,6 +5,7 @@ return {
     "Saghen/blink.cmp",
     opts = {
       completion = {
+        documentation = { auto_show = true },
         keyword = { range = "full" },
         menu = {
           draw = {
@@ -21,11 +22,12 @@ return {
           },
         },
         trigger = {
-          show_on_insert_on_trigger_character = true,
+          show_on_keyword = true,
         },
       },
       signature = { enabled = true },
     },
+    build = "nix run .#build-plugin",
     dependencies = {
       "xzbdmw/colorful-menu.nvim",
     },

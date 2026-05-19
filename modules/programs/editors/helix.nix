@@ -13,7 +13,7 @@ in {
     enable = mkEnableOption "helix";
   };
 
-  config.user.sessionVariables.EDITOR = mkIf config.modules.editors.helix.enable "hx";
+  #config.user.sessionVariables.EDITOR = mkIf config.modules.editors.helix.enable "hx";
 
   config.user.home.programs.helix = {
     inherit (config.modules.editors.helix) enable;
@@ -21,18 +21,57 @@ in {
     package = wrappedHelix;
 
     settings.editor = {
-      auto-save = true;
+      auto-save = {
+        focus-lost = true;
+        after-delay = {
+          enable = true;
+        };
+      };
       cursorline = true;
       lsp = {
         display-messages = true;
         display-inlay-hints = true;
       };
-      cursor-shape.insert = "bar";
+      cursor-shape.insert = "underline";
       line-number = "relative";
       completion-timeout = 5;
       completion-replace = false;
       color-modes = true;
       popup-border = "popup";
+      inline-diagnostics = {
+        cursor-line = "warning";
+        other-lines = "hint";
+        max-diagnostics = 3;
+      };
+      rulers = [
+        88
+        120
+      ];
+      statusline = {
+        left = [
+          "mode"
+          "spacer"
+          "spinner"
+          "file-name"
+          "separator"
+          "spacer"
+          "version-control"
+        ];
+        right = [
+          "diagnostics"
+          "position"
+        ];
+        separator = "│";
+        diagnostics = [
+          "warning"
+          "error"
+          "info"
+        ];
+        workspace-diagnostics = [
+          "warning"
+          "error"
+        ];
+      };
     };
 
     languages.language-server.rust-analyzer.config = {
