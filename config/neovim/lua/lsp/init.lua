@@ -138,6 +138,7 @@ local servers = {
   },
   starpls = {
     cmd = { "starpls", "server", "--experimental_enable_label_completions", "--experimental_infer_ctx_attributes" },
+    root_markers = { { "MODULE.bazel", "MODULE.bazel.lock" }, "WORKSPACE.bazel" },
   },
 
   terraformls = {
@@ -150,7 +151,6 @@ local servers = {
       },
     },
   },
-  zls = {},
   rust_analyzer = {
     settings = {
       ["rust-analyzer"] = {
@@ -223,6 +223,7 @@ local servers = {
 }
 
 vim.lsp.inlay_hint.enable(true)
+vim.lsp.semantic_tokens.enable(true)
 
 vim.lsp.config("*", {
   on_init = nil,

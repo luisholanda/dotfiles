@@ -3,15 +3,15 @@ final: _: let
 in {
   rust-analyzer-unwrapped = final.unstable.rustPlatform.buildRustPackage rec {
     pname = "rust-analyzer-unwrapped";
-    version = "2025-12-01";
+    version = "2026-03-30";
 
-    cargoHash = "sha256-ChsaWQ4gfBuucdab1uRw7tCZJcqDn9drwyAqQ6b4Dac=";
+    cargoHash = "sha256-nTllacWD0alq8OVKAPhcuMnAyPW2Uh0JAJkHhB9YcZ4=";
 
     src = final.fetchFromGitHub {
       owner = "rust-lang";
       repo = "rust-analyzer";
       rev = version;
-      hash = "sha256-vR3vU9AwzMsBvjNeeG2inA5W/2MwseFk5NIIrLFEMHk=";
+      hash = "sha256-Cbpmf0+1pqi/zbpub2vkp5lTPx3QdVtDkkagDwQzHHg=";
     };
 
     cargoBuildFlags = [
