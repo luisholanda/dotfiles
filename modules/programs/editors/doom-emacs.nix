@@ -6,7 +6,6 @@
 }: let
   inherit (lib) mkEnableOption mkIf makeBinPath;
   inherit (pkgs.stdenv) isDarwin;
-  inherit (config.stylix) fonts;
 
   emacsCfg = config.modules.editors.emacs;
   editorPkgs = config.modules.editors.extraPackages;
@@ -18,23 +17,6 @@
       pkgs.emacs-pgtk.overrideAttrs (_old: {
         buildBuildInputs = [pkgs.gtk3];
       });
-
-  emacs =
-    pkgs.runCommandLocal "doom-emacs"
-    {
-      buildInputs = with pkgs; [makeBinaryWrapper];
-    }
-    ''
-      mkdir -p $out/bin
-
-      for bin in $(find ${baseEmacs}/bin -not -name '.*' -a \( -type f -o -type l \) ); do
-        ln -s $(realpath $bin) $out/bin/$(basename $bin)
-        wrapProgram $out/bin/$(basename $bin) \
-            --set LSP_USE_PLISTS true
-      done
-
-      ln -s ${baseEmacs}/lib/emacs/*/native-lisp $out/native-lisp
-    '';
 
   doom = pkgs.writeScriptBin "doom" ''
     #!${pkgs.stdenv.shell}

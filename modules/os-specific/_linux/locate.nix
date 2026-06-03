@@ -1,4 +1,4 @@
-{config, ...}: {
+_: {
   config = {
     services.locate.enable = true;
     services.locate.interval = "hourly";
