@@ -46,7 +46,7 @@ in {
     proselint
 
     # Nix
-    nil
+    pkgs.unstable.lixPackageSets.latest.nil
     nixd
     alejandra
     deadnix

@@ -5,7 +5,7 @@
   ...
 }: {
   config = {
-    nix.package = pkgs.unstable.nixVersions.latest;
+    nix.package = pkgs.unstable.lixPackageSets.latest.lix;
     nix.optimise.automatic = true;
 
     nix.settings = {
