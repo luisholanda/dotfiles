@@ -11,6 +11,7 @@
 
   linuxPackages = {
     rtl8188eu = callPackage ./os-specific/linux/firmware/rtl8188eu.nix;
+    proton-cachyos = callPackage ./os-specific/linux/proton-cachy.nix;
   };
 in
   {
