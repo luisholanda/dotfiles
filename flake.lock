@@ -233,6 +233,24 @@
         "type": "github"
       }
     },
+    "ncro": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1780427445,
+        "narHash": "sha256-NqXI6uSi3r9JtKK03GjWNcKou/BHbBfP1kWECYu+G14=",
+        "owner": "feel-co",
+        "repo": "ncro",
+        "rev": "8cb77a1eedab7355801c0a9f976b7551fdf2e998",
+        "type": "github"
+      },
+      "original": {
+        "owner": "feel-co",
+        "repo": "ncro",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -274,16 +292,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1779113322,
-        "narHash": "sha256-4a9puq3lZMCmZUmWfZ3/lBg6mt+1svwYaBMXURwi/uc=",
+        "lastModified": 1780243769,
+        "narHash": "sha256-x5UQuRsH3MqI0U9afaXSNqzTPSeZlRLvFAav2Ux1pNw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "608782a922a07e12df2c7dbb1b677cfaec17b271",
+        "rev": "331800de5053fcebacf6813adb5db9c9dca22a0c",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "release-25.11",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -299,6 +317,22 @@
       },
       "original": {
         "owner": "NixOS",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1779113322,
+        "narHash": "sha256-4a9puq3lZMCmZUmWfZ3/lBg6mt+1svwYaBMXURwi/uc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "608782a922a07e12df2c7dbb1b677cfaec17b271",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "release-25.11",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -354,9 +388,10 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
+        "ncro": "ncro",
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "pre-commit-hooks": "pre-commit-hooks",
         "stylix": "stylix"

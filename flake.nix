@@ -18,6 +18,8 @@
     nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    ncro.url = "github:feel-co/ncro";
   };
 
   outputs = inputs @ {
@@ -27,6 +29,7 @@
     flake-utils,
     pre-commit-hooks,
     nix-darwin,
+    ncro,
     ...
   }: let
     dotfiles = import self.outPath;
@@ -112,6 +115,7 @@
 
         extraModules = [
           dotfiles
+          ncro.nixosModules.default
           {
             config.nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
           }
@@ -176,16 +180,4 @@
         };
       };
     };
-  nixConfig = {
-    extra-substituters = [
-      "https://hyprland.cachix.org"
-      "https://nix-tools.cachix.org"
-      "https://helix.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      "nix-tools.cachix.org-1:ebBEBZLogLxcCvipq2MTvuHlP7ZRdkazFSQsbs0Px1A="
-      "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
-    ];
-  };
 }
