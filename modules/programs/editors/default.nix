@@ -53,6 +53,7 @@ in {
 
     # Protobuffer
     unstable.protolint
+    unstable.protols
 
     # Python
     unstable.basedpyright
@@ -68,7 +69,7 @@ in {
     terraform-ls
 
     # Rust
-    unstable.rust-analyzer
+    rust-analyzer
 
     # YAML/JSON
     yaml-language-server
@@ -78,10 +79,6 @@ in {
 
     # SQL
     unstable.sqruff
-
-    # DAP
-    lldb_19
-    llvmPackages_19.llvm
   ];
 
   config.user.xdg.configFile."zls.json".text = builtins.toJSON {
