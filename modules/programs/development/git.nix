@@ -108,22 +108,23 @@ in {
             inherit hostname identityFile;
             user = "git";
             identitiesOnly = true;
-            extraOptions = {
-              PreferredAuthentications = "publickey";
-              AddKeysToAgent = "yes";
-            };
+          })
+          cfg.ssh.keys;
+
+        ssh.settings =
+          builtins.mapAttrs (_: _: {
+            PreferredAuthentications = "publickey";
+            AddKeysToAgent = "yes";
           })
           cfg.ssh.keys;
       };
 
-      user.sessionVariables = mkIf cfg.enable {
-        GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR or null;
-      };
+      user.sessionVariables.GIT_SEQUENCE_EDITOR = config.user.sessionVariables.EDITOR;
     }
 
     # SSH-specific configurations.
     (mkIf cfg.ssh.always {
-      user.home.programs.git.extraConfig.url =
+      user.home.programs.git.settings.url =
         lib.mapAttrs' (hostname: _: {
           name = "git@${hostname}:";
           value.insteadOf = "https://${hostname}/";
@@ -133,7 +134,7 @@ in {
     # MacOS-specific configurations.
     (mkIf isDarwin {
       user.home.programs.git = {
-        extraConfig.credentials.helper = "oskeychain";
+        settings.credentials.helper = "oskeychain";
         ignores = [
           # General
           ".DS_Store"

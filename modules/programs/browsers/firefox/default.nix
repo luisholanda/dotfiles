@@ -22,6 +22,7 @@ in {
     user.home.programs.firefox = {
       enable = true;
       package = pkgs.firefox-bin;
+      configPath = "${config.user.xdg.configDir}/mozilla/firefox";
     };
   };
 }

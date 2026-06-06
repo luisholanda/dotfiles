@@ -39,6 +39,7 @@ in {
         enable = true;
         xwayland.enable = true;
         systemd.enableXdgAutostart = true;
+        configType = "hyprlang";
       };
 
       programs.ashell = {

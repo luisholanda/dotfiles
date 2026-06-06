@@ -163,7 +163,7 @@ in {
           mkMerge [
             cleanExtraConfig
             {
-              home.sessionVariables = mkAliasDefinitions cfg.sessionVariables;
+              home.sessionVariables = cfg.sessionVariables;
               # Necessary for home-manager to work with flakes, otherwise it will
               # look for a nixpkgs channel.
               home.stateVersion = mkDefault config.system.stateVersion;
